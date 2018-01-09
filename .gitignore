@@ -16,7 +16,4 @@ hs_err_pid*
 *.stackdump
 *.exe
 
-*.classpath
-*.properties
-*.xml
 
