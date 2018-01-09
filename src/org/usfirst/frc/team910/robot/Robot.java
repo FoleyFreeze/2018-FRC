@@ -7,6 +7,12 @@
 
 package org.usfirst.frc.team910.robot;
 
+import org.usfirst.frc.team910.robot.components.Climber;
+import org.usfirst.frc.team910.robot.components.DriveTrain;
+import org.usfirst.frc.team910.robot.components.Elevator;
+import org.usfirst.frc.team910.robot.components.Gatherer;
+import org.usfirst.frc.team910.robot.components.Vision;
+
 import edu.wpi.first.wpilibj.IterativeRobot;
 
 /**
@@ -18,13 +24,23 @@ import edu.wpi.first.wpilibj.IterativeRobot;
  */
 public class Robot extends IterativeRobot {
 	
+	DriveTrain drive;
+	Climber clim;
+	Elevator elevate;
+	Gatherer gather;
+	Vision view;
+	
 	/**
 	 * This function is run when the robot is first started up and should be
 	 * used for any initialization code.
 	 */
 	@Override
 	public void robotInit() {
-		
+		drive = new DriveTrain();
+		clim = new Climber();
+		elevate = new Elevator();
+		gather = new Gatherer();
+		view = new Vision();
 	}
 
 	/**
@@ -56,7 +72,11 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void teleopPeriodic() {
-		
+		drive.run();
+		clim.run();
+		elevate.run();
+		gather.run();
+		view.run();
 	}
 	
 	/**
