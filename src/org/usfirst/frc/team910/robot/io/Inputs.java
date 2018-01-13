@@ -7,6 +7,7 @@ public class Inputs {
 	private Joystick rightStick;
 	public double leftDrive;
 	public double rightDrive;
+	public boolean dynamicBrake = false;
 
 	public Inputs() {
 		leftStick = new Joystick(0);
@@ -16,5 +17,6 @@ public class Inputs {
 	public void read() {
 		leftDrive = leftStick.getY();
 		rightDrive = rightStick.getY();
+		dynamicBrake = leftStick.getTrigger();
 	}
 }
