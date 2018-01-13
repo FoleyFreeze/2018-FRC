@@ -14,6 +14,7 @@ import org.usfirst.frc.team910.robot.components.Gatherer;
 import org.usfirst.frc.team910.robot.components.Vision;
 import org.usfirst.frc.team910.robot.io.Inputs;
 import org.usfirst.frc.team910.robot.io.Outputs;
+import org.usfirst.frc.team910.robot.io.Sensors;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
 
@@ -33,6 +34,7 @@ public class Robot extends IterativeRobot {
 	Vision view;
 	Inputs input;
 	Outputs output;
+	Sensors sensor;
 	
 	/**
 	 * This function is run when the robot is first started up and should be
@@ -47,6 +49,7 @@ public class Robot extends IterativeRobot {
 		gather = new Gatherer();
 		view = new Vision();
 		input = new Inputs();
+		sensor = new Sensors();
 	}
 
 	/**
@@ -79,7 +82,8 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void teleopPeriodic() {
 		input.read();
-		drive.run(input);
+		sensor.read();
+		drive.run(input,sensor);
 		climb.run();
 		elevate.run();
 		gather.run();
