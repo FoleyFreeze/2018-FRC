@@ -15,11 +15,13 @@ public class DriveTrain {
 	}
 
 	public void run(Inputs in, Sensors sense) {
-		tankDrive(in.leftDrive, in.rightDrive);
 		if (in.dynamicBrake) {
-			dynamicBrake(sense.leftDist, sense.rightDist, true);
+			boolean first = !prevBrake && in.dynamicBrake;
+			dynamicBrake(sense.leftDist, sense.rightDist, first);
+		}else {
+			tankDrive(in.leftDrive, in.rightDrive);
 		}
-
+		prevBrake = in.dynamicBrake; 
 	}
 
 	private void tankDrive(double left, double right) {
@@ -28,6 +30,7 @@ public class DriveTrain {
 
 	private double setPointL;
 	private double setPointR;
+	private boolean prevBrake = false;
 
 	/**
 	 *Dynamic braking ensures that the robot stays in place even if pushed
@@ -39,6 +42,7 @@ public class DriveTrain {
 	 */
 	
 	private void dynamicBrake(double leftEncoder, double rightEncoder, boolean first) {
+		
 		if (first) {
 			setPointL = leftEncoder;
 			setPointR = rightEncoder;
@@ -48,6 +52,11 @@ public class DriveTrain {
 		double powerL = DYN_BRAKE_KP * errorL;
 		double powerR = DYN_BRAKE_KP * errorR;
 
+		if(powerL>1) powerL = 1;
+		else if(powerL<-1) powerL = -1;
+		if(powerR>1) powerR = 1;
+		else if(powerR<-1) powerR = -1;
+		
 		out.setDrivePower(powerL, powerR);
 
 	}

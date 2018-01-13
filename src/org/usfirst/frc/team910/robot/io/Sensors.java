@@ -12,8 +12,10 @@ public class Sensors {
 	
 	public Sensors() {
 		
-		leftEncoder = new Encoder(0,0);
-		rightEncoder = new Encoder(0,0);
+		leftEncoder = new Encoder(3,4);
+		rightEncoder = new Encoder(6,5);
+		leftEncoder.setDistancePerPulse(1);
+		rightEncoder.setDistancePerPulse(1);
 			
 	}
 	public void read() {

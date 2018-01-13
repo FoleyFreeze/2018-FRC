@@ -15,8 +15,8 @@ public class Inputs {
 	}
 
 	public void read() {
-		leftDrive = leftStick.getY();
-		rightDrive = rightStick.getY();
+		leftDrive = -leftStick.getY();
+		rightDrive = -rightStick.getY();
 		dynamicBrake = leftStick.getTrigger();
 	}
 }
