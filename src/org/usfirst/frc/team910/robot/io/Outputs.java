@@ -23,8 +23,8 @@ public class Outputs {
 		double power = 0.25;
 		leftDrive1.set(leftPower*power);
 		leftDrive2.set(leftPower*power);
-		rightDrive1.set(rightPower*power);
-		rightDrive2.set(rightPower*power);
+		rightDrive1.set(-rightPower*power);
+		rightDrive2.set(-rightPower*power);
 	}
 
 }
