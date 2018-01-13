@@ -9,8 +9,8 @@ public class Inputs {
 	public double rightDrive;
 
 	public Inputs() {
-		leftStick = new Joystick(1);
-		rightStick = new Joystick(2);
+		leftStick = new Joystick(0);
+		rightStick = new Joystick(1);
 	}
 
 	public void read() {

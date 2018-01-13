@@ -40,6 +40,7 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void robotInit() {
+		output = new Outputs();
 		drive = new DriveTrain(output);
 		climb = new Climber();
 		elevate = new Elevator();
