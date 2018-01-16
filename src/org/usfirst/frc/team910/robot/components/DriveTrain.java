@@ -6,9 +6,9 @@ import org.usfirst.frc.team910.robot.io.Sensors;
 
 public class DriveTrain {
 	public static final double DYN_BRAKE_KP = 0.1; // This is power per inch of error
+	public static final double DRIVE_STRAIGHT_KP = 0.1; // Distance difference by inch
 
 	Outputs out;
-	
 
 	public DriveTrain(Outputs out) {
 		this.out = out;
@@ -18,31 +18,41 @@ public class DriveTrain {
 		if (in.dynamicBrake) {
 			boolean first = !prevBrake && in.dynamicBrake;
 			dynamicBrake(sense.leftDist, sense.rightDist, first);
-		}else {
+		} 
+		else if(in.driveStraight) {
+			boolean first = !prevDriveStraight && in.driveStraight;
+			driveStraight(sense.leftDist, sense.rightDist, first, in.rightDrive);
+		}
+		else {
 			tankDrive(in.leftDrive, in.rightDrive);
 		}
-		prevBrake = in.dynamicBrake; 
+		
+		prevBrake = in.dynamicBrake;
+		prevDriveStraight = in.driveStraight;
+
 	}
 
 	private void tankDrive(double left, double right) {
 		out.setDrivePower(left, right);
 	}
 
+	/**
+	 * Dynamic braking ensures that the robot stays in place even if pushed
+	 *
+	 * @param leftEncoder
+	 *            current distance measured of left drive
+	 * @param rightEncoder
+	 *            current distance measured of right drive
+	 * @param first
+	 *            if true initializing the set points of the first time
+	 * @return nothing
+	 */
 	private double setPointL;
 	private double setPointR;
 	private boolean prevBrake = false;
 
-	/**
-	 *Dynamic braking ensures that the robot stays in place even if pushed
-	 *
-	 *@param leftEncoder current distance measured of left drive     
-	 * @param rightEncoder current distance measured of right drive
-	 * @param first if true initializing the set points of the first time
-	 * @return nothing
-	 */
-	
 	private void dynamicBrake(double leftEncoder, double rightEncoder, boolean first) {
-		
+
 		if (first) {
 			setPointL = leftEncoder;
 			setPointR = rightEncoder;
@@ -52,12 +62,52 @@ public class DriveTrain {
 		double powerL = DYN_BRAKE_KP * errorL;
 		double powerR = DYN_BRAKE_KP * errorR;
 
-		if(powerL>1) powerL = 1;
-		else if(powerL<-1) powerL = -1;
-		if(powerR>1) powerR = 1;
-		else if(powerR<-1) powerR = -1;
-		
+		if (powerL > 1)
+			powerL = 1;
+		else if (powerL < -1)
+			powerL = -1;
+		if (powerR > 1)
+			powerR = 1;
+		else if (powerR < -1)
+			powerR = -1;
+
 		out.setDrivePower(powerL, powerR);
 
+	}
+/**
+ * Press right trigger, initialize drive straight
+ * 
+ * @param leftEncoder is the number of rotations on the left
+ * @param rightEncoder is the number of rotations on the right
+ * @param first determines whether you just pressed the trigger
+ * @param rightJoystick is the right joystick axis(y axis)
+ */
+	private boolean prevDriveStraight = false;
+	private double initDiff;
+
+	private void driveStraight(double leftEncoder, double rightEncoder, boolean first, double rightJoystick) {
+
+		if (first) {
+			 initDiff = leftEncoder - rightEncoder;
+		}
+		
+		double encDiff = leftEncoder - rightEncoder;
+		double dispError = encDiff - initDiff;
+		
+		double powerDiff = DRIVE_STRAIGHT_KP * dispError;
+		
+		double powerL = rightJoystick - powerDiff;
+		double powerR = rightJoystick + powerDiff;
+		
+		if (powerL > 1)
+			powerL = 1;
+		else if (powerL < -1)
+			powerL = -1;
+		if (powerR > 1)
+			powerR = 1;
+		else if (powerR < -1)
+			powerR = -1;
+
+		out.setDrivePower(powerL, powerR);
 	}
 }

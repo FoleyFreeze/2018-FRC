@@ -8,6 +8,7 @@ public class Inputs {
 	public double leftDrive;
 	public double rightDrive;
 	public boolean dynamicBrake = false;
+	public boolean driveStraight = false;
 
 	public Inputs() {
 		leftStick = new Joystick(0);
@@ -18,5 +19,6 @@ public class Inputs {
 		leftDrive = -leftStick.getY();
 		rightDrive = -rightStick.getY();
 		dynamicBrake = leftStick.getTrigger();
+		driveStraight = rightStick.getTrigger();
 	}
 }
