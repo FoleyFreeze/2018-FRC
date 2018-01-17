@@ -1,5 +1,6 @@
 package org.usfirst.frc.team910.robot.components;
 
+import org.usfirst.frc.team910.robot.io.Angle;
 import org.usfirst.frc.team910.robot.io.Inputs;
 import org.usfirst.frc.team910.robot.io.Outputs;
 import org.usfirst.frc.team910.robot.io.Sensors;
@@ -7,8 +8,10 @@ import org.usfirst.frc.team910.robot.io.Sensors;
 public class DriveTrain {
 	public static final double DYN_BRAKE_KP = 0.1; // This is power per inch of error
 	public static final double DRIVE_STRAIGHT_KP = 0.1; // Distance difference by inch
+	public static final double DRIVE_STRAIGHTNAVX_KP = 0.68;  //Distance difference by inch
 
 	Outputs out;
+	
 
 	public DriveTrain(Outputs out) {
 		this.out = out;
@@ -21,7 +24,8 @@ public class DriveTrain {
 		} 
 		else if(in.driveStraight) {
 			boolean first = !prevDriveStraight && in.driveStraight;
-			driveStraight(sense.leftDist, sense.rightDist, first, in.rightDrive);
+			//driveStraightEnc(sense.leftDist, sense.rightDist, first, in.rightDrive);
+			driveStraightNavx(sense.robotAngle,in.rightDrive, first);
 		}
 		else {
 			tankDrive(in.leftDrive, in.rightDrive);
@@ -85,7 +89,7 @@ public class DriveTrain {
 	private boolean prevDriveStraight = false;
 	private double initDiff;
 
-	private void driveStraight(double leftEncoder, double rightEncoder, boolean first, double rightJoystick) {
+	private void driveStraightEnc(double leftEncoder, double rightEncoder, boolean first, double rightJoystick) {
 
 		if (first) {
 			 initDiff = leftEncoder - rightEncoder;
@@ -110,4 +114,29 @@ public class DriveTrain {
 
 		out.setDrivePower(powerL, powerR);
 	}
+	
+	private Angle initAngle = new Angle(0); 
+	
+	private void driveStraightNavx(Angle currentAngle, double rightJoystick, boolean first) {
+		if(first) {
+			initAngle.set(currentAngle);	
+		}
+		double angleError = currentAngle.subtract(initAngle);
+		double powerDiff = DRIVE_STRAIGHTNAVX_KP * angleError;
+		
+		double powerL = rightJoystick - powerDiff;
+		double powerR = rightJoystick + powerDiff;
+		
+		if (powerL > 1)
+			powerL = 1;
+		else if (powerL < -1)
+			powerL = -1;
+		if (powerR > 1)
+			powerR = 1;
+		else if (powerR < -1)
+			powerR = -1;
+
+		out.setDrivePower(powerL, powerR);
+	}
+	
 }
