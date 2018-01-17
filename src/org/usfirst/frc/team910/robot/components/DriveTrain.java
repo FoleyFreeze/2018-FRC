@@ -115,8 +115,14 @@ public class DriveTrain {
 		out.setDrivePower(powerL, powerR);
 	}
 	
+	/**
+	 * corrects for angle errors when driving straight
+	 * 
+	 * @param currentableAngle is the angle the robot is currently at
+	 * @param rightJoystick the reading of the right Joystick y-axis
+	 * @param First determines whether you just pressed the trigger
+	 */
 	private Angle initAngle = new Angle(0); 
-	
 	private void driveStraightNavx(Angle currentAngle, double rightJoystick, boolean first) {
 		if(first) {
 			initAngle.set(currentAngle);	
