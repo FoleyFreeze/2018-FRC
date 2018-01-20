@@ -30,19 +30,23 @@ public class Outputs {
 		leftDrive1.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
 		leftDrive1.setSensorPhase(true);
 		rightDrive1.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
-		rightDrive1.setSensorPhase(true);
-		//leftDrive1.setFeedbackDevice(FeedbackDevice.CTRE_MagEncoder_Relative);
+		rightDrive1.setSensorPhase(false);
 		
 	}
 
+	public void readEncoders() {
+		leftDrive1.getSelectedSensorPosition(0);
+		rightDrive1.getSelectedSensorPosition(0);
+	}
+	
 	public void setDrivePower(double leftPower, double rightPower) {
 		double power = 0.25;
 		leftDrive1.set(ControlMode.PercentOutput, leftPower*power);
-		leftDrive2.set(ControlMode.Follower, leftPower*power);
-		leftDrive3.set(ControlMode.Follower, leftPower*power);
+		leftDrive2.set(ControlMode.PercentOutput, leftPower*power);
+		leftDrive3.set(ControlMode.PercentOutput, leftPower*power);
 		rightDrive1.set(ControlMode.PercentOutput, rightPower*power);
-		rightDrive2.set(ControlMode.Follower, rightPower*power);
-		rightDrive3.set(ControlMode.Follower, rightPower*power);
+		rightDrive2.set(ControlMode.PercentOutput, rightPower*power);
+		rightDrive3.set(ControlMode.PercentOutput, rightPower*power);
 	}
 
 }
