@@ -1,12 +1,14 @@
 package org.usfirst.frc.team910.robot.io;
 
+import org.usfirst.frc.team910.robot.Component;
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.wpilibj.Talon;
 
-public class Outputs {
+public class Outputs extends Component {
 	TalonSRX leftDrive1;
 	TalonSRX leftDrive2;
 	TalonSRX leftDrive3;

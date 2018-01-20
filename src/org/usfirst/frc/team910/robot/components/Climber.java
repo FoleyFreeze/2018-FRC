@@ -1,6 +1,8 @@
 package org.usfirst.frc.team910.robot.components;
 
-public class Climber {
+import org.usfirst.frc.team910.robot.Component;
+
+public class Climber extends Component {
 	
 	public Climber(){
 		

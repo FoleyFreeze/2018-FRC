@@ -1,11 +1,12 @@
 package org.usfirst.frc.team910.robot.components;
 
+import org.usfirst.frc.team910.robot.Component;
 import org.usfirst.frc.team910.robot.io.Angle;
 import org.usfirst.frc.team910.robot.io.Inputs;
 import org.usfirst.frc.team910.robot.io.Outputs;
 import org.usfirst.frc.team910.robot.io.Sensors;
 
-public class DriveTrain {
+public class DriveTrain extends Component {
 	public static final double DYN_BRAKE_KP = 0.1; // This is power per inch of error
 	public static final double DRIVE_STRAIGHT_KP = 0.1; // Distance difference by inch
 	public static final double DRIVE_STRAIGHTNAVX_KP = 0.1;  //Distance difference by inch

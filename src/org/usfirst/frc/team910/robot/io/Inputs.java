@@ -1,8 +1,10 @@
 package org.usfirst.frc.team910.robot.io;
 
+import org.usfirst.frc.team910.robot.Component;
+
 import edu.wpi.first.wpilibj.Joystick;
 
-public class Inputs {
+public class Inputs extends Component {
 	private Joystick leftStick;
 	private Joystick rightStick;
 	public double leftDrive;

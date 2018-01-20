@@ -1,6 +1,8 @@
 package org.usfirst.frc.team910.robot.components;
 
-public class Elevator {
+import org.usfirst.frc.team910.robot.Component;
+
+public class Elevator extends Component {
 	
 	public Elevator(){
 		

@@ -1,6 +1,8 @@
 package org.usfirst.frc.team910.robot.components;
 
-public class Gatherer {
+import org.usfirst.frc.team910.robot.Component;
+
+public class Gatherer extends Component {
 	
 	public Gatherer(){
 		

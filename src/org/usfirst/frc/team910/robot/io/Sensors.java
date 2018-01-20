@@ -1,11 +1,13 @@
 package org.usfirst.frc.team910.robot.io;
 
+import org.usfirst.frc.team910.robot.Component;
+
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.SPI;
 
-public class Sensors {
+public class Sensors extends Component {
 
 	private AHRS navx;
 
