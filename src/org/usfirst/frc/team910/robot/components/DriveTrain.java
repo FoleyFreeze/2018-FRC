@@ -18,7 +18,7 @@ public class DriveTrain extends Component {
 		this.out = out;
 	}
 
-	public void run(Inputs in, Sensors sense) {
+	public void run() {
 		if (in.dynamicBrake) {
 			boolean first = !prevBrake && in.dynamicBrake;
 			dynamicBrake(sense.leftDist, sense.rightDist, first);

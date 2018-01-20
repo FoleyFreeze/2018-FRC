@@ -88,7 +88,7 @@ public class Robot extends TimedRobot {
 	public void teleopPeriodic() {
 		input.read();
 		sensor.read();
-		drive.run(input,sensor);
+		drive.run();
 		climb.run();
 		elevate.run();
 		gather.run();
