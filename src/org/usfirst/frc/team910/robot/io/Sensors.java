@@ -11,9 +11,6 @@ public class Sensors extends Component {
 
 	private AHRS navx;
 
-	Encoder leftEncoder;
-	Encoder rightEncoder;
-
 	public double leftDist;
 	public double rightDist;
 	public Angle robotAngle;
@@ -22,16 +19,10 @@ public class Sensors extends Component {
 		navx = new AHRS(SPI.Port.kMXP);
 		navx.zeroYaw();
 		robotAngle = new Angle(0);
-		leftEncoder = new Encoder(3, 4);
-		rightEncoder = new Encoder(6, 5);
-		leftEncoder.setDistancePerPulse(1);
-		rightEncoder.setDistancePerPulse(1);
 
 	}
 
 	public void read() {
-		leftDist = leftEncoder.getDistance();
-		rightDist = rightEncoder.getDistance();
 		robotAngle.set(navx.getYaw());
 
 	}
