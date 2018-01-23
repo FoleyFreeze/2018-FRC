@@ -7,8 +7,8 @@ import org.usfirst.frc.team910.robot.io.Outputs;
 import org.usfirst.frc.team910.robot.io.Sensors;
 
 public class DriveTrain extends Component {
-	public static final double DYN_BRAKE_KP = 0.1; // This is power per inch of error
-	public static final double DRIVE_STRAIGHT_KP = 0.1; // Distance difference by inch
+	public static final double DYN_BRAKE_KP = 0.0005; // This is power per inch of error
+	public static final double DRIVE_STRAIGHT_KP = 0.0005; // Distance difference by inch
 	public static final double DRIVE_STRAIGHTNAVX_KP = 0.1;  //Distance difference by inch
 
 	Outputs out;
@@ -25,8 +25,8 @@ public class DriveTrain extends Component {
 		} 
 		else if(in.driveStraight) {
 			boolean first = !prevDriveStraight && in.driveStraight;
-			//driveStraightEnc(sense.leftDist, sense.rightDist, first, in.rightDrive);
-			driveStraightNavx(sense.robotAngle,in.rightDrive, first);
+			driveStraightEnc(sense.leftDist, sense.rightDist, first, in.rightDrive);
+			//driveStraightNavx(sense.robotAngle,in.rightDrive, first);
 		}
 		else {
 			tankDrive(in.leftDrive, in.rightDrive);

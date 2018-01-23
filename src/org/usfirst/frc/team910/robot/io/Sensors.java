@@ -24,7 +24,7 @@ public class Sensors extends Component {
 
 	public void read() {
 		out.readEncoders();
-		robotAngle.set(navx.getYaw());
+		robotAngle.set(-navx.getYaw());
 
 	}
 }
