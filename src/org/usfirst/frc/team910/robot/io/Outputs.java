@@ -37,8 +37,8 @@ public class Outputs extends Component {
 	}
 
 	public void readEncoders() {
-		sense.leftDist = leftDrive1.getSelectedSensorPosition(0);
-		sense.rightDist = rightDrive1.getSelectedSensorPosition(0);
+		sense.leftDist = leftDrive1.getSelectedSensorPosition(0) * (60/12000);
+		sense.rightDist = rightDrive1.getSelectedSensorPosition(0) * (60/12000);
 	}
 	
 	public void setDrivePower(double leftPower, double rightPower) {

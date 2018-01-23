@@ -1,6 +1,8 @@
 package org.usfirst.frc.team910.robot.auton;
 
-public abstract class AutonStep {
+import org.usfirst.frc.team910.robot.Component;
+
+public abstract class AutonStep extends Component {
 
 	public abstract void init();
 	

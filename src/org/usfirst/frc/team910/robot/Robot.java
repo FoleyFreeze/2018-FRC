@@ -7,6 +7,7 @@
 
 package org.usfirst.frc.team910.robot;
 
+import org.usfirst.frc.team910.robot.auton.AutonMain;
 import org.usfirst.frc.team910.robot.components.Arm;
 import org.usfirst.frc.team910.robot.components.Climber;
 import org.usfirst.frc.team910.robot.components.DriveTrain;
@@ -29,6 +30,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
  */
 public class Robot extends TimedRobot {
 	
+	AutonMain auton;
 	DriveTrain drive;
 	Climber climb;
 	Elevator elevate;
@@ -45,6 +47,7 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void robotInit() {
+		auton = new AutonMain();
 		output = new Outputs();
 		drive = new DriveTrain(output);
 		climb = new Climber();
@@ -70,7 +73,7 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void autonomousPeriodic() {
-		
+		auton.run();
 	}
 	
 	/**
