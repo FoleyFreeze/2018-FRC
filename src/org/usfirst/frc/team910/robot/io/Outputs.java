@@ -32,7 +32,7 @@ public class Outputs extends Component {
 		leftDrive1.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
 		leftDrive1.setSensorPhase(true);
 		rightDrive1.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
-		rightDrive1.setSensorPhase(false);
+		rightDrive1.setSensorPhase(true);
 		
 	}
 
@@ -42,7 +42,7 @@ public class Outputs extends Component {
 	}
 	
 	public void setDrivePower(double leftPower, double rightPower) {
-		double power = 0.25;
+		double power = 0.2;
 		leftDrive1.set(ControlMode.PercentOutput, leftPower*power);
 		leftDrive2.set(ControlMode.PercentOutput, leftPower*power);
 		leftDrive3.set(ControlMode.PercentOutput, leftPower*power);
