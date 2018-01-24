@@ -57,11 +57,12 @@ public class DriveTrain extends Component {
 	private boolean prevBrake = false;
 
 	private void dynamicBrake(double leftEncoder, double rightEncoder, boolean first) {
-
+		//once trigger pulled sets position
 		if (first) {
 			setPointL = leftEncoder;
 			setPointR = rightEncoder;
 		}
+		//calculate error sets power motors based on error
 		double errorL = setPointL - leftEncoder;
 		double errorR = setPointR - rightEncoder;
 		double powerL = DYN_BRAKE_KP * errorL;
@@ -91,16 +92,20 @@ public class DriveTrain extends Component {
 	private double initDiff;
 
 	private void driveStraightEnc(double leftEncoder, double rightEncoder, boolean first, double rightJoystick) {
-
+		
+		//Checks trigger pulled to find initial difference between encoders 
 		if (first) {
 			 initDiff = leftEncoder - rightEncoder;
 		}
-		
+		//encoder tick difference between left and right encoder
 		double encDiff = leftEncoder - rightEncoder;
+		//how bad our initial difference is from current difference
 		double dispError = encDiff - initDiff;
 		
+		//sets power difference with P from PID
 		double powerDiff = DRIVE_STRAIGHT_KP * dispError;
 		
+		//power for each motor
 		double powerL = rightJoystick - powerDiff;
 		double powerR = rightJoystick + powerDiff;
 		
@@ -125,12 +130,16 @@ public class DriveTrain extends Component {
 	 */
 	private Angle initAngle = new Angle(0); 
 	private void driveStraightNavx(Angle currentAngle, double rightJoystick, boolean first) {
+	
+		//check trigger pulled sets starting angle
 		if(first) {
 			initAngle.set(currentAngle);	
 		}
+		//how far off we are from initial angle
 		double angleError = currentAngle.subtract(initAngle);
 		double powerDiff = DRIVE_STRAIGHTNAVX_KP * angleError;
 		
+		//power for each motor
 		double powerL = rightJoystick - powerDiff;
 		double powerR = rightJoystick + powerDiff;
 		

@@ -1,4 +1,4 @@
-package org.usfirst.frc.team910.robot.auton;
+package org.usfirst.frc.team910.robot.auton.steps;
 
 import org.usfirst.frc.team910.robot.Component;
 
