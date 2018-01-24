@@ -6,15 +6,16 @@ public class DriveForward extends AutonStep {
 	double initDist;
 	@Override
 	public void init() {
-		in.driveStraight = true;
 		initDist = sense.leftDist;
 	}
 
 	@Override
 	public void run() {
+		in.driveStraight = true;
+		in.dynamicBrake = false;
 		in.rightDrive = 0.8;
-		drive.run();
 	}
+	
 	@Override
 	public boolean isDone() {
 		if(sense.leftDist - initDist >= 60) {

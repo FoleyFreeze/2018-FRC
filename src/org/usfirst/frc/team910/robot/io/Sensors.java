@@ -27,4 +27,9 @@ public class Sensors extends Component {
 		robotAngle.set(-navx.getYaw());
 
 	}
+	
+	public void resetnavx() {
+		navx.zeroYaw();
+	}
+	
 }

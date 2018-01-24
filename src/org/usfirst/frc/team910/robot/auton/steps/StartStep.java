@@ -1,22 +1,19 @@
 package org.usfirst.frc.team910.robot.auton.steps;
 
-public class EndStep extends AutonStep {
+public class StartStep extends AutonStep {
 
 	@Override
 	public void init() {
-		
 		
 	}
 
 	@Override
 	public void run() {
-		
+		sense.resetnavx();		
 	}
 
 	@Override
 	public boolean isDone() {
-		
-		return false;
+		return true;
 	}
-
 }

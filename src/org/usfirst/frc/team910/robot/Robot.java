@@ -18,7 +18,6 @@ import org.usfirst.frc.team910.robot.io.Inputs;
 import org.usfirst.frc.team910.robot.io.Outputs;
 import org.usfirst.frc.team910.robot.io.Sensors;
 
-import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.TimedRobot;
 
 /**
@@ -49,7 +48,7 @@ public class Robot extends TimedRobot {
 	public void robotInit() {
 		auton = new AutonMain();
 		output = new Outputs();
-		drive = new DriveTrain(output);
+		drive = new DriveTrain();
 		climb = new Climber();
 		elevate = new Elevator();
 		gather = new Gatherer();
@@ -73,7 +72,15 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void autonomousPeriodic() {
+		sensor.read();
+		view.run();
 		auton.run();
+		
+		drive.run();
+		climb.run();
+		elevate.run();
+		gather.run();
+		arm.run();
 	}
 	
 	/**
@@ -91,11 +98,12 @@ public class Robot extends TimedRobot {
 	public void teleopPeriodic() {
 		input.read();
 		sensor.read();
+		view.run();
+		
 		drive.run();
 		climb.run();
 		elevate.run();
 		gather.run();
-		view.run();
 		arm.run();
 	}
 	

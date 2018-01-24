@@ -11,11 +11,10 @@ public class DriveTrain extends Component {
 	public static final double DRIVE_STRAIGHT_KP = 0.0005; // Distance difference by inch
 	public static final double DRIVE_STRAIGHTNAVX_KP = 0.1;  //Distance difference by inch
 
-	Outputs out;
 	
 
-	public DriveTrain(Outputs out) {
-		this.out = out;
+	public DriveTrain() {
+		
 	}
 
 	public void run() {

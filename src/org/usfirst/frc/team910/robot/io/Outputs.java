@@ -6,8 +6,6 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
-import edu.wpi.first.wpilibj.Talon;
-
 public class Outputs extends Component {
 	TalonSRX leftDrive1;
 	TalonSRX leftDrive2;
