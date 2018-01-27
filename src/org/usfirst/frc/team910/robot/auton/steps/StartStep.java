@@ -9,11 +9,11 @@ public class StartStep extends AutonStep {
 
 	@Override
 	public void run() {
-		sense.resetnavx();		
+		sense.resetnavx();	//set start position to 0 degrees	
 	}
 
 	@Override
 	public boolean isDone() {
-		return true;
+		return true; //move one right away
 	}
 }

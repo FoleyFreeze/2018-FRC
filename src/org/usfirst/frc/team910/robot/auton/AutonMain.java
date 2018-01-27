@@ -15,7 +15,9 @@ public class AutonMain {
 	public int currentStep = 0;
 	
 	public AutonMain() {
+		//declare a new array for our steps
 		steps = new ArrayList<AutonStep>();
+		//new steps
 		steps.add(new StartStep());
 		steps.add(new DriveForward());
 		steps.add(new EndStep());
@@ -24,14 +26,16 @@ public class AutonMain {
 	}
 	
 	public void run() {
-		System.out.println(currentStep);
-		steps.get(currentStep).run();
+
+		steps.get(currentStep).run(); //run the functions of the step we are on
+		//if step has error we move to the next step
 		if(steps.get(currentStep).isError()) {
 			currentStep = steps.size() - 1;
 		}
+		//if step finished move to next step in array
 		else if(steps.get(currentStep).isDone()) {
 			currentStep++;
-			steps.get(currentStep).init();
+			steps.get(currentStep).init(); //run initial code for next step
 		}
 
 	}
