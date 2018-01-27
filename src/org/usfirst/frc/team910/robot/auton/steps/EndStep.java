@@ -16,7 +16,8 @@ public class EndStep extends AutonStep {
 	@Override
 	public boolean isDone() {
 		
-		return false;
+		return false; 	//never ends on purpose
+					  	//always end of our auton, ensures we dont move out of control when we finish.
 	}
 
 }

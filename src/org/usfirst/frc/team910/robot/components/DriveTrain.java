@@ -43,12 +43,9 @@ public class DriveTrain extends Component {
 	/**
 	 * Dynamic braking ensures that the robot stays in place even if pushed
 	 *
-	 * @param leftEncoder
-	 *            current distance measured of left drive
-	 * @param rightEncoder
-	 *            current distance measured of right drive
-	 * @param first
-	 *            if true initializing the set points of the first time
+	 * @param leftEncoder current distance measured of left drive
+	 * @param rightEncoder current distance measured of right drive
+	 * @param first if true initializing the set points of the first time
 	 * @return nothing
 	 */
 	private double setPointL;
