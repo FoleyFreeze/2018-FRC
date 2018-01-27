@@ -36,7 +36,9 @@ public class SeriesSet extends AutonSet {
 			return false;
 		}
 	}
+	
 	boolean error = false;//will change in case that requires complete stopping
+	
 	@Override
 	public boolean isError() {//if this is true, there is an error requiring robot to stop
 		return error;
