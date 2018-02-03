@@ -11,6 +11,8 @@ public class Inputs extends Component {
 	public double rightDrive;
 	public boolean dynamicBrake = false;
 	public boolean driveStraight = false;
+	public boolean elevatorUp = false;
+	public boolean elevatorDown = false;
 
 	public Inputs() {
 		leftStick = new Joystick(0);
@@ -22,5 +24,7 @@ public class Inputs extends Component {
 		rightDrive = -rightStick.getY();
 		dynamicBrake = leftStick.getTrigger();
 		driveStraight = rightStick.getTrigger();
+		elevatorUp = rightStick.getRawButton(4);
+		elevatorDown = rightStick.getRawButton(6);
 	}
 }

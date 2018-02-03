@@ -7,4 +7,6 @@ public class Port {
 	public static final int RIGHT_DRIVE_CAN_1=13;
 	public static final int RIGHT_DRIVE_CAN_2=14;
 	public static final int RIGHT_DRIVE_CAN_3=15;
+	public static final int ELEVATOR_CAN_1=-1; //FIXME please
+	public static final int ELEVATOR_CAN_2=-1;
 }

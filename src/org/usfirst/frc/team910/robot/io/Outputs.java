@@ -1,6 +1,7 @@
 package org.usfirst.frc.team910.robot.io;
 
 import org.usfirst.frc.team910.robot.Component;
+import org.usfirst.frc.team910.robot.components.Elevator;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
@@ -13,6 +14,8 @@ public class Outputs extends Component {
 	TalonSRX rightDrive1;
 	TalonSRX rightDrive2;
 	TalonSRX rightDrive3;
+	TalonSRX elevator1;
+	TalonSRX elevator2;
 	
 
 	public Outputs() {
@@ -22,7 +25,9 @@ public class Outputs extends Component {
 		rightDrive1 = new TalonSRX(Port.RIGHT_DRIVE_CAN_1);
 		rightDrive2 = new TalonSRX(Port.RIGHT_DRIVE_CAN_2);
 		rightDrive3 = new TalonSRX(Port.RIGHT_DRIVE_CAN_3);
-		
+		elevator1 = new TalonSRX(Port.ELEVATOR_CAN_1);
+		elevator2 = new TalonSRX(Port.ELEVATOR_CAN_2);
+	
 		rightDrive1.setInverted(true);
 		rightDrive2.setInverted(true);
 		rightDrive3.setInverted(true);
@@ -31,6 +36,7 @@ public class Outputs extends Component {
 		leftDrive1.setSensorPhase(true);
 		rightDrive1.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
 		rightDrive1.setSensorPhase(true);
+		
 		
 	}
 
@@ -47,6 +53,13 @@ public class Outputs extends Component {
 		rightDrive1.set(ControlMode.PercentOutput, rightPower*power);
 		rightDrive2.set(ControlMode.PercentOutput, rightPower*power);
 		rightDrive3.set(ControlMode.PercentOutput, rightPower*power);
+	}
+	
+	public void setElevatorPower(double power) {
+		double restriction = 0.2;
+		elevator1.set(ControlMode.PercentOutput, power * restriction); //FIXME please good 
+		elevator2.set(ControlMode.PercentOutput, power * restriction);
+		
 	}
 
 }

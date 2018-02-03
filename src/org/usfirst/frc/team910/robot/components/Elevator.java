@@ -9,6 +9,14 @@ public class Elevator extends Component {
 	}
 	
 	public void run() {
-		
+		if(in.elevatorUp) {
+			elevate(.45);
+		} 
+		if (in.elevatorDown) {
+			elevate(-.45);
+		}
+	}
+	public void elevate(double power) {
+		out.setElevatorPower(power);
 	}
 }
