@@ -13,6 +13,12 @@ public class Inputs extends Component {
 	public boolean driveStraight = false;
 	public boolean arm = false;
 	
+	public boolean elevatorUp = false;
+	public boolean elevatorDown = false;
+
+	public boolean gather = false;
+	public boolean ungather = false;
+
 	public Inputs() {
 		leftStick = new Joystick(0);
 		rightStick = new Joystick(1);
@@ -24,6 +30,12 @@ public class Inputs extends Component {
 		dynamicBrake = leftStick.getTrigger();
 		driveStraight = rightStick.getTrigger();
 		arm = rightStick.getRawButton(6); 
+
+		elevatorUp = rightStick.getRawButton(4);
+		elevatorDown = rightStick.getRawButton(6);
+
+		gather = rightStick.getRawButton(3);
+		ungather = rightStick.getRawButton(5);
 
 	}
 }
