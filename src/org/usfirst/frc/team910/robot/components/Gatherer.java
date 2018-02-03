@@ -2,13 +2,21 @@ package org.usfirst.frc.team910.robot.components;
 
 import org.usfirst.frc.team910.robot.Component;
 
-public class Gatherer extends Component {
-	
-	public Gatherer(){
-		
+public class Gatherer extends Component {//This is territory of Arianna Kerkmaz, intruders shall be peacefully contained
+
+	public Gatherer() {
+
 	}
-	
+
 	public void run() {
-		
+		if(in.gather) {//if you want to take in a pwr^3
+			gather(1,1);//suck in pwr^3
+		}else if(in.ungather) {//if you want to shoot out a pwr^3
+			gather(-1,-1);//shoot out pwr^3
+		}
+	}
+
+	private void gather(double leftPower, double rightPower) {
+		out.setGatherPower(leftPower, rightPower);//set the powers to correctly operate pwr^3
 	}
 }
