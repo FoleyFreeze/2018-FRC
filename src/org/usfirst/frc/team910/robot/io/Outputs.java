@@ -88,5 +88,5 @@ public class Outputs extends Component {
 		gatherRight.set(ControlMode.PercentOutput, rightPower*restriction);
 
 	}
-
+	
 }

@@ -7,6 +7,7 @@ public class Port {
 	public static final int RIGHT_DRIVE_CAN_1=13;
 	public static final int RIGHT_DRIVE_CAN_2=14;
 	public static final int RIGHT_DRIVE_CAN_3=15;
+	
 	public static final int ARM_CAN=-1;
 
 	public static final int ELEVATOR_CAN_1=-1; //FIXME please
@@ -14,4 +15,6 @@ public class Port {
 
 	public static final int LEFT_GATHER_CAN=-1; //TODO fix for 2018
 	public static final int RIGHT_GATHER_CAN=-1;//TODO fix for 2018
+	
+	public static final double TICKS_PER_INCH = 317.2;
 }
