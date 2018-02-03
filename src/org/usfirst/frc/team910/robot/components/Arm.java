@@ -11,5 +11,4 @@ public class Arm extends Component {
 	public void run() {
 
 	}
-
 }

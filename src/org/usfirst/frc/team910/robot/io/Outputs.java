@@ -13,6 +13,7 @@ public class Outputs extends Component {
 	TalonSRX rightDrive1;
 	TalonSRX rightDrive2;
 	TalonSRX rightDrive3;
+	TalonSRX armMotor;
 	
 
 	public Outputs() {
@@ -22,10 +23,12 @@ public class Outputs extends Component {
 		rightDrive1 = new TalonSRX(Port.RIGHT_DRIVE_CAN_1);
 		rightDrive2 = new TalonSRX(Port.RIGHT_DRIVE_CAN_2);
 		rightDrive3 = new TalonSRX(Port.RIGHT_DRIVE_CAN_3);
+		armMotor = new TalonSRX(Port.ARM_CAN);
 		
 		rightDrive1.setInverted(true);
 		rightDrive2.setInverted(true);
 		rightDrive3.setInverted(true);
+		
 		
 		leftDrive1.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
 		leftDrive1.setSensorPhase(true);
@@ -48,5 +51,8 @@ public class Outputs extends Component {
 		rightDrive2.set(ControlMode.PercentOutput, rightPower*power);
 		rightDrive3.set(ControlMode.PercentOutput, rightPower*power);
 	}
-
+	public void setArmPower(double armPower) {
+		double power = 0.2;
+		armMotor.set(ControlMode.PercentOutput, armPower*power);
+	}
 }
