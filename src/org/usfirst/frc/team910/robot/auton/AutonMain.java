@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import org.usfirst.frc.team910.robot.auton.steps.AutonStep;
 import org.usfirst.frc.team910.robot.auton.steps.DriveForward;
+import org.usfirst.frc.team910.robot.auton.steps.DrivePath;
 import org.usfirst.frc.team910.robot.auton.steps.EndStep;
 import org.usfirst.frc.team910.robot.auton.steps.StartStep;
 
@@ -19,7 +20,7 @@ public class AutonMain {
 		steps = new ArrayList<AutonStep>();
 		//new steps
 		steps.add(new StartStep());
-		steps.add(new DriveForward());
+		steps.add(new DrivePath());
 		steps.add(new EndStep());
 		
 		

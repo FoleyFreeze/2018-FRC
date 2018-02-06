@@ -18,7 +18,11 @@ public class DriveTrain extends Component {
 	}
 
 	public void run() {
-		if (in.dynamicBrake) {
+		//If motion profiling don't do any other run functions
+		if(in.enableMP) {
+			out.driveMP.run(in.enableMP);
+		}
+		else if (in.dynamicBrake) {
 			boolean first = !prevBrake && in.dynamicBrake;
 			dynamicBrake(sense.leftDist, sense.rightDist, first);
 		} 
@@ -39,6 +43,7 @@ public class DriveTrain extends Component {
 	private void tankDrive(double left, double right) {
 		out.setDrivePower(left, right);
 	}
+		
 
 	/**
 	 * Dynamic braking ensures that the robot stays in place even if pushed

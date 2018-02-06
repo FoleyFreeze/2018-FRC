@@ -14,6 +14,7 @@ public class Outputs extends Component {
 	TalonSRX rightDrive1;
 	TalonSRX rightDrive2;
 	TalonSRX rightDrive3;
+	
 	TalonSRX armMotor;
 
 	TalonSRX elevator1;
@@ -21,6 +22,9 @@ public class Outputs extends Component {
 
 	TalonSRX gatherLeft;
 	TalonSRX gatherRight;
+	
+	public MotionProfile driveMP;
+	
 	
 
 	public Outputs() {
@@ -30,28 +34,31 @@ public class Outputs extends Component {
 		rightDrive1 = new TalonSRX(Port.RIGHT_DRIVE_CAN_1);
 		rightDrive2 = new TalonSRX(Port.RIGHT_DRIVE_CAN_2);
 		rightDrive3 = new TalonSRX(Port.RIGHT_DRIVE_CAN_3);
-		armMotor = new TalonSRX(Port.ARM_CAN);
-
-
-		elevator1 = new TalonSRX(Port.ELEVATOR_CAN_1);
-		elevator2 = new TalonSRX(Port.ELEVATOR_CAN_2);
-	
-
-		gatherLeft = new TalonSRX(Port.LEFT_GATHER_CAN);
-		gatherRight = new TalonSRX(Port.RIGHT_GATHER_CAN);
 		
-
 		rightDrive1.setInverted(true);
 		rightDrive2.setInverted(true);
 		rightDrive3.setInverted(true);
-		
-		
+				
 		leftDrive1.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
 		leftDrive1.setSensorPhase(true);
 		rightDrive1.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
 		rightDrive1.setSensorPhase(true);
 		
+		driveMP = new MotionProfile(leftDrive1, rightDrive1);
 		
+		rightDrive2.set(ControlMode.Follower, Port.RIGHT_DRIVE_CAN_1);
+		rightDrive3.set(ControlMode.Follower, Port.RIGHT_DRIVE_CAN_1);
+		leftDrive2.set(ControlMode.Follower, Port.LEFT_DRIVE_CAN_1);
+		leftDrive3.set(ControlMode.Follower, Port.LEFT_DRIVE_CAN_1);
+
+		elevator1 = new TalonSRX(Port.ELEVATOR_CAN_1);
+		elevator2 = new TalonSRX(Port.ELEVATOR_CAN_2);
+		
+		armMotor = new TalonSRX(Port.ARM_CAN);
+
+		gatherLeft = new TalonSRX(Port.LEFT_GATHER_CAN);
+		gatherRight = new TalonSRX(Port.RIGHT_GATHER_CAN);
+			
 	}
 
 	public void readEncoders() {

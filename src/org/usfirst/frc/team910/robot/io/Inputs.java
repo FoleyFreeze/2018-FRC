@@ -13,6 +13,8 @@ public class Inputs extends Component {
 	public boolean driveStraight = false;
 	public boolean arm = false;
 	
+	public boolean enableMP = false;
+	
 	public boolean elevatorUp = false;
 	public boolean elevatorDown = false;
 
