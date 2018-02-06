@@ -43,13 +43,32 @@ public class MotionProfile {
 	//where we start
 	private MpState state = MpState.OFF;
 	
+	public void init(Path leftPath, Path rightPath) {
+		//if we are running path, stop init
+		if(state == MpState.RUNNING) {
+			return;
+		}
+		//send points
+		this.leftPath = leftPath;
+		this.rightPath = rightPath;
+		leftMotor.configMotionProfileTrajectoryPeriod((int)(Path.DT*1000), 0);
+		fillTopBuffer(leftPath, leftMotor);
+			
+		rightMotor.configMotionProfileTrajectoryPeriod((int)(Path.DT*1000), 0);
+		fillTopBuffer(rightPath, rightMotor);
+		//if in certain states, go to init(state)
+		if(state == MpState.FINISHED || state == MpState.ERROR) {
+			state = MpState.INIT;
+		}
+	}
+	
 	public void run(boolean enable) {
 		leftMotor.getMotionProfileStatus(statusL);
 		rightMotor.getMotionProfileStatus(statusR);
 		
 		switch(state) {
 		case OFF:
-			
+			//move to init when enabled
 			if(enable) {
 				state = MpState.INIT;
 			}
@@ -57,20 +76,23 @@ public class MotionProfile {
 			break;
 			
 		case INIT:
-			
+			//if buffer empty, fill
 			if(statusL.topBufferCnt == 0) {
+				leftMotor.configMotionProfileTrajectoryPeriod((int)(Path.DT*1000), 0);
 				fillTopBuffer(leftPath, leftMotor);
-			}
+			}//if buffer empty, fill
 			if(statusR.topBufferCnt == 0) {
+				rightMotor.configMotionProfileTrajectoryPeriod((int)(Path.DT*1000), 0);
 				fillTopBuffer(rightPath, rightMotor);
-			}
+			}//if enable false, turn off
 			if(!enable) {
 				state = MpState.OFF;
+				//if ready, go to running
 			}else if(statusL.btmBufferCnt > MIN_PTS_TO_START && statusR.btmBufferCnt > MIN_PTS_TO_START) {
 				leftMotor.set(ControlMode.MotionProfile, SetValueMotionProfile.Enable.value);
 				rightMotor.set(ControlMode.MotionProfile, SetValueMotionProfile.Enable.value);
 				state = MpState.RUNNING;
-			}else {
+			}else {//if not ready, keep filling
 				leftMotor.set(ControlMode.MotionProfile, SetValueMotionProfile.Disable.value);
 				rightMotor.set(ControlMode.MotionProfile, SetValueMotionProfile.Disable.value);
 			}
@@ -80,7 +102,7 @@ public class MotionProfile {
 		case RUNNING:
 			
 			if(statusL.hasUnderrun || statusR.hasUnderrun) {
-				
+				//if underrun, go to error
 				leftMotor.clearMotionProfileHasUnderrun(0);
 				rightMotor.clearMotionProfileHasUnderrun(0);
 				leftMotor.clearMotionProfileTrajectories();
@@ -91,19 +113,19 @@ public class MotionProfile {
 				
 				state = MpState.ERROR;
 			}
-			
+			//if on last point, finish
 			else if(statusL.isLast && statusR.isLast) {
 				leftMotor.set(ControlMode.MotionProfile, SetValueMotionProfile.Disable.value);
 				rightMotor.set(ControlMode.MotionProfile, SetValueMotionProfile.Disable.value);
 				
 				state = MpState.FINISHED;
-			}
+			} //if not enabled, stop
 			else if(!enable) {
 				leftMotor.set(ControlMode.MotionProfile, SetValueMotionProfile.Disable.value);
 				rightMotor.set(ControlMode.MotionProfile, SetValueMotionProfile.Disable.value);
 				
 				state = MpState.OFF;
-			}else {
+			} else {//otherwise, keep going
 				leftMotor.set(ControlMode.MotionProfile, SetValueMotionProfile.Enable.value);
 				rightMotor.set(ControlMode.MotionProfile, SetValueMotionProfile.Enable.value);
 			}
@@ -111,15 +133,54 @@ public class MotionProfile {
 			
 			break;
 			
-		case ERROR:
-			
+		case FINISHED:
+			//stop moving
+			leftMotor.set(ControlMode.MotionProfile, SetValueMotionProfile.Disable.value);
+			rightMotor.set(ControlMode.MotionProfile, SetValueMotionProfile.Disable.value);
+			//if not enabled, go to off
+			if(!enable) {
+				state = MpState.OFF;
+			}
 			break;
 			
+		case ERROR:
+			//if underrun, stop
+			if(statusL.hasUnderrun || statusR.hasUnderrun) {
+				leftMotor.clearMotionProfileHasUnderrun(0);
+				rightMotor.clearMotionProfileHasUnderrun(0);
+				leftMotor.clearMotionProfileTrajectories();
+				rightMotor.clearMotionProfileTrajectories();
+				
+				leftMotor.set(ControlMode.MotionProfile, SetValueMotionProfile.Disable.value);
+				rightMotor.set(ControlMode.MotionProfile, SetValueMotionProfile.Disable.value);
+			}
+			if(!enable) {
+				state = MpState.OFF;
+			}
+			break;
+			
+		}
+	
+	}
+	public boolean doneYet() {
+		if(state == MpState.FINISHED) {
+			return true;
+		}else {
+			return false;
+		}
+	}
+	
+	public boolean weFailed() {
+		if(state == MpState.ERROR) {
+			return true;
+		}else {
+			return false;
 		}
 	}
 	
 	private TrajectoryPoint point = new TrajectoryPoint();
 	public void fillTopBuffer(Path path, TalonSRX motor) {
+		//for every point, set these values
 		for(int i = 0; i < path.positions.size(); i++) {
 			point.position = path.positions.get(i) * Port.TICKS_PER_INCH;
 			point.velocity = path.velocities.get(i) * Port.TICKS_PER_INCH / 10;
