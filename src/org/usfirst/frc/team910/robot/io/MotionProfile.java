@@ -62,14 +62,14 @@ public class MotionProfile {
 		}
 	}
 	
-	public void run(boolean enable) {
+	public void run(boolean mpEnable) {
 		leftMotor.getMotionProfileStatus(statusL);
 		rightMotor.getMotionProfileStatus(statusR);
 		
 		switch(state) {
 		case OFF:
 			//move to init when enabled
-			if(enable) {
+			if(mpEnable) {
 				state = MpState.INIT;
 			}
 		
@@ -85,7 +85,7 @@ public class MotionProfile {
 				rightMotor.configMotionProfileTrajectoryPeriod((int)(Path.DT*1000), 0);
 				fillTopBuffer(rightPath, rightMotor);
 			}//if enable false, turn off
-			if(!enable) {
+			if(!mpEnable) {
 				state = MpState.OFF;
 				//if ready, go to running
 			}else if(statusL.btmBufferCnt > MIN_PTS_TO_START && statusR.btmBufferCnt > MIN_PTS_TO_START) {
@@ -120,7 +120,7 @@ public class MotionProfile {
 				
 				state = MpState.FINISHED;
 			} //if not enabled, stop
-			else if(!enable) {
+			else if(!mpEnable) {
 				leftMotor.set(ControlMode.MotionProfile, SetValueMotionProfile.Disable.value);
 				rightMotor.set(ControlMode.MotionProfile, SetValueMotionProfile.Disable.value);
 				
@@ -138,7 +138,7 @@ public class MotionProfile {
 			leftMotor.set(ControlMode.MotionProfile, SetValueMotionProfile.Disable.value);
 			rightMotor.set(ControlMode.MotionProfile, SetValueMotionProfile.Disable.value);
 			//if not enabled, go to off
-			if(!enable) {
+			if(!mpEnable) {
 				state = MpState.OFF;
 			}
 			break;
@@ -154,7 +154,7 @@ public class MotionProfile {
 				leftMotor.set(ControlMode.MotionProfile, SetValueMotionProfile.Disable.value);
 				rightMotor.set(ControlMode.MotionProfile, SetValueMotionProfile.Disable.value);
 			}
-			if(!enable) {
+			if(!mpEnable) {
 				state = MpState.OFF;
 			}
 			break;
