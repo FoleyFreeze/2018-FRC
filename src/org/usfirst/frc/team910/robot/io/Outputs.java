@@ -15,17 +15,18 @@ public class Outputs extends Component {
 	TalonSRX rightDrive2;
 	TalonSRX rightDrive3;
 	
-	TalonSRX armMotor;
-
+	TalonSRX armMotor1;
+	TalonSRX armMotor2;
+	
 	TalonSRX elevator1;
 	TalonSRX elevator2;
-
+	
 	TalonSRX gatherLeft;
 	TalonSRX gatherRight;
 	
 	public MotionProfile driveMP;
 	
-	
+
 
 	public Outputs() {
 		leftDrive1 = new TalonSRX(Port.LEFT_DRIVE_CAN_1);
@@ -54,8 +55,23 @@ public class Outputs extends Component {
 		elevator1 = new TalonSRX(Port.ELEVATOR_CAN_1);
 		elevator2 = new TalonSRX(Port.ELEVATOR_CAN_2);
 		
-		armMotor = new TalonSRX(Port.ARM_CAN);
-
+		elevator2.set(ControlMode.Follower, Port.ELEVATOR_CAN_1);
+		
+		elevator1.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
+		elevator1.setSensorPhase(false); //TODO look at gear box and find out if directions match
+		elevator1.setInverted(false); 
+		elevator2.setInverted(false); 
+		
+		armMotor1 = new TalonSRX(Port.ARM_CAN_1);
+		armMotor2 = new TalonSRX(Port.ARM_CAN_2);
+		
+		armMotor2.set(ControlMode.Follower, Port.ARM_CAN_1);
+		
+		armMotor1.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
+		armMotor1.setSensorPhase(false); //TODO look at gear box and find out if directions match
+		armMotor1.setInverted(false);
+		armMotor2.setInverted(false);
+		
 		gatherLeft = new TalonSRX(Port.LEFT_GATHER_CAN);
 		gatherRight = new TalonSRX(Port.RIGHT_GATHER_CAN);
 			
@@ -78,7 +94,8 @@ public class Outputs extends Component {
 
 	public void setArmPower(double armPower) {
 		double power = 0.2;
-		armMotor.set(ControlMode.PercentOutput, armPower*power);
+		armMotor1.set(ControlMode.PercentOutput, armPower*power);
+		armMotor2.set(ControlMode.PercentOutput, armPower*power);
 	}
 
 	
@@ -87,7 +104,16 @@ public class Outputs extends Component {
 		elevator1.set(ControlMode.PercentOutput, power * restriction); //FIXME please good 
 		elevator2.set(ControlMode.PercentOutput, power * restriction);
 	}
+	
+	public void setElevatorPosition(double elevatorPosition) {
+		elevator1.set(ControlMode.Position,  elevatorPosition * Port.TICKS_PER_INCH_HEIGHT); //sets position for the elevation device (lift for british)
+	}
 		
+	
+	public void setArmPosition(double armPosition) {
+		armMotor1.set(ControlMode.Position, armPosition * Port.TICKS_PER_REV); 
+		
+	}
 
 	public void setGatherPower(double leftPower, double rightPower) {
 		double restriction = 0.25;

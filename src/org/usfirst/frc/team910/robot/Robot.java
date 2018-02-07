@@ -8,7 +8,6 @@
 package org.usfirst.frc.team910.robot;
 
 import org.usfirst.frc.team910.robot.auton.AutonMain;
-import org.usfirst.frc.team910.robot.components.Arm;
 import org.usfirst.frc.team910.robot.components.Climber;
 import org.usfirst.frc.team910.robot.components.DriveTrain;
 import org.usfirst.frc.team910.robot.components.Elevator;
@@ -38,7 +37,7 @@ public class Robot extends TimedRobot {
 	Inputs input;
 	Outputs output;
 	Sensors sensor;
-	Arm arm;
+
 	
 	/**
 	 * This function is run when the robot is first started up and should be
@@ -55,8 +54,7 @@ public class Robot extends TimedRobot {
 		view = new Vision();
 		input = new Inputs();
 		sensor = new Sensors();
-		arm = new Arm();
-		Component.set(input, output, sensor, arm, climb, drive, elevate, gather, view);
+		Component.set(input, output, sensor, climb, drive, elevate, gather, view);
 	}
 
 	/**
@@ -80,7 +78,6 @@ public class Robot extends TimedRobot {
 		climb.run();
 		elevate.run();
 		gather.run();
-		arm.run();
 	}
 	
 	/**
@@ -103,8 +100,6 @@ public class Robot extends TimedRobot {
 		drive.run();
 		climb.run();
 		elevate.run();
-		gather.run();
-		arm.run();
 	}
 	
 	/**

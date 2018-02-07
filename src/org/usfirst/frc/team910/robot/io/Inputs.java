@@ -20,6 +20,14 @@ public class Inputs extends Component {
 
 	public boolean gather = false;
 	public boolean ungather = false;
+	
+	public boolean liftToScaleTrigger = false; //TODO set these based on buttons 
+	public boolean liftToSwitchTrigger = false;
+	public boolean liftToFloorTrigger = false; 
+	public boolean liftFlipTrigger = false; 
+	
+	int liftHeightMod = 0; //this can be 0, -1, 1 
+	
 
 	public Inputs() {
 		leftStick = new Joystick(0);
