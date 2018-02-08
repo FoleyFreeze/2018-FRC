@@ -36,22 +36,31 @@ public class Outputs extends Component {
 		rightDrive2 = new TalonSRX(Port.RIGHT_DRIVE_CAN_2);
 		rightDrive3 = new TalonSRX(Port.RIGHT_DRIVE_CAN_3);
 		
+		rightDrive2.follow(rightDrive1);
+		rightDrive3.follow(rightDrive1);
+		leftDrive2.follow(leftDrive1);
+		leftDrive3.follow(leftDrive1);
+		
 		rightDrive1.setInverted(true);
 		rightDrive2.setInverted(true);
 		rightDrive3.setInverted(true);
 				
 		leftDrive1.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
 		leftDrive1.setSensorPhase(true);
+		//leftDrive1.setSelectedSensorPosition(0, 0, 0);
 		rightDrive1.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
 		rightDrive1.setSensorPhase(true);
+		//rightDrive1.setSelectedSensorPosition(0, 0, 0);
 		
 		driveMP = new MotionProfile(leftDrive1, rightDrive1);
+		rightDrive1.configPeakOutputForward(0.7, 0);
+		rightDrive1.configPeakOutputReverse(-0.7, 0);
+		leftDrive1.configPeakOutputForward(0.7, 0);
+		leftDrive1.configPeakOutputReverse(-0.7, 0);
 		
-		rightDrive2.set(ControlMode.Follower, Port.RIGHT_DRIVE_CAN_1);
-		rightDrive3.set(ControlMode.Follower, Port.RIGHT_DRIVE_CAN_1);
-		leftDrive2.set(ControlMode.Follower, Port.LEFT_DRIVE_CAN_1);
-		leftDrive3.set(ControlMode.Follower, Port.LEFT_DRIVE_CAN_1);
+		
 
+		/*
 		elevator1 = new TalonSRX(Port.ELEVATOR_CAN_1);
 		elevator2 = new TalonSRX(Port.ELEVATOR_CAN_2);
 		
@@ -74,16 +83,17 @@ public class Outputs extends Component {
 		
 		gatherLeft = new TalonSRX(Port.LEFT_GATHER_CAN);
 		gatherRight = new TalonSRX(Port.RIGHT_GATHER_CAN);
-			
+		*/
 	}
 
 	public void readEncoders() {
-		sense.leftDist = leftDrive1.getSelectedSensorPosition(0) * (60/12000);
-		sense.rightDist = rightDrive1.getSelectedSensorPosition(0) * (60/12000);
+		sense.leftDist = leftDrive1.getSelectedSensorPosition(0) / Port.TICKS_PER_INCH;
+		sense.rightDist = rightDrive1.getSelectedSensorPosition(0) / Port.TICKS_PER_INCH;
+		//System.out.format("L:%.2f R:%.2f\n",sense.leftDist,sense.rightDist);
 	}
 	
 	public void setDrivePower(double leftPower, double rightPower) {
-		double power = 0.2;
+		double power = 0.4;
 		leftDrive1.set(ControlMode.PercentOutput, leftPower*power);
 		leftDrive2.set(ControlMode.PercentOutput, leftPower*power);
 		leftDrive3.set(ControlMode.PercentOutput, leftPower*power);

@@ -26,6 +26,10 @@ public class AutonMain {
 		
 	}
 	
+	public void init() {
+		currentStep = 0;
+	}
+	
 	public void run() {
 
 		steps.get(currentStep).run(); //run the functions of the step we are on

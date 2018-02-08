@@ -23,6 +23,8 @@ public class Path {
 	
 	public void buildPath(double dist) { // distance as an input, total path distance
 
+		
+		
 		double velocMax = Math.sqrt(ACCEL * dist); // highest velocity before you start decelerating
 		double velocity = 0; //initial velocity
 		double position = 0; //initial position
@@ -46,6 +48,7 @@ public class Path {
 					velocity = TOP_VELOC;
 				}
 				
+				//System.out.format("X:%.3f V:%.3f\n", position,velocity);
 				positions.add(position); //record position
 				velocities.add(velocity); //record velocity
 			}
@@ -69,6 +72,7 @@ public class Path {
 					velocity = TOP_VELOC - ACCEL*(DT-transTime);
 				}
 
+				//System.out.format("X:%.3f V:%.3f\n", position,velocity);
 				positions.add(position); //record position
 				velocities.add(velocity); //record velocity
 
@@ -87,6 +91,7 @@ public class Path {
 					velocity = 0;
 				}
 				
+				//System.out.format("X:%.3f V:%.3f\n", position,velocity);
 				positions.add(position); //record position
 				velocities.add(velocity); //record velocity
 			}
@@ -117,6 +122,7 @@ public class Path {
 					break;
 				}
 				
+				//System.out.format("X:%.3f V:%.3f\n", position,velocity);
 				positions.add(position);//record position
 				velocities.add(velocity);//record velocity
 			}
@@ -136,6 +142,7 @@ public class Path {
 					velocity = 0;
 				}
 
+				//System.out.format("X:%.3f V:%.3f\n", position,velocity);
 				positions.add(position);//record position
 				velocities.add(velocity);//record position
 			}

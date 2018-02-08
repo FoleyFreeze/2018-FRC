@@ -35,6 +35,8 @@ public class Inputs extends Component {
 	}
 
 	public void read() {
+		enableMP = false;
+		
 		leftDrive = -leftStick.getY();
 		rightDrive = -rightStick.getY();
 		dynamicBrake = leftStick.getTrigger();

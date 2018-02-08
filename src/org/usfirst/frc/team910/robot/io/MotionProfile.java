@@ -1,5 +1,6 @@
 package org.usfirst.frc.team910.robot.io;
 
+import org.usfirst.frc.team910.robot.Component;
 import org.usfirst.frc.team910.robot.util.Path;
 
 import com.ctre.phoenix.motion.MotionProfileStatus;
@@ -11,9 +12,9 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.wpilibj.Notifier;
 
-public class MotionProfile {
+public class MotionProfile extends Component{
 
-	private static final int MIN_PTS_TO_START = 10;
+	private static final int MIN_PTS_TO_START = 20;
 	
 	
 	private Path leftPath;
@@ -26,6 +27,10 @@ public class MotionProfile {
 	public MotionProfile(TalonSRX leftMotor, TalonSRX rightMotor) {
 		this.leftMotor = leftMotor;
 		this.rightMotor = rightMotor;
+		
+		//in case the talon is in a weird state
+		leftMotor.clearMotionProfileHasUnderrun(0);
+		rightMotor.clearMotionProfileHasUnderrun(0);
 		
 		//start motion profile streaming threads
 		leftMotor.changeMotionControlFramePeriod((int) (Path.DT * 500));
@@ -61,6 +66,7 @@ public class MotionProfile {
 			state = MpState.INIT;
 		}
 	}
+
 	
 	public void run(boolean mpEnable) {
 		leftMotor.getMotionProfileStatus(statusL);
@@ -76,6 +82,11 @@ public class MotionProfile {
 			break;
 			
 		case INIT:
+			out.rightDrive2.follow(out.rightDrive1);
+			out.rightDrive3.follow(out.rightDrive1);
+			out.leftDrive2.follow(out.leftDrive1);
+			out.leftDrive3.follow(out.leftDrive1);
+			
 			//if buffer empty, fill
 			if(statusL.topBufferCnt == 0) {
 				leftMotor.configMotionProfileTrajectoryPeriod((int)(Path.DT*1000), 0);
@@ -93,24 +104,22 @@ public class MotionProfile {
 				rightMotor.set(ControlMode.MotionProfile, SetValueMotionProfile.Enable.value);
 				state = MpState.RUNNING;
 			}else {//if not ready, keep filling
-				leftMotor.set(ControlMode.MotionProfile, SetValueMotionProfile.Disable.value);
-				rightMotor.set(ControlMode.MotionProfile, SetValueMotionProfile.Disable.value);
+				//leftMotor.set(ControlMode.MotionProfile, SetValueMotionProfile.Disable.value);
+				//rightMotor.set(ControlMode.MotionProfile, SetValueMotionProfile.Disable.value);
 			}
 			
 			break;
 			
 		case RUNNING:
 			
+			//System.out.format("LBC:%d RBC:%d Lerr:%d Rerr:%d Lpct:%.2f\n", statusL.btmBufferCnt+statusL.topBufferCnt,statusR.btmBufferCnt+statusR.topBufferCnt,leftMotor.getClosedLoopError(0),rightMotor.getClosedLoopError(0),leftMotor.getMotorOutputPercent());
+			
 			if(statusL.hasUnderrun || statusR.hasUnderrun) {
 				//if underrun, go to error
-				leftMotor.clearMotionProfileHasUnderrun(0);
-				rightMotor.clearMotionProfileHasUnderrun(0);
-				leftMotor.clearMotionProfileTrajectories();
-				rightMotor.clearMotionProfileTrajectories();
-				
 				leftMotor.set(ControlMode.MotionProfile, SetValueMotionProfile.Disable.value);
 				rightMotor.set(ControlMode.MotionProfile, SetValueMotionProfile.Disable.value);
-				
+			
+				System.out.println("From Running to Error");
 				state = MpState.ERROR;
 			}
 			//if on last point, finish
@@ -118,6 +127,7 @@ public class MotionProfile {
 				leftMotor.set(ControlMode.MotionProfile, SetValueMotionProfile.Disable.value);
 				rightMotor.set(ControlMode.MotionProfile, SetValueMotionProfile.Disable.value);
 				
+				System.out.println("From Running to Finished");
 				state = MpState.FINISHED;
 			} //if not enabled, stop
 			else if(!mpEnable) {
@@ -135,8 +145,8 @@ public class MotionProfile {
 			
 		case FINISHED:
 			//stop moving
-			leftMotor.set(ControlMode.MotionProfile, SetValueMotionProfile.Disable.value);
-			rightMotor.set(ControlMode.MotionProfile, SetValueMotionProfile.Disable.value);
+			//leftMotor.set(ControlMode.MotionProfile, SetValueMotionProfile.Disable.value);
+			//rightMotor.set(ControlMode.MotionProfile, SetValueMotionProfile.Disable.value);
 			//if not enabled, go to off
 			if(!mpEnable) {
 				state = MpState.OFF;
@@ -146,13 +156,13 @@ public class MotionProfile {
 		case ERROR:
 			//if underrun, stop
 			if(statusL.hasUnderrun || statusR.hasUnderrun) {
+				leftMotor.set(ControlMode.MotionProfile, SetValueMotionProfile.Disable.value);
+				rightMotor.set(ControlMode.MotionProfile, SetValueMotionProfile.Disable.value);
+				
 				leftMotor.clearMotionProfileHasUnderrun(0);
 				rightMotor.clearMotionProfileHasUnderrun(0);
 				leftMotor.clearMotionProfileTrajectories();
 				rightMotor.clearMotionProfileTrajectories();
-				
-				leftMotor.set(ControlMode.MotionProfile, SetValueMotionProfile.Disable.value);
-				rightMotor.set(ControlMode.MotionProfile, SetValueMotionProfile.Disable.value);
 			}
 			if(!mpEnable) {
 				state = MpState.OFF;

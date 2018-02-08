@@ -62,7 +62,7 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void autonomousInit() {
-		
+		auton.init();
 	}
 
 	/**
@@ -75,9 +75,9 @@ public class Robot extends TimedRobot {
 		auton.run();
 		
 		drive.run();
-		climb.run();
-		elevate.run();
-		gather.run();
+		//climb.run();
+		//elevate.run();
+		//gather.run();
 	}
 	
 	/**
@@ -98,8 +98,14 @@ public class Robot extends TimedRobot {
 		view.run();
 		
 		drive.run();
-		climb.run();
-		elevate.run();
+		//climb.run();
+		//elevate.run();
+	}
+	
+	@Override
+	public void disabledInit() {
+		input.enableMP = false;
+		output.driveMP.run(false);
 	}
 	
 	/**
