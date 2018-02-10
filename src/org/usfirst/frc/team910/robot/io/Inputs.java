@@ -25,8 +25,9 @@ public class Inputs extends Component {
 	public boolean liftToSwitchTrigger = false;
 	public boolean liftToFloorTrigger = false; 
 	public boolean liftFlipTrigger = false; 
+	public boolean liftExchangeTrigger = false;
 	
-	int liftHeightMod = 0; //this can be 0, -1, 1 
+	public int liftHeightMod = 0; //this can be 0, -1, 1 
 	
 
 	public Inputs() {
