@@ -10,7 +10,7 @@ public class Path {
 
 	public static final double TOP_VELOC = 60.1; // inches per second, highest capable velocity of robot
 	public static final double ACCEL = 60; // inches per second squared
-	public static final double DT = 0.01; // 10 milliseconds
+	public static final double DT = 0.02; // 10 milliseconds
 	
 	//tolerance constants
 	public static final double POS_TOL = 0.01;

@@ -13,7 +13,8 @@ public class DrivePath extends AutonStep {
 	
 	@Override
 	public void init() {
-		out.driveMP.init(profile, profile);
+		drive.initMp(profile, profile);
+		//out.driveMP.init(profile, profile);
 		
 	}
 

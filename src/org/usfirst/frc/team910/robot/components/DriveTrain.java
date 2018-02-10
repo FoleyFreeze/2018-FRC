@@ -5,11 +5,15 @@ import org.usfirst.frc.team910.robot.io.Angle;
 import org.usfirst.frc.team910.robot.io.Inputs;
 import org.usfirst.frc.team910.robot.io.Outputs;
 import org.usfirst.frc.team910.robot.io.Sensors;
+import org.usfirst.frc.team910.robot.util.Path;
 
 public class DriveTrain extends Component {
 	public static final double DYN_BRAKE_KP = 0.0005; // This is power per inch of error
 	public static final double DRIVE_STRAIGHT_KP = 0.1; // Distance difference by inch
 	public static final double DRIVE_STRAIGHTNAVX_KP = 0.1;  //Distance difference by inch
+	public static final double DRIVEMP_KP = 0.1;
+	public static final double DRIVEMP_KD = 0.5;
+	public static final double DRIVEMP_KFV = 0.05;
 
 	
 
@@ -20,7 +24,8 @@ public class DriveTrain extends Component {
 	public void run() {
 		//If motion profiling don't do any other run functions
 		if(in.enableMP) {
-			out.driveMP.run(in.enableMP);
+			driveMp();
+			//out.driveMP.run(in.enableMP);
 		}
 		else if (in.dynamicBrake) {
 			boolean first = !prevBrake && in.dynamicBrake;
@@ -154,6 +159,49 @@ public class DriveTrain extends Component {
 			powerR = -1;
 
 		out.setDrivePower(powerL, powerR);
+	}
+	
+	private Path leftPath;
+	private Path rightPath;
+	
+	public void initMp (Path leftPath, Path rightPath) {
+		index = 0;
+		prevLError = 0;
+		prevRError = 0;
+		
+		this.leftPath = leftPath;
+		this.rightPath = rightPath;
+		
+	}
+	
+	private int index = 0;
+	private double prevLError = 0;
+	private double prevRError = 0;
+	
+	private void driveMp () {
+		
+		double leftPosition = leftPath.positions.get(index);
+		double rightPosition = rightPath.positions.get(index);
+		
+		double leftVelocity = leftPath.velocities.get(index);
+		double rightVelocity = rightPath.velocities.get(index);
+		
+		index++;
+		
+		double lError = leftPosition - sense.leftDist;
+		double rError = rightPosition - sense.rightDist;
+		
+		double deltaLError = lError - prevLError;
+		double deltaRError = rError - prevRError;
+		
+		double powerL = (DRIVEMP_KP * lError) + (DRIVEMP_KD * deltaLError ) + (DRIVEMP_KFV * leftVelocity);
+		double powerR = (DRIVEMP_KP * rError) + (DRIVEMP_KD * deltaRError ) + (DRIVEMP_KFV * rightVelocity);
+		
+		prevLError = lError;
+		prevRError = rError;
+		
+		out.setDrivePower(powerL, powerR);
+		
 	}
 	
 }
