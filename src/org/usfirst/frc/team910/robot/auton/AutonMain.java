@@ -19,9 +19,9 @@ public class AutonMain {
 		//declare a new array for our steps
 		steps = new ArrayList<AutonStep>();
 		//new steps
-		steps.add(new StartStep());
+		steps.add(new StartStep());//always first step
 		steps.add(new DrivePath());
-		steps.add(new EndStep());
+		steps.add(new EndStep());//always last step
 		
 		
 	}

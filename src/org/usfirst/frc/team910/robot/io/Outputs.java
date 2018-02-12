@@ -111,7 +111,7 @@ public class Outputs extends Component {
 	
 	public void setElevatorPower(double power) {
 		double restriction = 0.2;
-		elevator1.set(ControlMode.PercentOutput, power * restriction); //FIXME please good 
+		elevator1.set(ControlMode.PercentOutput, power * restriction); //TODO please good 
 		elevator2.set(ControlMode.PercentOutput, power * restriction);
 	}
 	

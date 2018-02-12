@@ -11,7 +11,7 @@ public class Port {
 	public static final int ARM_CAN_1=-1;
 	public static final int ARM_CAN_2=-1;
 	
-	public static final int ELEVATOR_CAN_1=-1; //FIXME please
+	public static final int ELEVATOR_CAN_1=-1; //TODO fix for 2018
 	public static final int ELEVATOR_CAN_2=-1;
 
 	public static final int LEFT_GATHER_CAN=-1; //TODO fix for 2018
