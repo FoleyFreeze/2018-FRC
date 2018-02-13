@@ -1,8 +1,11 @@
 package org.usfirst.frc.team910.robot.io;
 
+import javax.swing.plaf.synth.SynthSeparatorUI;
+
 import org.usfirst.frc.team910.robot.Component;
 import org.usfirst.frc.team910.robot.components.Elevator;
 
+import com.ctre.phoenix.ErrorCode;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
@@ -92,8 +95,21 @@ public class Outputs extends Component {
 		//System.out.format("L:%.2f R:%.2f\n",sense.leftDist,sense.rightDist);
 	}
 	
+	public void resetEncoders() {
+		if(leftDrive1.setSelectedSensorPosition(0, 0, 50) != ErrorCode.OK) {
+			System.out.println("Error in resetting left encoder position");
+			//TODO: instead of crashing, propegate this error to auton isError() 
+			//in order to prevent auton from running when encoders are broken
+			System.exit(-1); 
+		}
+		if(rightDrive1.setSelectedSensorPosition(0, 0, 50) != ErrorCode.OK) {
+			System.out.println("Error in resetting right encoder position");
+			System.exit(-1);
+		}
+	}
+	
 	public void setDrivePower(double leftPower, double rightPower) {
-		double power = 0.4;
+		double power = 0.75;
 		leftDrive1.set(ControlMode.PercentOutput, leftPower*power);
 		leftDrive2.set(ControlMode.PercentOutput, leftPower*power);
 		leftDrive3.set(ControlMode.PercentOutput, leftPower*power);
