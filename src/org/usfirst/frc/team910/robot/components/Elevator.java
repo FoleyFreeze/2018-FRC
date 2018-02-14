@@ -3,6 +3,16 @@ package org.usfirst.frc.team910.robot.components;
 import org.usfirst.frc.team910.robot.Component;
 
 public class Elevator extends Component {
+	//TODO figure this out properly
+	public static final double[] ARM_AXIS= {0, 0, 0, 0, 0, 0};
+	public static final double[] LIFT_TABLE_MIN= {0,0,0,0,0,0};
+	public static final double[] LIFT_TABLE_MAX= {0,0,0,0,0,0};
+	//TODO ""
+	public static final double[] LIFT_AXIS= {0,0,0,0,0,0,0};
+	public static final double[] ARM_TABLE_MIN_FRONT= {0,0,0,0,0,0,0};
+	public static final double[] ARM_TABLE_MAX_FRONT= {0,0,0,0,0,0,0};
+	public static final double[] ARM_TABLE_MIN_REAR= {0,0,0,0,0,0,0};
+	public static final double[] ARM_TABLE_MAX_REAR= {0,0,0,0,0,0,0};
 	
 	public static final double LIFT_MAX = -1;
 	public static final double LIFT_SCALE = -1;
@@ -245,5 +255,27 @@ public class Elevator extends Component {
 
 	public void elevate(double power) {
 		out.setElevatorPower(power);
+	}
+	public double interp(double[] axis, double[] table, double x) {
+		if(x <= axis[0]) {
+			return table[0];
+		}
+		else if(x>=axis[axis.length-1]) {
+			return table[table.length-1];
+		}
+		else {
+			int index=0;
+			for(int i=1; i<axis.length; i++) {
+				if(x<axis[i]) {
+					index = i;
+					break;
+				}
+			}
+			double slopeAxis = axis[index] - axis[index-1];
+			double slopeTbl = table[index]-table[index-1];
+			double indexFraction= x/slopeAxis;
+			double y = indexFraction * slopeTbl+table[index-1];
+			return y;
+		}
 	}
 }
