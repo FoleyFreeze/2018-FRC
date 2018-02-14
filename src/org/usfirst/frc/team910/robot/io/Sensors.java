@@ -16,6 +16,8 @@ public class Sensors extends Component {
 
 	public double leftDist = 0;
 	public double rightDist = 0;
+	public double liftPos = 0;
+	public double armPos = 0;
 	
 	public Sensors() {
 		navx = new AHRS(SPI.Port.kMXP);
