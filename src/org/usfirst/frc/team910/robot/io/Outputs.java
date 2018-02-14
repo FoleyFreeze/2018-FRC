@@ -92,6 +92,8 @@ public class Outputs extends Component {
 	public void readEncoders() {
 		sense.leftDist = leftDrive1.getSelectedSensorPosition(0) / Port.TICKS_PER_INCH;
 		sense.rightDist = rightDrive1.getSelectedSensorPosition(0) / Port.TICKS_PER_INCH;
+		sense.liftPos = elevator1.getSelectedSensorPosition(0)/Port.TICKS_PER_INCH_HEIGHT;
+		sense.armPos = armMotor1.getSelectedSensorPosition(0)/Port.TICKS_PER_DEGREE;
 		//System.out.format("L:%.2f R:%.2f\n",sense.leftDist,sense.rightDist);
 	}
 	
@@ -137,7 +139,7 @@ public class Outputs extends Component {
 		
 	
 	public void setArmPosition(double armPosition) {
-		armMotor1.set(ControlMode.Position, armPosition * Port.TICKS_PER_REV); 
+		armMotor1.set(ControlMode.Position, armPosition * Port.TICKS_PER_DEGREE); 
 		
 	}
 

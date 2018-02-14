@@ -80,22 +80,52 @@ public class Elevator extends Component {
 				goalState = liftState.R_SCALE_POSITION;
 				
 				break;
+			default:
+				break;
 				
 			}
 		}
 		
 		
 		//PART 2: figure out where we are based on encoder values
-		double liftEncoder=0;
-		double armEncoder=0;
+		double liftEncoder=sense.liftPos;
+		double armEncoder=sense.armPos;
 		if (liftEncoder > LIFT_MIN && liftEncoder < LIFT_EXCHANGE) {
 			currentState=liftState.F_FLOOR_POSITION;
 		}
 		else if (liftEncoder < LIFT_SWITCH) {
-			currentState=LIFT_EXCHANGE;
-			//TODO finish this
+			currentState=liftState.F_EXCHANGE_POSITION;
+		}
+		else if(liftEncoder<LIFT_SCALE) {
+			currentState=liftState.F_SWITCH_POSITION;
+		}
+		else{
+			currentState=liftState.F_SCALE_POSITION;
 		}
 		
+		if(armEncoder<ARM_REST) {
+			switch (currentState) {
+			case F_EXCHANGE_POSITION:
+				currentState = liftState.R_EXCHANGE_POSITION;
+				
+				break;
+			case F_FLOOR_POSITION:
+				currentState = liftState.R_EXCHANGE_POSITION;
+			
+				break;
+			case F_SWITCH_POSITION:
+				currentState = liftState.R_SWITCH_POSITION;
+				
+				break;
+			case F_SCALE_POSITION:
+				currentState = liftState.R_SCALE_POSITION;
+				
+				break;
+			default:
+				break;
+				
+			}
+		}
 		
 		//PART 3: figure out where to move to so we get closer to our goal
 		switch (currentState) {

@@ -18,6 +18,6 @@ public class Port {
 	public static final int RIGHT_GATHER_CAN=-1;//TODO fix for 2018
 	
 	public static final double TICKS_PER_INCH = 317.2;
-	public static final double TICKS_PER_REV = 0; //TODO calculate or measure real value 
-	public static final double TICKS_PER_INCH_HEIGHT = 0; //TODO calculate or measure real value please
+	public static final double TICKS_PER_DEGREE = 0; //TODO calculate or measure real value 
+	public static final double TICKS_PER_INCH_HEIGHT = 1; //TODO calculate or measure real value please
 }
