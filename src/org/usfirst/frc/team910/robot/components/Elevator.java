@@ -36,19 +36,19 @@ public class Elevator extends Component {
 
 		//PART 1: determine our goal position based on controller input
 		
-		if(in.liftExchangeTrigger) {
+		if(in.liftExchange) {
 			goalState = liftState.F_EXCHANGE_POSITION;
 		}
 		//goal to raise elevator to front exchange
-		else if (in.liftToFloorTrigger) {
+		else if (in.liftExchange) {
 			goalState = liftState.F_FLOOR_POSITION;
 		}
 		//goal to raise elevator to front switch
-		else if (in.liftToSwitchTrigger) {
+		else if (in.liftExchange) {
 			goalState = liftState.F_SWITCH_POSITION;
 		}
 		//goal to raise elevator to front scale
-		else if (in.liftToScaleTrigger) {
+		else if (in.liftExchange) {
 			goalState = liftState.F_SCALE_POSITION;
 		}
 		
@@ -62,7 +62,7 @@ public class Elevator extends Component {
 		
 		//FIXME replaced this if with if two lines below
 		//if(flipState) {
-		if(in.liftFlipTrigger) {
+		if(in.liftExchange) {
 			switch (goalState) {
 			case F_EXCHANGE_POSITION:
 				goalState = liftState.R_EXCHANGE_POSITION;
