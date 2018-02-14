@@ -54,6 +54,10 @@ public class Inputs extends Component {
 		leftStick = new Joystick(0);
 		rightStick = new Joystick(1);
 	}
+	
+	boolean prevLowAngle;
+	boolean prevMiddleAngle;
+	boolean prevHighAngle;
 
 	public void read() {
 		enableMP = false;
@@ -77,11 +81,17 @@ public class Inputs extends Component {
 			//switch height
 			elevatorHeight = 2;
 		}
-
-	
-		lowAngle = controlBoard.getRawButton(2);
-		middleAngle = controlBoard.getRawButton(3);
-		highAngle = controlBoard.getRawButton(4);
+		
+		
+		
+		lowAngle = !prevLowAngle && controlBoard.getRawButton(2);
+		middleAngle = !prevMiddleAngle && controlBoard.getRawButton(3);
+		highAngle = !prevHighAngle && controlBoard.getRawButton(4);
+		
+		prevLowAngle = controlBoard.getRawButton(2);
+		prevMiddleAngle = controlBoard.getRawButton(3);
+		prevHighAngle = controlBoard.getRawButton(4);
+		
 		shoot = controlBoard.getRawButton(5);
 		gather = controlBoard.getRawButton(6);
 		autoGather = controlBoard.getRawButton(9);
@@ -94,14 +104,5 @@ public class Inputs extends Component {
 		autoCube2 = controlBoard.getRawButton(17);
 		autoCube3 = controlBoard.getRawButton(20);
 		
-		/*
-		arm = rightStick.getRawButton(6); 
-
-		elevatorUp = rightStick.getRawButton(4);
-		elevatorDown = rightStick.getRawButton(6);
-
-		gather = rightStick.getRawButton(3);
-		ungather = rightStick.getRawButton(5);
-*/
 	}
 }
