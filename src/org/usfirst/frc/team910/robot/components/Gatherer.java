@@ -11,7 +11,7 @@ public class Gatherer extends Component {//This is territory of Arianna Kerkmaz,
 	public void run() {
 		if(in.gather) {//if you want to take in a pwr^3
 			gather(1,1);//suck in pwr^3
-		}else if(in.ungather) {//if you want to shoot out a pwr^3
+		}else if(in.shoot) {//if you want to shoot out a pwr^3
 			gather(-1,-1);//shoot out pwr^3
 		}
 	}
