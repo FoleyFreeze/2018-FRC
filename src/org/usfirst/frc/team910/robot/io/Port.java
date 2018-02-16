@@ -20,4 +20,7 @@ public class Port {
 	public static final double TICKS_PER_INCH = 317.2;
 	public static final double TICKS_PER_DEGREE = 0; //TODO calculate or measure real value 
 	public static final double TICKS_PER_INCH_HEIGHT = 1; //TODO calculate or measure real value please
+	
+	public static final int CLIMBER_CAN_1=-1;
+	public static final int CLIMBER_CAN_2=-1;
 }
