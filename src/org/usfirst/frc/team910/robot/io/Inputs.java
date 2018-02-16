@@ -67,10 +67,8 @@ public class Inputs extends Component {
 		dynamicBrake = leftStick.getTrigger();
 		driveStraight = rightStick.getTrigger();
 		
-		shift = controlBoard.getRawButton(1);
-		manualOverride = controlBoard.getRawButton(14);
-		liftFlip = controlBoard.getRawButton(15);
-
+		//all elevator heights 
+		//goes in order of high to low
 		if(controlBoard.getRawButton(19)){
 			//scale height
 			elevatorHeight = 3;
@@ -82,8 +80,7 @@ public class Inputs extends Component {
 			elevatorHeight = 2;
 		}
 		
-		
-		
+		//rising edge for angle buttons so you dont have to hold them
 		lowAngle = !prevLowAngle && controlBoard.getRawButton(2);
 		middleAngle = !prevMiddleAngle && controlBoard.getRawButton(3);
 		highAngle = !prevHighAngle && controlBoard.getRawButton(4);
@@ -92,6 +89,9 @@ public class Inputs extends Component {
 		prevMiddleAngle = controlBoard.getRawButton(3);
 		prevHighAngle = controlBoard.getRawButton(4);
 		
+		shift = controlBoard.getRawButton(1);
+		manualOverride = controlBoard.getRawButton(14);
+		liftFlip = controlBoard.getRawButton(15);
 		shoot = controlBoard.getRawButton(5);
 		gather = controlBoard.getRawButton(6);
 		autoGather = controlBoard.getRawButton(9);

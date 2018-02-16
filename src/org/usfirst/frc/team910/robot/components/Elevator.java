@@ -50,29 +50,21 @@ public class Elevator extends Component {
 			goalState = liftState.F_EXCHANGE_POSITION;
 		}
 		//goal to raise elevator to front exchange
-		else if (in.liftExchange) {
+		else if (in.elevatorHeight == 1) {
 			goalState = liftState.F_FLOOR_POSITION;
 		}
 		//goal to raise elevator to front switch
-		else if (in.liftExchange) {
+		else if (in.elevatorHeight == 2) {
 			goalState = liftState.F_SWITCH_POSITION;
 		}
 		//goal to raise elevator to front scale
-		else if (in.liftExchange) {
+		else if (in.elevatorHeight == 3) {
 			goalState = liftState.F_SCALE_POSITION;
 		}
 		
-		
-		//FIXME with the below code the goalState switch would never run
-		/*
-		if(in.liftFlipTrigger) {
-			flipState = !flipState;
-		}
-		*/
-		
-		//FIXME replaced this if with if two lines below
-		//if(flipState) {
-		if(in.liftExchange) {
+		//liftflip is the switch on control board
+		//when it is in the front position it is on
+		if(!in.liftFlip) {
 			switch (goalState) {
 			case F_EXCHANGE_POSITION:
 				goalState = liftState.R_EXCHANGE_POSITION;
