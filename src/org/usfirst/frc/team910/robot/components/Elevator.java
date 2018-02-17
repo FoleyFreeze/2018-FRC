@@ -249,21 +249,27 @@ public class Elevator extends Component {
 		out.setElevatorPower(power);
 	}
 	public double interp(double[] axis, double[] table, double x) {
+		//if in the floor
 		if(x <= axis[0]) {
 			return table[0];
 		}
+		//if we are at a point of the axis of the elevator height
 		else if(x>=axis[axis.length-1]) {
+			//go to corresponding table position
 			return table[table.length-1];
 		}
 		else {
 			int index=0;
+			//if not on axis point, create points
 			for(int i=1; i<axis.length; i++) {
 				if(x<axis[i]) {
 					index = i;
 					break;
 				}
 			}
+			//slope of the arm positions
 			double slopeAxis = axis[index] - axis[index-1];
+			//slope of the elevator positions
 			double slopeTbl = table[index]-table[index-1];
 			double indexFraction= x/slopeAxis;
 			double y = indexFraction * slopeTbl+table[index-1];
