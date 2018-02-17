@@ -58,13 +58,22 @@ public class Elevator extends Component {
 	
 	
 	public void run() {
-		/*if (in.elevatorUp) {
-			elevate(.45);
+		if (in.highAngle) {
+			out.setElevatorPower(1);
 		}
-		if (in.elevatorDown) {
-			elevate(-.45);
-		}*/
-
+		else if (in.middleAngle) {
+			out.setElevatorPower(-1);
+		}
+		
+		if(in.autoGather) {
+			out.setArmPower(1);
+		} else {
+			out.setArmPower(-1);
+		}
+		return;
+		
+		
+		/*
 		//PART 1: determine our goal position based on controller input
 		
 		if(in.liftExchange) {
@@ -278,6 +287,7 @@ public class Elevator extends Component {
 			break;
 		}
 		
+		*/
 	}
 	
 	private double prevArmError = 0;

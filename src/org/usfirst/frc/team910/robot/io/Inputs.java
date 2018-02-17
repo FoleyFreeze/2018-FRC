@@ -31,7 +31,7 @@ public class Inputs extends Component {
 	public boolean manualOverride = false;
 	public boolean liftFlip = false;
 	public int elevatorHeight = 0;
-	//TODO manualHeight
+	public double manualHeight = 0;
 	public boolean lowAngle = false;
 	public boolean middleAngle = false;
 	public boolean highAngle = false;
@@ -53,6 +53,7 @@ public class Inputs extends Component {
 	public Inputs() {
 		leftStick = new Joystick(0);
 		rightStick = new Joystick(1);
+		controlBoard = new Joystick(2);
 	}
 	
 	boolean prevLowAngle;
@@ -104,5 +105,6 @@ public class Inputs extends Component {
 		autoCube2 = controlBoard.getRawButton(17);
 		autoCube3 = controlBoard.getRawButton(20);
 		
+		manualHeight = (controlBoard.getRawAxis(5) + 1) / 2;//TODO: double check this is the right axis
 	}
 }

@@ -66,7 +66,7 @@ public class Outputs extends Component {
 		
 		
 
-		/*
+		
 		elevator1 = new TalonSRX(Port.ELEVATOR_CAN_1);
 		elevator2 = new TalonSRX(Port.ELEVATOR_CAN_2);
 		
@@ -92,7 +92,7 @@ public class Outputs extends Component {
 		
 		climber1 = new TalonSRX(Port.CLIMBER_CAN_1);
 		climber2 = new TalonSRX(Port.CLIMBER_CAN_2);
-		*/
+		
 	}
 
 	public void readEncoders() {
@@ -127,14 +127,14 @@ public class Outputs extends Component {
 	}
 
 	public void setArmPower(double armPower) {
-		double power = 0.2;
+		double power = in.manualHeight;//FIXME: this is a hack
 		armMotor1.set(ControlMode.PercentOutput, armPower*power);
 		armMotor2.set(ControlMode.PercentOutput, armPower*power);
 	}
 
 	
 	public void setElevatorPower(double power) {
-		double restriction = 0.2;
+		double restriction = in.manualHeight;//FIXME: this is a hack
 		elevator1.set(ControlMode.PercentOutput, power * restriction); //TODO please good 
 		elevator2.set(ControlMode.PercentOutput, power * restriction);
 	}
