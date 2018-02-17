@@ -9,7 +9,7 @@ public class StartStep extends AutonStep {
 
 	@Override
 	public void run() {
-		sense.resetnavx();	//set start position to 0 degrees	
+		sense.reset();	//set start position to 0 degrees	
 	}
 
 	@Override

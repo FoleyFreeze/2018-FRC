@@ -200,7 +200,24 @@ public class DriveTrain extends Component {
 		prevLError = lError;
 		prevRError = rError;
 		
+		if (powerL > 1)
+			powerL = 1;
+		else if (powerL < -1)
+			powerL = -1;
+		if (powerR > 1)
+			powerR = 1;
+		else if (powerR < -1)
+			powerR = -1;
+		
+		System.out.format("idx:%d lpwr:%.2f lerr:%.2f derr:%.2f lvel:%.2f\n", index, powerL,lError,deltaLError,leftVelocity);
+		
 		out.setDrivePower(powerL, powerR);
+		
+	}
+	
+	public boolean isMpDoneYet() {
+		return index == leftPath.positions.size();
+			
 		
 	}
 	

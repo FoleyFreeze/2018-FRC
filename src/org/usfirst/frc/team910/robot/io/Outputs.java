@@ -1,8 +1,11 @@
 package org.usfirst.frc.team910.robot.io;
 
+import javax.swing.plaf.synth.SynthSeparatorUI;
+
 import org.usfirst.frc.team910.robot.Component;
 import org.usfirst.frc.team910.robot.components.Elevator;
 
+import com.ctre.phoenix.ErrorCode;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
@@ -23,6 +26,9 @@ public class Outputs extends Component {
 	
 	TalonSRX gatherLeft;
 	TalonSRX gatherRight;
+	
+	TalonSRX climber1;
+	TalonSRX climber2;
 	
 	public MotionProfile driveMP;
 	
@@ -83,17 +89,35 @@ public class Outputs extends Component {
 		
 		gatherLeft = new TalonSRX(Port.LEFT_GATHER_CAN);
 		gatherRight = new TalonSRX(Port.RIGHT_GATHER_CAN);
+		
+		climber1 = new TalonSRX(Port.CLIMBER_CAN_1);
+		climber2 = new TalonSRX(Port.CLIMBER_CAN_2);
 		*/
 	}
 
 	public void readEncoders() {
 		sense.leftDist = leftDrive1.getSelectedSensorPosition(0) / Port.TICKS_PER_INCH;
 		sense.rightDist = rightDrive1.getSelectedSensorPosition(0) / Port.TICKS_PER_INCH;
+		sense.liftPos = elevator1.getSelectedSensorPosition(0)/Port.TICKS_PER_INCH_HEIGHT;
+		sense.armPos = armMotor1.getSelectedSensorPosition(0)/Port.TICKS_PER_DEGREE;
 		//System.out.format("L:%.2f R:%.2f\n",sense.leftDist,sense.rightDist);
 	}
 	
+	public void resetEncoders() {
+		if(leftDrive1.setSelectedSensorPosition(0, 0, 50) != ErrorCode.OK) {
+			System.out.println("Error in resetting left encoder position");
+			//TODO: instead of crashing, propegate this error to auton isError() 
+			//in order to prevent auton from running when encoders are broken
+			System.exit(-1); 
+		}
+		if(rightDrive1.setSelectedSensorPosition(0, 0, 50) != ErrorCode.OK) {
+			System.out.println("Error in resetting right encoder position");
+			System.exit(-1);
+		}
+	}
+	
 	public void setDrivePower(double leftPower, double rightPower) {
-		double power = 0.4;
+		double power = 0.75;
 		leftDrive1.set(ControlMode.PercentOutput, leftPower*power);
 		leftDrive2.set(ControlMode.PercentOutput, leftPower*power);
 		leftDrive3.set(ControlMode.PercentOutput, leftPower*power);
@@ -121,7 +145,7 @@ public class Outputs extends Component {
 		
 	
 	public void setArmPosition(double armPosition) {
-		armMotor1.set(ControlMode.Position, armPosition * Port.TICKS_PER_REV); 
+		armMotor1.set(ControlMode.Position, armPosition * Port.TICKS_PER_DEGREE); 
 		
 	}
 
@@ -130,6 +154,11 @@ public class Outputs extends Component {
 		gatherLeft.set(ControlMode.PercentOutput, leftPower*restriction);
 		gatherRight.set(ControlMode.PercentOutput, rightPower*restriction);
 
+	}
+	
+	public void setClimberPower(double power1, double power2) {
+		climber1.set(ControlMode.PercentOutput, power1);
+		climber2.set(ControlMode.PercentOutput, power2);
 	}
 	
 }

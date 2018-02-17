@@ -26,14 +26,15 @@ public class DrivePath extends AutonStep {
 
 	@Override
 	public boolean isDone() {
-		if(out.driveMP.doneYet()) {
+		//if(out.driveMP.doneYet()) {
+		if(drive.isMpDoneYet()) {
 			in.enableMP = false;
 			return true;
 		}else {
 			return false;
 		}
 	}
-	
+	/*
 	@Override
 	public boolean isError() {
 		if(out.driveMP.weFailed()) {
@@ -43,5 +44,5 @@ public class DrivePath extends AutonStep {
 			return false;
 		}
 	}
-	
+	*/
 }
