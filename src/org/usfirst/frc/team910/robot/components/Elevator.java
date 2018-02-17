@@ -248,8 +248,9 @@ public class Elevator extends Component {
 	public void elevate(double power) {
 		out.setElevatorPower(power);
 	}
-	public double interp(double[] axis, double[] table, double x) {
-		//if in the floor
+	
+	public static double interp(double[] axis, double[] table, double x) {
+		//if out of bounds
 		if(x <= axis[0]) {
 			return table[0];
 		}
@@ -271,8 +272,8 @@ public class Elevator extends Component {
 			double slopeAxis = axis[index] - axis[index-1];
 			//slope of the elevator positions
 			double slopeTbl = table[index]-table[index-1];
-			double indexFraction= x/slopeAxis;
-			double y = indexFraction * slopeTbl+table[index-1];
+			double indexFraction= (x-axis[index-1])/slopeAxis;
+			double y = indexFraction * slopeTbl + table[index-1];
 			return y;
 		}
 	}
