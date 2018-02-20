@@ -21,13 +21,13 @@ public class Path {
 		velocities = new ArrayList<Double>();
 	}
 	
-	public void buildPath(double dist) { // distance as an input, total path distance
+	public void buildPath(double accelMax, double velocMax, double velocity, double position, double dist, double startDist) { // distance as an input, total path distance
 
 		
 		
-		double velocMax = Math.sqrt(ACCEL * dist); // highest velocity before you start decelerating
-		double velocity = 0; //initial velocity
-		double position = 0; //initial position
+		velocMax = Math.sqrt(ACCEL * dist); // highest velocity before you start decelerating
+		velocity = 0; //initial velocity
+		position = 0; //initial position
 		
 		if (velocMax > TOP_VELOC) { //if robot can reach its top speed, use 3 step method
 			while (velocity < TOP_VELOC) { //Step 1: Accelerate, while under the top speed
@@ -78,7 +78,7 @@ public class Path {
 
 			}
 			
-			while (position < dist) { //Step 3: Decelerate, while position is less than the total path
+			while (position < dist + startDist) { //Step 3: Decelerate, while position is less than the total path
 				position = position + velocity * DT - 0.5 * ACCEL * DT * DT; //distance formula with negative acceleration 
 				velocity = velocity - ACCEL * DT;//velocity formula with negative acceleration
 				if(velocity <= 0) {
@@ -87,7 +87,7 @@ public class Path {
 				
 				//if the time step went past end point, stop at the end point 
 				if (position >= dist - POS_TOL && velocity <= 0) {
-					position = dist;
+					position = dist + startDist;
 					velocity = 0;
 				}
 				
@@ -105,7 +105,7 @@ public class Path {
 				velocity = velocity + ACCEL * DT; //velocity formula, vf = vi+at
 				
 				//if the time step passed the point to slow down, change so that it is slowing down
-				if (position > (dist - step1Dist)) {
+				if (position > (dist - step1Dist) + startDist) {
 					//position at which you start slowing down
 					double prevPos = positions.get(positions.size()-1);
 					//distance covered before slowing down;
@@ -137,8 +137,8 @@ public class Path {
 				}
 				
 				//if the time step went past end point, stop at the end point 
-				if (position >= dist - POS_TOL && velocity <= 0) {
-					position = dist;
+				if (position >= (dist + startDist) - POS_TOL && velocity <= 0) {
+					position = dist + startDist;
 					velocity = 0;
 				}
 
