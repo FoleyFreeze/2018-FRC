@@ -6,7 +6,7 @@ public class Path {
 
 	public ArrayList<Double> positions; //array of the recorded positions per loop
 	public ArrayList<Double> velocities;//array of the recorded velocities per loop
-	
+	public ArrayList<Double> accelerations; // array of the recorded accelerations per loop
 
 	public static final double TOP_VELOC = 60.1; // inches per second, highest capable velocity of robot
 	public static final double ACCEL = 60; // inches per second squared
@@ -19,6 +19,7 @@ public class Path {
 	public Path() { //constructor to create the arrays
 		positions = new ArrayList<Double>();
 		velocities = new ArrayList<Double>();
+		accelerations = new ArrayList<Double>(); 
 	}
 	
 	/**
@@ -35,8 +36,7 @@ public class Path {
 		
 		double velocity = startVel; //initial velocity
 		double position = startPos; //initial position
-		
-		double step3dist = velocMax * velocMax - velocity * velocity / (2 * accelMax); 
+		 
 		double endPosition = dist + startPos;
 		
 		double accel = accelMax; 
@@ -44,29 +44,41 @@ public class Path {
 			accel = -accelMax; 
 		}
 		
+		double step3dist = velocMax * velocMax - velocity * velocity / (2 * accelMax);
+		
 		//Step 1: Go from start velocity to cruise speed
 		while (velocity != velocMax && endPosition - position > step3dist) { //Step 1: Accelerate, while under the top speed
 			position = position + velocity * DT + 0.5 * accel * DT * DT; //distance formula, x = xi + vi*t + .5*a*t^2
 			velocity = velocity + accel * DT; // velocity formula, vf = vi+at
 			step3dist = velocMax * velocMax - velocity * velocity / (2 * -accel); 
 			
-			//check if this is the last dt in this step
-			if(velocity > TOP_VELOC) {
+			//check if this is the last dt before we trasition into step 2
+			if((velocity > velocMax)^(accel<0)) { //accel is set to positive or negative based on velocity being greater than velocMax 
 				//at what time does velocity reach top_veloc?
 				double prevVel = velocities.get(velocities.size() -1); //last record velocity
-				double transTime = (TOP_VELOC - prevVel)/ACCEL;
+				double transTime = (velocMax - prevVel)/accel;
 				//at that time, what is the position?
 				double prevPos = positions.get(positions.size() -1);
-				double transPos = prevPos + prevVel*transTime + 0.5 * ACCEL * transTime * transTime;
+				double transPos = prevPos + prevVel*transTime + 0.5 * accel * transTime * transTime;
 				//holding top_veloc for the remaining time, what is the total position at the end?
-				position = transPos + (TOP_VELOC*(DT-transTime));
+				position = transPos + (velocMax*(DT-transTime));
 				//what is the velocity at the end?
-				velocity = TOP_VELOC;
+				velocity = velocMax;
+				accel = 0;
+			} else if(endPosition - position > step3dist) { //checking for transition from step 1 to step 3
+				double prevVel = velocities.get(velocities.size() -1); 
+				double positionOvershoot = position - (endPosition - step3dist);
+				double transVel = Math.sqrt(2 * accel * positionOvershoot - velocity * velocity);
+				double transTime = (transVel - prevVel)/ accel;
+				velocity = transVel - accel * (DT - transTime);
+				position = endPosition - step3dist + transVel * (DT - transTime) - 0.5 * accel * (DT - transTime * transTime);
+				accel = -accel;
 			}
 			
 			//System.out.format("X:%.3f V:%.3f\n", position,velocity);
 			positions.add(position); //record position
 			velocities.add(velocity); //record velocity
+			accelerations.add(accel); //record acceleration
 		}
 		
 		double step1Dist = (TOP_VELOC*TOP_VELOC)/(2*ACCEL); //record the position during first phase, 
