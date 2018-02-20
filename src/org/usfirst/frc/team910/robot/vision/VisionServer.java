@@ -39,7 +39,7 @@ public class VisionServer {
     // timeout in seconds: up to timeout amount of time allowed for ping to complete
 	synchronized public VisionPingInfo ping(int timeout) {
 
-        VisionPingInfo pInfo = new VisionPingInfo();
+        pInfo = new VisionPingInfo();
         double pingTimer;
         String pingResponse;
 		String[] parts; // Each element stores one of the parts of the single string message parse on the delimiter ','
@@ -62,7 +62,7 @@ public class VisionServer {
             pingResponse = pingin.getString(String.valueOf(PING_OUT_DATA));
             
     		parts = pingResponse.split(",");
-    		int pingResult = Integer.parseInt(parts[0]);
+    		int pingResult = Integer.parseInt(parts[PING_IN_RESPONSE]);
     		
     		// We sent the Pi PING_OUT_DATA
     		// We expect the Pi to return PING_OUT_DATA + 1
@@ -73,13 +73,13 @@ public class VisionServer {
         	}
         	        	
         	// Ping response not yet received; if there's time, try again
-        } while (pingTimer < (Timer.getFPGATimestamp() + Math.abs(timeout)));
+        } while (pingTimer < Timer.getFPGATimestamp());
         
         // When we get here, the ping either worked, or timed out
         if(pInfo.result == 0) {
         	
             // ping worked; populate object with ping info
-    		convertStringMessageFromAsciiToValues(parts, pInfo);
+    		convertStringMessageFromAsciiToValues(parts);
             
     	    // TODO: setup a listener for the cameras that exist; the listeners that
     	    // get setup will take the object recognized messages and put them in the queue
@@ -132,8 +132,16 @@ public class VisionServer {
 		}
         return (result);
     }
-	private void convertStringMessageFromAsciiToValues(String[] msg, VisionPingInfo info) {
-		// TODO
+	// Parse the single ping message string into the type VisionPingInfo
+	private void convertStringMessageFromAsciiToValues(String[] msg) {
+		
+		pInfo.piInfo = msg[PING_IN_PI_INFO];
+        pInfo.numCameras = Integer.parseInt(msg[PING_IN_NUM_PIXY]);
+        pInfo.cameraIDs[0] = Integer.parseInt(msg[PING_IN_PIXY_ID]);
+        pInfo.cameraFWVersions[0] = msg[PING_IN_PIXY_FW_VERSION];
+        pInfo.cameraIDs[1] = Integer.parseInt(msg[PING_IN_PIXY_ID_2]);
+        pInfo.cameraFWVersions[1] = msg[PING_IN_PIXY_FW_VERSION_2];
+        
 	}
 	private int pixy1ID;
 	private BlockingQueue pixy1 = null;
@@ -154,5 +162,15 @@ public class VisionServer {
     
     private static final int PING_OUT_DATA  = 909;
 
+    private static final int PING_IN_RESPONSE = 0;
+    private static final int PING_IN_PI_INFO = 1;
+    private static final int PING_IN_NUM_PIXY = 2;
+    private static final int PING_IN_PIXY_ID = 3;
+    private static final int PING_IN_PIXY_FW_VERSION = 4;
+    private static final int PING_IN_PIXY_ID_2 = 5;
+    private static final int PING_IN_PIXY_FW_VERSION_2 = 6;
+    
+    VisionPingInfo pInfo;
+    
 }
 
