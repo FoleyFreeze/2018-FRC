@@ -8,7 +8,7 @@ public class DrivePath extends AutonStep {
 		
 	public DrivePath() {
 		profile = new Path();
-		profile.buildPath(120);
+		//profile.buildPath(120);
 	}
 	
 	@Override

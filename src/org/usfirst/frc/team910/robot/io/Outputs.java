@@ -150,7 +150,7 @@ public class Outputs extends Component {
 	}
 
 	public void setGatherPower(double leftPower, double rightPower) {
-		double restriction = 0.25;
+		double restriction = in.manualHeight;
 		gatherLeft.set(ControlMode.PercentOutput, leftPower*restriction);
 		gatherRight.set(ControlMode.PercentOutput, rightPower*restriction);
 

@@ -63,12 +63,16 @@ public class Elevator extends Component {
 		}
 		else if (in.middleAngle) {
 			out.setElevatorPower(-1);
+		} else {
+			out.setElevatorPower(0);
 		}
 		
 		if(in.autoGather) {
 			out.setArmPower(1);
-		} else {
+		} else if (in.liftExchange){
 			out.setArmPower(-1);
+		} else {
+			out.setArmPower(0);
 		}
 		return;
 		
