@@ -35,12 +35,12 @@ public class Outputs extends Component {
 
 
 	public Outputs() {
-		leftDrive1 = new TalonSRX(Port.LEFT_DRIVE_CAN_1);
-		leftDrive2 = new TalonSRX(Port.LEFT_DRIVE_CAN_2);
-		leftDrive3 = new TalonSRX(Port.LEFT_DRIVE_CAN_3);
-		rightDrive1 = new TalonSRX(Port.RIGHT_DRIVE_CAN_1);
-		rightDrive2 = new TalonSRX(Port.RIGHT_DRIVE_CAN_2);
-		rightDrive3 = new TalonSRX(Port.RIGHT_DRIVE_CAN_3);
+		leftDrive1 = new TalonSRX(ElectroBach.LEFT_DRIVE_CAN_1);
+		leftDrive2 = new TalonSRX(ElectroBach.LEFT_DRIVE_CAN_2);
+		leftDrive3 = new TalonSRX(ElectroBach.LEFT_DRIVE_CAN_3);
+		rightDrive1 = new TalonSRX(ElectroBach.RIGHT_DRIVE_CAN_1);
+		rightDrive2 = new TalonSRX(ElectroBach.RIGHT_DRIVE_CAN_2);
+		rightDrive3 = new TalonSRX(ElectroBach.RIGHT_DRIVE_CAN_3);
 		
 		rightDrive2.follow(rightDrive1);
 		rightDrive3.follow(rightDrive1);
@@ -67,39 +67,39 @@ public class Outputs extends Component {
 		
 
 		
-		elevator1 = new TalonSRX(Port.ELEVATOR_CAN_1);
-		elevator2 = new TalonSRX(Port.ELEVATOR_CAN_2);
+		elevator1 = new TalonSRX(ElectroBach.ELEVATOR_CAN_1);
+		elevator2 = new TalonSRX(ElectroBach.ELEVATOR_CAN_2);
 		
-		elevator2.set(ControlMode.Follower, Port.ELEVATOR_CAN_1);
+		elevator2.set(ControlMode.Follower, ElectroBach.ELEVATOR_CAN_1);
 		
 		elevator1.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
 		elevator1.setSensorPhase(false); //TODO look at gear box and find out if directions match
 		elevator1.setInverted(false); 
 		elevator2.setInverted(false); 
 		
-		armMotor1 = new TalonSRX(Port.ARM_CAN_1);
-		armMotor2 = new TalonSRX(Port.ARM_CAN_2);
+		armMotor1 = new TalonSRX(ElectroBach.ARM_CAN_1);
+		armMotor2 = new TalonSRX(ElectroBach.ARM_CAN_2);
 		
-		armMotor2.set(ControlMode.Follower, Port.ARM_CAN_1);
+		armMotor2.set(ControlMode.Follower, ElectroBach.ARM_CAN_1);
 		
 		armMotor1.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
 		armMotor1.setSensorPhase(false); //TODO look at gear box and find out if directions match
 		armMotor1.setInverted(false);
 		armMotor2.setInverted(false);
 		
-		gatherLeft = new TalonSRX(Port.LEFT_GATHER_CAN);
-		gatherRight = new TalonSRX(Port.RIGHT_GATHER_CAN);
+		gatherLeft = new TalonSRX(ElectroBach.LEFT_GATHER_CAN);
+		gatherRight = new TalonSRX(ElectroBach.RIGHT_GATHER_CAN);
 		
-		climber1 = new TalonSRX(Port.CLIMBER_CAN_1);
-		climber2 = new TalonSRX(Port.CLIMBER_CAN_2);
+		climber1 = new TalonSRX(ElectroBach.CLIMBER_CAN_1);
+		climber2 = new TalonSRX(ElectroBach.CLIMBER_CAN_2);
 		
 	}
 
 	public void readEncoders() {
-		sense.leftDist = leftDrive1.getSelectedSensorPosition(0) / Port.TICKS_PER_INCH;
-		sense.rightDist = rightDrive1.getSelectedSensorPosition(0) / Port.TICKS_PER_INCH;
-		sense.liftPos = elevator1.getSelectedSensorPosition(0)/Port.TICKS_PER_INCH_HEIGHT;
-		sense.armPos = armMotor1.getSelectedSensorPosition(0)/Port.TICKS_PER_DEGREE;
+		sense.leftDist = leftDrive1.getSelectedSensorPosition(0) / ElectroBach.TICKS_PER_INCH;
+		sense.rightDist = rightDrive1.getSelectedSensorPosition(0) / ElectroBach.TICKS_PER_INCH;
+		sense.liftPos = elevator1.getSelectedSensorPosition(0)/ElectroBach.TICKS_PER_INCH_HEIGHT;
+		sense.armPos = armMotor1.getSelectedSensorPosition(0)/ElectroBach.TICKS_PER_DEGREE;
 		//System.out.format("L:%.2f R:%.2f\n",sense.leftDist,sense.rightDist);
 	}
 	
@@ -140,12 +140,12 @@ public class Outputs extends Component {
 	}
 	
 	public void setElevatorPosition(double elevatorPosition) {
-		elevator1.set(ControlMode.Position,  elevatorPosition * Port.TICKS_PER_INCH_HEIGHT); //sets position for the elevation device (lift for british)
+		elevator1.set(ControlMode.Position,  elevatorPosition * ElectroBach.TICKS_PER_INCH_HEIGHT); //sets position for the elevation device (lift for british)
 	}
 		
 	
 	public void setArmPosition(double armPosition) {
-		armMotor1.set(ControlMode.Position, armPosition * Port.TICKS_PER_DEGREE); 
+		armMotor1.set(ControlMode.Position, armPosition * ElectroBach.TICKS_PER_DEGREE); 
 		
 	}
 

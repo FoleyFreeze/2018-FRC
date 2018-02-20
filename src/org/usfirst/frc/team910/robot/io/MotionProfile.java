@@ -192,8 +192,8 @@ public class MotionProfile extends Component{
 	public void fillTopBuffer(Path path, TalonSRX motor) {
 		//for every point, set these values
 		for(int i = 0; i < path.positions.size(); i++) {
-			point.position = path.positions.get(i) * Port.TICKS_PER_INCH;
-			point.velocity = path.velocities.get(i) * Port.TICKS_PER_INCH / 10;
+			point.position = path.positions.get(i) * ElectroBach.TICKS_PER_INCH;
+			point.velocity = path.velocities.get(i) * ElectroBach.TICKS_PER_INCH / 10;
 			point.headingDeg = 0;
 			point.isLastPoint = i == path.positions.size()-1;//only true on the last point
 			point.profileSlotSelect0 = 0;

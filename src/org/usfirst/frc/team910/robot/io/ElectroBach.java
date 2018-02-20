@@ -1,6 +1,6 @@
 package org.usfirst.frc.team910.robot.io;
 
-public class Port {
+public class ElectroBach {
 	public static final int LEFT_DRIVE_CAN_1=2;
 	public static final int LEFT_DRIVE_CAN_2=0;
 	public static final int LEFT_DRIVE_CAN_3=1;
