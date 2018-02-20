@@ -88,7 +88,11 @@ public class Outputs extends Component {
 		armMotor2.setInverted(false);
 		
 		gatherLeft = new TalonSRX(ElectroBach.LEFT_GATHER_CAN);
+		gatherLeft.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
+		gatherLeft.setSensorPhase(true);
 		gatherRight = new TalonSRX(ElectroBach.RIGHT_GATHER_CAN);
+		gatherRight.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
+		gatherRight.setSensorPhase(true);
 		
 		climber1 = new TalonSRX(ElectroBach.CLIMBER_CAN_1);
 		climber2 = new TalonSRX(ElectroBach.CLIMBER_CAN_2);
@@ -100,6 +104,8 @@ public class Outputs extends Component {
 		sense.rightDist = rightDrive1.getSelectedSensorPosition(0) / ElectroBach.TICKS_PER_INCH;
 		sense.liftPos = elevator1.getSelectedSensorPosition(0)/ElectroBach.TICKS_PER_INCH_HEIGHT;
 		sense.armPos = armMotor1.getSelectedSensorPosition(0)/ElectroBach.TICKS_PER_DEGREE;
+		sense.gatherLeftPos = gatherLeft.getSelectedSensorPosition(0)/ElectroBach.TICKS_PER_INCH;
+		sense.gatherRightPos = gatherRight.getSelectedSensorPosition(0)/ElectroBach.TICKS_PER_INCH;
 		//System.out.format("L:%.2f R:%.2f\n",sense.leftDist,sense.rightDist);
 	}
 	
