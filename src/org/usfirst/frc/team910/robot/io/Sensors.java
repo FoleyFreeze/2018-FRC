@@ -19,8 +19,8 @@ public class Sensors extends Component {
 	public double rightDist = 0;
 	public double liftPos = 0;
 	public double armPos = 0;
-	public double gatherLeftPos = 0;
-	public double gatherRightPos = 0;
+	//public double gatherLeftPos = 0;
+	//public double gatherRightPos = 0;
 	
 	public Sensors() {
 		navx = new AHRS(SPI.Port.kMXP);
@@ -35,8 +35,8 @@ public class Sensors extends Component {
 		SmartDashboard.putNumber("Right Drive Enc", rightDist);
 		SmartDashboard.putNumber("Lift Position Enc", liftPos);
 		SmartDashboard.putNumber("Arm Position Enc", armPos);
-		SmartDashboard.putNumber("Left Gather Enc", gatherLeftPos);
-		SmartDashboard.putNumber("Right Gather Enc", gatherRightPos);
+		//SmartDashboard.putNumber("Left Gather Enc", gatherLeftPos);
+		//SmartDashboard.putNumber("Right Gather Enc", gatherRightPos);
 		
 		
 		robotAngle.set(-navx.getYaw());

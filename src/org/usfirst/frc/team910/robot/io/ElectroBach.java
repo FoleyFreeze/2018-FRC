@@ -14,8 +14,8 @@ public class ElectroBach {
 	public static final int ELEVATOR_CAN_1=6;
 	public static final int ELEVATOR_CAN_2=9;
 
-	public static final int LEFT_GATHER_CAN=4; //TODO fix for 2018
-	public static final int RIGHT_GATHER_CAN=5;//TODO fix for 2018
+	public static final int LEFT_GATHER_CAN=4;
+	public static final int RIGHT_GATHER_CAN=5;
 	
 	public static final double TICKS_PER_INCH = 317.2;
 	public static final double TICKS_PER_DEGREE = 0; //TODO calculate or measure real value 

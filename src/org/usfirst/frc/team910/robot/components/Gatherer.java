@@ -9,16 +9,20 @@ public class Gatherer extends Component {
 	}
 
 	public void run() {
-		if(in.gather) {//if you want to take in a pwr^3
-			gather(1,1);//suck in pwr^3
-		}else if(in.shoot) {//if you want to shoot out a pwr^3
-			gather(-1,-1);//shoot out pwr^3
-		} else {
+		if(in.gather) {
+			gather(0.5,1);
+		//}else if(in.gather && in.climb) {
+			//gather(1,0.5);}
+		}else if(in.shoot) {
+			gather(-0.5,-0.5);
+		//} else if(in.shift){
+			//gather(0.5,-1);
+		}	else {
 			gather(0,0);
 		}
 	}
 
 	private void gather(double leftPower, double rightPower) {
-		out.setGatherPower(leftPower, rightPower);//set the powers to correctly operate pwr^3
+		out.setGatherPower(leftPower, rightPower);
 	}
 }

@@ -59,7 +59,7 @@ public class Elevator extends Component {
 	
 	public void run() {
 		if (in.highAngle) {
-			out.setElevatorPower(1);
+			out.setElevatorPower(1);//FIXME this is a hack
 		}
 		else if (in.middleAngle) {
 			out.setElevatorPower(-1);

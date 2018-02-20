@@ -17,6 +17,7 @@ import org.usfirst.frc.team910.robot.io.Inputs;
 import org.usfirst.frc.team910.robot.io.Outputs;
 import org.usfirst.frc.team910.robot.io.Sensors;
 
+import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.TimedRobot;
 
 /**
@@ -96,7 +97,7 @@ public class Robot extends TimedRobot {
 		input.read();
 		sensor.read();
 		view.run();
-		
+		gather.run();
 		drive.run();
 		//climb.run();
 		//elevate.run();
