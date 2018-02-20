@@ -6,6 +6,7 @@ import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Sensors extends Component {
 
@@ -28,6 +29,10 @@ public class Sensors extends Component {
 
 	public void read() {
 		out.readEncoders();
+		SmartDashboard.putNumber("Left Drive Enc", leftDist);
+		SmartDashboard.putNumber("Right Drive Enc", rightDist);
+		SmartDashboard.putNumber("Lift Position Enc", liftPos);
+		SmartDashboard.putNumber("Arm Position Enc", armPos);
 		
 		robotAngle.set(-navx.getYaw());
 	}

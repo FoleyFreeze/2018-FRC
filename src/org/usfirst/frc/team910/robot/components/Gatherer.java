@@ -2,8 +2,8 @@ package org.usfirst.frc.team910.robot.components;
 
 import org.usfirst.frc.team910.robot.Component;
 
-public class Gatherer extends Component {//This is territory of Arianna Kerkmaz, intruders shall be peacefully contained
-
+public class Gatherer extends Component {
+	
 	public Gatherer() {
 
 	}
@@ -13,6 +13,8 @@ public class Gatherer extends Component {//This is territory of Arianna Kerkmaz,
 			gather(1,1);//suck in pwr^3
 		}else if(in.shoot) {//if you want to shoot out a pwr^3
 			gather(-1,-1);//shoot out pwr^3
+		} else {
+			gather(0,0);
 		}
 	}
 

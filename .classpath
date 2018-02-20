@@ -7,8 +7,8 @@
 	<classpathentry exported="true" kind="var" path="opencv" sourcepath="opencv.sources"/>
 	<classpathentry exported="true" kind="var" path="cscore" sourcepath="cscore.sources"/>
 	<classpathentry exported="true" kind="var" path="wpiutil" sourcepath="wpiutil.sources"/>
-	<classpathentry exported="true" kind="var" path="USERLIBS_DIR/CTRE_Phoenix.jar" sourcepath="USERLIBS_DIR/CTRE_Phoenix.sources"/>
-	<classpathentry exported="true" kind="var" path="USERLIBS_DIR/navx_frc.jar" sourcepath="USERLIBS_DIR/navx_frc.sources"/>
 	<classpathentry kind="var" path="USERLIBS_DIR/CTRE_Phoenix-sources.jar"/>
+	<classpathentry kind="var" path="USERLIBS_DIR/CTRE_Phoenix.jar"/>
+	<classpathentry kind="var" path="USERLIBS_DIR/navx_frc.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
