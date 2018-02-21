@@ -164,8 +164,9 @@ public class Outputs extends Component {
 	}
 	
 	public void setClimberPower(double power1, double power2) {
-		climber1.set(ControlMode.PercentOutput, power1);
-		climber2.set(ControlMode.PercentOutput, power2);
+		double restriction = in.manualHeight;
+		climber1.set(ControlMode.PercentOutput, power1*restriction);
+		climber2.set(ControlMode.PercentOutput, power2*restriction);
 	}
 	
 }

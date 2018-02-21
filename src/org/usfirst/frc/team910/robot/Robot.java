@@ -99,8 +99,8 @@ public class Robot extends TimedRobot {
 		view.run();
 		gather.run();
 		drive.run();
-		//climb.run();
-		//elevate.run();
+		climb.run();
+		elevate.run();
 	}
 	
 	@Override
@@ -114,7 +114,7 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void disabledPeriodic() {
-		
+		sensor.read();
 	}
 
 	/**

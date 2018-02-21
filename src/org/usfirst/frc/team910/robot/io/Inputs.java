@@ -82,13 +82,13 @@ public class Inputs extends Component {
 		}
 		
 		//rising edge for angle buttons so you dont have to hold them
-		lowAngle = !prevLowAngle && controlBoard.getRawButton(2);
-		middleAngle = !prevMiddleAngle && controlBoard.getRawButton(3);
-		highAngle = !prevHighAngle && controlBoard.getRawButton(4);
+		//lowAngle = !prevLowAngle && controlBoard.getRawButton(2);
+		//middleAngle = !prevMiddleAngle && controlBoard.getRawButton(3);
+		//highAngle = !prevHighAngle && controlBoard.getRawButton(4);
 		
-		prevLowAngle = controlBoard.getRawButton(2);
-		prevMiddleAngle = controlBoard.getRawButton(3);
-		prevHighAngle = controlBoard.getRawButton(4);
+		lowAngle = controlBoard.getRawButton(2);
+		middleAngle = controlBoard.getRawButton(3);
+		highAngle = controlBoard.getRawButton(4);
 		
 		shift = controlBoard.getRawButton(1);
 		manualOverride = controlBoard.getRawButton(14);
