@@ -5,6 +5,7 @@ import org.usfirst.frc.team910.robot.Component;
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -21,12 +22,13 @@ public class Sensors extends Component {
 	public double armPos = 0;
 	//public double gatherLeftPos = 0;
 	//public double gatherRightPos = 0;
+	public PowerDistributionPanel pdp;
 	
 	public Sensors() {
 		navx = new AHRS(SPI.Port.kMXP);
 		navx.zeroYaw();
 		robotAngle = new Angle(0);
-
+		pdp=new PowerDistributionPanel();
 	}
 
 	public void read() {
