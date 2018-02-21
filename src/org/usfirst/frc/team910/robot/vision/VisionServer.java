@@ -6,21 +6,25 @@ import java.util.concurrent.BlockingQueue;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.EntryListenerFlags;
+
 
 import edu.wpi.first.wpilibj.Timer;
 import java.lang.Math;
 
 public class VisionServer {
 
-    public VisionServer(VisionPing vp) {
+    public VisionServer() {
     	
     	// Initialize queue references
         pixy1 = null;
         pixy2 = null;
-        response = null;
-    
+        listener1 = null;
+        listener2 = null;  
         pingComplete = false;
-
+        inst = null;
+        table = null;
+        
         // No debug output by default
         debug = false;
 
@@ -107,7 +111,8 @@ public class VisionServer {
 		
 	}
 	
-	// associate camera with a queue
+	// associate camera with a queue and start listening for messages from the associated network table entyy for the 
+	// specified Pixy
 	public boolean queueForPixyN(int pixyNumber, BlockingQueue queue) {
 		
 		boolean result = false;
@@ -115,10 +120,12 @@ public class VisionServer {
         switch(pixyNumber) {
         case 1:
         	this.pixy1 = queue;
+        	table.addEntryListener("pixy1objdata", new VisionObjectDataPixy1Listener(), EntryListenerFlags.kNew | EntryListenerFlags.kUpdate);
         	result = true;
         	break;
         case 2:
         	this.pixy2 = queue;
+        	table.addEntryListener("pixy2objdata", new VisionObjectDataPixy2Listener(), EntryListenerFlags.kNew | EntryListenerFlags.kUpdate);
         	result = true;
         	break;
         default:
@@ -145,7 +152,6 @@ public class VisionServer {
 	private BlockingQueue pixy2;
     
     private boolean pingComplete;
-    private VisionPing response;
     private VisionPingInfo pInfo;
 
     private static final String PIXY_TABLE = "pixy";
@@ -160,6 +166,12 @@ public class VisionServer {
     private static final int PING_IN_PIXY_ID_2 = 5;
     private static final int PING_IN_PIXY_FW_VERSION_2 = 6;    
  
+    private VisionObjectDataPixy1Listener listener1;
+    private VisionObjectDataPixy2Listener listener2;
+    
+    private NetworkTableInstance inst;
+    private NetworkTable table;
+    
 	private boolean debug;
 
 }
