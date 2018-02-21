@@ -1,7 +1,5 @@
 package org.usfirst.frc.team910.robot.io;
 
-import javax.swing.plaf.synth.SynthSeparatorUI;
-
 import org.usfirst.frc.team910.robot.Component;
 import org.usfirst.frc.team910.robot.components.Elevator;
 
@@ -88,7 +86,11 @@ public class Outputs extends Component {
 		armMotor2.setInverted(false);
 		
 		gatherLeft = new TalonSRX(ElectroBach.LEFT_GATHER_CAN);
+		//gatherLeft.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
+		//gatherLeft.setSensorPhase(true);
 		gatherRight = new TalonSRX(ElectroBach.RIGHT_GATHER_CAN);
+		//gatherRight.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
+		//gatherRight.setSensorPhase(true);
 		
 		climber1 = new TalonSRX(ElectroBach.CLIMBER_CAN_1);
 		climber2 = new TalonSRX(ElectroBach.CLIMBER_CAN_2);
@@ -100,6 +102,8 @@ public class Outputs extends Component {
 		sense.rightDist = rightDrive1.getSelectedSensorPosition(0) / ElectroBach.TICKS_PER_INCH;
 		sense.liftPos = elevator1.getSelectedSensorPosition(0)/ElectroBach.TICKS_PER_INCH_HEIGHT;
 		sense.armPos = armMotor1.getSelectedSensorPosition(0)/ElectroBach.TICKS_PER_DEGREE;
+		//sense.gatherLeftPos = gatherLeft.getSelectedSensorPosition(0)/ElectroBach.TICKS_PER_INCH;
+		//sense.gatherRightPos = gatherRight.getSelectedSensorPosition(0)/ElectroBach.TICKS_PER_INCH;
 		//System.out.format("L:%.2f R:%.2f\n",sense.leftDist,sense.rightDist);
 	}
 	
@@ -153,12 +157,14 @@ public class Outputs extends Component {
 		double restriction = in.manualHeight;
 		gatherLeft.set(ControlMode.PercentOutput, leftPower*restriction);
 		gatherRight.set(ControlMode.PercentOutput, rightPower*restriction);
+		System.out.println(in.manualHeight);
 
 	}
 	
 	public void setClimberPower(double power1, double power2) {
-		climber1.set(ControlMode.PercentOutput, power1);
-		climber2.set(ControlMode.PercentOutput, power2);
+		double restriction = in.manualHeight;
+		climber1.set(ControlMode.PercentOutput, power1*restriction);
+		climber2.set(ControlMode.PercentOutput, power2*restriction);
 	}
 	
 }
