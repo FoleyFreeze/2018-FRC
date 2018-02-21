@@ -1,7 +1,5 @@
 package org.usfirst.frc.team910.robot.io;
 
-import javax.swing.plaf.synth.SynthSeparatorUI;
-
 import org.usfirst.frc.team910.robot.Component;
 import org.usfirst.frc.team910.robot.components.Elevator;
 
