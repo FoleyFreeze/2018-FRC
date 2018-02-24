@@ -1,31 +1,33 @@
 package org.usfirst.frc.team910.robot.vision;
-
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import java.util.concurrent.ArrayBlockingQueue;
 
 import java.util.concurrent.BlockingQueue;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.EntryListenerFlags;
+
 
 import edu.wpi.first.wpilibj.Timer;
 import java.lang.Math;
 
 public class VisionServer {
 
-    public VisionServer(VisionPing vp) {
+    public VisionServer() {
     	
-        pixy1ID = -1;
+    	// Initialize queue references
         pixy1 = null;
-        
-        pixy2ID = -1;
         pixy2 = null;
-        
-        debug = false; // No debug output by default
-       
-        response = vp;
-    
+        listener1 = null;
+        listener2 = null;  
         pingComplete = false;
+        inst = null;
+        table = null;
         
+        // No debug output by default
+        debug = false;
+
 	}
 
     // ping the vision system
@@ -79,7 +81,7 @@ public class VisionServer {
         if(pInfo.result == 0) {
         	
             // ping worked; populate object with ping info
-    		convertStringMessageFromAsciiToValues(parts);
+        	convertPingMsgFromAsciiToValues(parts);
             
     	    // TODO: setup a listener for the cameras that exist; the listeners that
     	    // get setup will take the object recognized messages and put them in the queue
@@ -109,31 +111,34 @@ public class VisionServer {
 		
 	}
 	
-	// associate camera with a queue
-	public boolean queueForPixyN(int pixyNumber, int pixyID, BlockingQueue queue) {
+	// associate camera with a queue and start listening for messages from the associated network table entyy for the 
+	// specified Pixy
+	public boolean queueForPixyN(int pixyNumber, BlockingQueue queue) {
 		
 		boolean result = false;
 		
         switch(pixyNumber) {
         case 1:
-        	this.pixy1ID = pixyID;
         	this.pixy1 = queue;
+        	table.addEntryListener("pixy1objdata", new VisionObjectDataPixy1Listener(), EntryListenerFlags.kNew | EntryListenerFlags.kUpdate);
         	result = true;
         	break;
         case 2:
-        	this.pixy2ID = pixyID;
         	this.pixy2 = queue;
+        	table.addEntryListener("pixy2objdata", new VisionObjectDataPixy2Listener(), EntryListenerFlags.kNew | EntryListenerFlags.kUpdate);
         	result = true;
         	break;
         default:
         	if(debug) { 
-        		System.out.printf("VisionServer.queueForPixyN: invalid pixy number %d", pixyNumber);
+                String s = String.format("VisionServer.queueForPixyN: invalid pixy number %d\n", pixyNumber);
+        		System.out.println(s);
+        		SmartDashboard.putString("VisionServerDebug",s);
         	}
 		}
         return (result);
     }
 	// Parse the single ping message string into the type VisionPingInfo
-	private void convertStringMessageFromAsciiToValues(String[] msg) {
+	private void convertPingMsgFromAsciiToValues(String[] msg) {
 		
 		pInfo.piInfo = msg[PING_IN_PI_INFO];
         pInfo.numCameras = Integer.parseInt(msg[PING_IN_NUM_PIXY]);
@@ -143,34 +148,31 @@ public class VisionServer {
         pInfo.cameraFWVersions[1] = msg[PING_IN_PIXY_FW_VERSION_2];
         
 	}
-	private int pixy1ID;
-	private BlockingQueue pixy1 = null;
-
-	private int pixy2ID;
-	private BlockingQueue pixy2 = null;
+	private BlockingQueue pixy1;
+	private BlockingQueue pixy2;
     
-	private boolean debug = false;
-
-    private VisionPing response;
-
     private boolean pingComplete;
+    private VisionPingInfo pInfo;
+
     private static final String PIXY_TABLE = "pixy";
-    
     private static final String PING_IN_KEY = "pingin";
-
     private static final String PING_OUT_KEY = "pingout";
-    
     private static final int PING_OUT_DATA  = 909;
-
     private static final int PING_IN_RESPONSE = 0;
     private static final int PING_IN_PI_INFO = 1;
     private static final int PING_IN_NUM_PIXY = 2;
     private static final int PING_IN_PIXY_ID = 3;
     private static final int PING_IN_PIXY_FW_VERSION = 4;
     private static final int PING_IN_PIXY_ID_2 = 5;
-    private static final int PING_IN_PIXY_FW_VERSION_2 = 6;
+    private static final int PING_IN_PIXY_FW_VERSION_2 = 6;    
+ 
+    private VisionObjectDataPixy1Listener listener1;
+    private VisionObjectDataPixy2Listener listener2;
     
-    VisionPingInfo pInfo;
+    private NetworkTableInstance inst;
+    private NetworkTable table;
     
+	private boolean debug;
+
 }
 

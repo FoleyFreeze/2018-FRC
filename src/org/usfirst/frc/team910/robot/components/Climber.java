@@ -16,7 +16,7 @@ public class Climber extends Component {
 			climb(0,0);
 		}
 		if(in.climb && in.shift) {
-			climb(.5,.5); //FIXME set to tested power
+			climb(-1,-1); //FIXME set to tested power
 		}
 	}
 	

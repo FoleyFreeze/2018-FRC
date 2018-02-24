@@ -1,11 +1,11 @@
 package org.usfirst.frc.team910.robot.io;
 
 public class ElectroBach {
-	public static final int LEFT_DRIVE_CAN_1=2;
+	public static final int LEFT_DRIVE_CAN_1=1;
 	public static final int LEFT_DRIVE_CAN_2=0;
-	public static final int LEFT_DRIVE_CAN_3=1;
-	public static final int RIGHT_DRIVE_CAN_1=13;
-	public static final int RIGHT_DRIVE_CAN_2=14;
+	public static final int LEFT_DRIVE_CAN_3=2;
+	public static final int RIGHT_DRIVE_CAN_1=14;
+	public static final int RIGHT_DRIVE_CAN_2=13;
 	public static final int RIGHT_DRIVE_CAN_3=15;
 	
 	public static final int ARM_CAN_1=10;
