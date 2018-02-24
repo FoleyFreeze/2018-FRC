@@ -34,6 +34,7 @@ public class AutonMain {
 		steps = new ArrayList<AutonStep>();
 		
 		
+		
 		if(goalsLeft) {
 			//new steps
 			steps.add(new StartStep());//always first step

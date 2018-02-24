@@ -1,5 +1,6 @@
 package org.usfirst.frc.team910.robot.util;
 
+
 import java.util.ArrayList;
 
 public class Path {
@@ -27,9 +28,10 @@ public class Path {
 	 *
 	 * @param accelMax is the max acceleration
 	 * @param velocMax is the max velocity
-	 * @param position is 
-	 * @param dist is the distance you want to go in feet
-	 * @param startDist is not finished 
+	 * @param dist is the distance you want to go in inches
+	 * @param startPos where we start a path
+	 * @param startVel velocity we start with at start of path
+	 * @param endVel velocity we end with at end of path
 	 */
 	public void buildPath(double accelMax, double velocMax, double dist, double startPos, double startVel, double endVel ) { // distance as an input, total path distance
 
@@ -39,91 +41,110 @@ public class Path {
 		 
 		double endPosition = dist + startPos;
 		
-		double accel = accelMax; 
+		double step1Accel = accelMax; 
 		if(velocity > velocMax) {
-			accel = -accelMax; 
+			step1Accel = -accelMax; 
 		}
 		
-		double step3dist = velocMax * velocMax - velocity * velocity / (2 * accelMax);
+		double step3Accel = -accelMax; 
+		if(endVel > velocMax) {
+			step3Accel = accelMax; 
+		}
+		
+		double step3dist = (endVel * endVel - velocity * velocity) / (2 * step3Accel); 
 		
 		//Step 1: Go from start velocity to cruise speed
 		while (velocity != velocMax && endPosition - position > step3dist) { //Step 1: Accelerate, while under the top speed
-			position = position + velocity * DT + 0.5 * accel * DT * DT; //distance formula, x = xi + vi*t + .5*a*t^2
-			velocity = velocity + accel * DT; // velocity formula, vf = vi+at
-			step3dist = velocMax * velocMax - velocity * velocity / (2 * -accel); 
+			position = position + velocity * DT + 0.5 * step1Accel * DT * DT; //distance formula, x = xi + vi*t + .5*a*t^2
+			velocity = velocity + step1Accel * DT; // velocity formula, vf = vi+at
+			step3dist = (endVel * endVel - velocity * velocity) / (2 * step3Accel); 
+			double tempAccel = step1Accel;
 			
 			//check if this is the last dt before we trasition into step 2
-			if((velocity > velocMax)^(accel<0)) { //accel is set to positive or negative based on velocity being greater than velocMax 
+			if((velocity > velocMax)^(step1Accel<0)) { //accel is set to positive or negative based on velocity being greater than velocMax 
 				//at what time does velocity reach top_veloc?
 				double prevVel = velocities.get(velocities.size() -1); //last record velocity
-				double transTime = (velocMax - prevVel)/accel;
+				double transTime = (velocMax - prevVel)/step1Accel;
 				//at that time, what is the position?
 				double prevPos = positions.get(positions.size() -1);
-				double transPos = prevPos + prevVel*transTime + 0.5 * accel * transTime * transTime;
+				double transPos = prevPos + prevVel*transTime + 0.5 * step1Accel * transTime * transTime;
 				//holding top_veloc for the remaining time, what is the total position at the end?
 				position = transPos + (velocMax*(DT-transTime));
 				//what is the velocity at the end?
 				velocity = velocMax;
-				accel = 0;
+				tempAccel = 0;
 			} else if(endPosition - position < step3dist) { //checking for transition from step 1 to step 3
 				double prevVel = velocities.get(velocities.size() -1); 
 				double positionOvershoot = position - (endPosition - step3dist);
-				double transVel = Math.sqrt(2 * accel * positionOvershoot - velocity * velocity);
-				double transTime = (transVel - prevVel)/ accel;
-				velocity = transVel - accel * (DT - transTime);
-				position = endPosition - step3dist + transVel * (DT - transTime) - 0.5 * accel * (DT - transTime * transTime);
-				accel = -accel;
+				double transVel = Math.sqrt(2 * step1Accel * positionOvershoot - velocity * velocity);
+				double transTime = (transVel - prevVel)/ step1Accel;
+				velocity = transVel - step1Accel * (DT - transTime);
+				position = endPosition - step3dist + transVel * (DT - transTime) - 0.5 * step1Accel * (DT - transTime * transTime);
+				tempAccel = -step1Accel;
 			}
 			
 			//System.out.format("X:%.3f V:%.3f\n", position,velocity);
 			positions.add(position); //record position
 			velocities.add(velocity); //record velocity
-			accelerations.add(accel); //record acceleration
+			accelerations.add(tempAccel); //record acceleration
+			
+			//System.out.format("P: %.3f  V: %.2f  A: %.0f\n", position, velocity, tempAccel);
 		}
 		
-		 
-		while (position < (dist - startPos)) { //Step 2: Constant Velocity, while position is less than total path - step1
+		step3dist = (endVel * endVel - velocity * velocity) / (2 * step3Accel); 
+	
+		while (endPosition - position > step3dist && (position - startPos) < dist) { //Step 2: Constant Velocity, while position is less than total path - step1
 			position = position + velocMax * DT; //distance formula w/ constant velocity
+			double tempAccel = 0;
 			
 			//if the time step passed the point to slow down, change so that it is slowing down
-			if (position > (dist - startPos)) {
+			
+			if(position - startPos >= dist) {
+				velocity = endVel;
+			}
+			else if (endPosition - position < step3dist) { 
 				//position at which you start slowing down
 				double prevPos = positions.get(positions.size()-1);
 				//distance covered before slowing down;
-				double transDist = (dist -startPos) - prevPos;
+				double transDist = (dist - step3dist) - (prevPos - startPos);
 				//time that we should begin slowing down
-				double transTime = transDist/velocMax; //FIXME GARE 
+				double transTime = transDist/velocMax;  
 				//part from previous position to the decel point
 				//double transPos = prevPos+TOP_VELOC*transTime;
-				double transPos = dist - startPos;
-				position = transPos + velocMax*(DT-transTime) - 0.5 * accel * (DT - transTime) * (DT - transTime);
-				velocity = velocMax - accel * (DT-transTime);
-				accel = (2 * (position - (velocity*DT))) / (DT*DT);
+				double transPos = dist - step3dist + startPos;
+				position = transPos + velocMax*(DT-transTime) + 0.5 * step3Accel * (DT - transTime) * (DT - transTime);
+				velocity = velocMax + step3Accel * (DT-transTime);
+				tempAccel = step3Accel;
 			}
 
 			//System.out.format("X:%.3f V:%.3f\n", position,velocity);
 			positions.add(position); //record position
 			velocities.add(velocity); //record velocity
-			accelerations.add(accel); //record acceleration
+			accelerations.add(tempAccel); //record acceleration
 
+			//System.out.format("P: %.3f  V: %.2f  A: %.0f\n", position, velocity, tempAccel);
 		}
 		
+
 		while (position < dist + startPos) { //Step 3: Decelerate, while position is less than the total path
-			position = position + velocity * DT - 0.5 * ACCEL * DT * DT; //distance formula with negative acceleration 
-			velocity = velocity - ACCEL * DT;//velocity formula with negative acceleration
-			if(velocity <= 0) {
-				velocity = 0;
-			}
+			position = position + velocity * DT + 0.5 * step3Accel * DT * DT; //distance formula with negative acceleration 
+			velocity = velocity + step3Accel * DT;//velocity formula with negative acceleration
+			double tempAccel = step3Accel;
 			
-			//if the time step went past end point, stop at the end point 
-			if (position >= dist - POS_TOL && velocity <= 0) {
+			//if the time step went past end point, stop at the end point
+			//or if we start going backwards
+			if (position - startPos >= dist - POS_TOL || velocity <= 0) {
 				position = dist + startPos;
-				velocity = 0;
+				velocity = endVel;
+				tempAccel = 0;
 			}
 			
 			//System.out.format("X:%.3f V:%.3f\n", position,velocity);
 			positions.add(position); //record position
 			velocities.add(velocity); //record velocity
+			accelerations.add(tempAccel); //record accelerations
+			
+			//System.out.format("P: %.3f  V: %.2f  A: %.0f\n", position, velocity, tempAccel);
 		} 
 
 	}

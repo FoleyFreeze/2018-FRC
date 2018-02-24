@@ -23,13 +23,13 @@ public class Gatherer extends Component {
 
 		if (in.gather) {
 			gather(0.5, 1);
+			gather = gatherState.INIT;
 		} else if (in.shoot) {
 			gather(-0.6, -0.6);
 		} else if (in.shift && in.shoot) {
 			gather(-1, -1);
 		} else {
 			gather(0, 0);
-			gather = gatherState.INIT;
 		}
 		switch (gather) {
 		// initially, run through
