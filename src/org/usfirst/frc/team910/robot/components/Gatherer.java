@@ -11,12 +11,10 @@ public class Gatherer extends Component {
 	public void run() {
 		if(in.gather) {
 			gather(0.5,1);
-		//}else if(in.gather && in.climb) {
-			//gather(1,0.5);}
 		}else if(in.shoot) {
-			gather(-0.5,-0.5);
-		//} else if(in.shift){
-			//gather(0.5,-1);
+			gather(-0.6,-0.6);
+		} else if(in.shift && in.shoot){
+			gather(-1,-1);
 		}	else {
 			gather(0,0);
 		}

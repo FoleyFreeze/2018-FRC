@@ -29,7 +29,7 @@ public class Path {
 	 * @param velocMax is the max velocity
 	 * @param position is 
 	 * @param dist is the distance you want to go in feet
-	 * @param startDist is
+	 * @param startDist is not finished 
 	 */
 	public void buildPath(double accelMax, double velocMax, double dist, double startPos, double startVel, double endVel ) { // distance as an input, total path distance
 
@@ -65,7 +65,7 @@ public class Path {
 				//what is the velocity at the end?
 				velocity = velocMax;
 				accel = 0;
-			} else if(endPosition - position > step3dist) { //checking for transition from step 1 to step 3
+			} else if(endPosition - position < step3dist) { //checking for transition from step 1 to step 3
 				double prevVel = velocities.get(velocities.size() -1); 
 				double positionOvershoot = position - (endPosition - step3dist);
 				double transVel = Math.sqrt(2 * accel * positionOvershoot - velocity * velocity);
@@ -81,28 +81,30 @@ public class Path {
 			accelerations.add(accel); //record acceleration
 		}
 		
-		double step1Dist = (TOP_VELOC*TOP_VELOC)/(2*ACCEL); //record the position during first phase, 
-		while (position < dist - step1Dist) { //Step 2: Constant Velocity, while position is less than total path - step1
-			position = position + TOP_VELOC * DT; //distance formula w/ constant velocity
+		 
+		while (position < (dist - startPos)) { //Step 2: Constant Velocity, while position is less than total path - step1
+			position = position + velocMax * DT; //distance formula w/ constant velocity
 			
 			//if the time step passed the point to slow down, change so that it is slowing down
-			if (position > (dist - step1Dist)) {
+			if (position > (dist - startPos)) {
 				//position at which you start slowing down
 				double prevPos = positions.get(positions.size()-1);
 				//distance covered before slowing down;
-				double transDist = (dist -step1Dist) - prevPos;
+				double transDist = (dist -startPos) - prevPos;
 				//time that we should begin slowing down
-				double transTime = transDist/TOP_VELOC;
+				double transTime = transDist/velocMax; //FIXME GARE 
 				//part from previous position to the decel point
 				//double transPos = prevPos+TOP_VELOC*transTime;
-				double transPos = dist - step1Dist;
-				position = transPos + TOP_VELOC*(DT-transTime) - 0.5 * ACCEL * (DT - transTime) * (DT - transTime);
-				velocity = TOP_VELOC - ACCEL*(DT-transTime);
+				double transPos = dist - startPos;
+				position = transPos + velocMax*(DT-transTime) - 0.5 * accel * (DT - transTime) * (DT - transTime);
+				velocity = velocMax - accel * (DT-transTime);
+				accel = (2 * (position - (velocity*DT))) / (DT*DT);
 			}
 
 			//System.out.format("X:%.3f V:%.3f\n", position,velocity);
 			positions.add(position); //record position
 			velocities.add(velocity); //record velocity
+			accelerations.add(accel); //record acceleration
 
 		}
 		
