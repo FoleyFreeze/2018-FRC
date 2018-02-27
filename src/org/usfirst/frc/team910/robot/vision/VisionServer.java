@@ -165,9 +165,6 @@ public class VisionServer {
     private static final int PING_IN_PIXY_FW_VERSION = 4;
     private static final int PING_IN_PIXY_ID_2 = 5;
     private static final int PING_IN_PIXY_FW_VERSION_2 = 6;    
- 
-    private VisionObjectDataPixy1Listener listener1;
-    private VisionObjectDataPixy2Listener listener2;
     
     private NetworkTableInstance inst;
     private NetworkTable table;
