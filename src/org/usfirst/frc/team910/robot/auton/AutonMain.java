@@ -4,8 +4,10 @@ import java.util.ArrayList;
 
 import org.usfirst.frc.team910.robot.Component;
 import org.usfirst.frc.team910.robot.auton.steps.AutonStep;
+import org.usfirst.frc.team910.robot.auton.steps.DriveForward;
 import org.usfirst.frc.team910.robot.auton.steps.DrivePath;
 import org.usfirst.frc.team910.robot.auton.steps.EndStep;
+import org.usfirst.frc.team910.robot.auton.steps.SeriesSet;
 import org.usfirst.frc.team910.robot.auton.steps.StartStep;
 
 
@@ -18,19 +20,25 @@ public class AutonMain extends Component {
 	final String PositionCenter = "Center";
 	final String PositionRight = "Right";
 	
+	private SeriesSet driveForward;
+	private SeriesSet onlySwitch;
 	
 	public int currentStep = 0;
 	
 	public AutonMain() {
-		//declare a new array for our steps
-		steps = new ArrayList<AutonStep>();	
 		
-		if(sense.goalsLeft) {
-			//new steps
-			steps.add(new StartStep());//always first step
-			steps.add(new DrivePath());
-			steps.add(new EndStep());//always last step
-		}		
+		driveForward = new SeriesSet();
+		AutonBuilder b = new AutonBuilder(driveForward);
+			b.add(new StartStep());
+			b.add(new DriveForward());
+			b.add(new EndStep());
+		b.end();
+		
+		onlySwitch = new SeriesSet();
+		b.add(onlySwitch);
+			b.add(new StartStep());
+			b.add(new EndStep());
+		b.end();
 	}
 	
 	
