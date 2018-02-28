@@ -1,5 +1,7 @@
 package org.usfirst.frc.team910.robot.vision;
 
+import java.util.concurrent.BlockingQueue;
+
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.TableEntryListener;
 import edu.wpi.first.networktables.NetworkTableEntry;
@@ -7,6 +9,11 @@ import edu.wpi.first.networktables.NetworkTableValue;
 
 public class VisionObjectDataPixy2Listener implements TableEntryListener {
 
+	public VisionObjectDataPixy2Listener(BlockingQueue queue) {
+		
+		this.queue = queue;
+		
+	}
 	public void valueChanged(NetworkTable table, java.lang.String key, NetworkTableEntry entry, NetworkTableValue value, int flags) {
 	
 		if (saveValue2 == true ) {
@@ -24,5 +31,6 @@ public class VisionObjectDataPixy2Listener implements TableEntryListener {
 	}
 	
 	private boolean saveValue2;
+	private BlockingQueue queue;
 
 }
