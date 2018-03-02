@@ -14,7 +14,11 @@ public class DriveTrain extends Component {
 	public static final double DRIVEMP_KP = 0.1;
 	public static final double DRIVEMP_KD = 0.5;
 	public static final double DRIVEMP_KFV = 0.05;
-
+	public static final double CAM_DRIVE_KP = 0.5/45; //This is power per degree of error
+	public static final double CAM_DRIVE_KD = 0; //.5/45 * 50. This is power per degree per 20 milliseconds
+	
+	public static final double[] CAM_DRIVE_TABLE = {1,0.75,0.5,0};
+	public static final double[] CAM_DRIVE_AXIS = {5,10,25,50};
 	
 
 	public DriveTrain() {
@@ -220,5 +224,41 @@ public class DriveTrain extends Component {
 			
 		
 	}
+	
+	private double prevCamError;
+	public void driveAngle(Angle targetAngle, double power) {
+		//error is the target angle minus the robot angle
+		double error = targetAngle.subtract(sense.robotAngle);
+		
+		//deltaError is the current error minus the previous camError
+		double deltaError = error - prevCamError;
+		
+		//PD for the given power
+		double powerDiff = CAM_DRIVE_KP * error + CAM_DRIVE_KD * deltaError;
+		
+		power = power * Elevator.interp(CAM_DRIVE_AXIS, CAM_DRIVE_TABLE, error);
+		
+		//setting powers
+		double powerL = power - powerDiff;
+		double powerR = power + powerDiff;
+		
+		prevCamError = error;
+		
+		if (powerL > 1)
+			powerL = 1;
+		else if (powerL < -1)
+			powerL = -1;
+		if (powerR > 1)
+			powerR = 1;
+		else if (powerR < -1)
+			powerR = -1;
+		
+		out.setDrivePower(powerL, powerR);
+		
+		
+		
+	}
+	
+	
 	
 }
