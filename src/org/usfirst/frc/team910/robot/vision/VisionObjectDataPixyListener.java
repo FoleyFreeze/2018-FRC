@@ -49,7 +49,7 @@ public class VisionObjectDataPixyListener implements TableEntryListener {
 	}
     public void setPixyIDBack(int Id) {
     	
-    	 pixyBackId = Id;
+    	pixyBackId = Id;
     	
 	}
 	public void valueChanged(NetworkTable table, java.lang.String key, NetworkTableEntry entry, NetworkTableValue value,
