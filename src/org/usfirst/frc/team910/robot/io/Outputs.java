@@ -8,6 +8,8 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 public class Outputs extends Component {
 	TalonSRX leftDrive1;
 	TalonSRX leftDrive2;
@@ -128,6 +130,8 @@ public class Outputs extends Component {
 		rightDrive1.set(ControlMode.PercentOutput, rightPower*power);
 		rightDrive2.set(ControlMode.PercentOutput, rightPower*power);
 		rightDrive3.set(ControlMode.PercentOutput, rightPower*power);
+		SmartDashboard.putNumber("Left Drive Power", leftPower*power);//TODO correct if needed
+		SmartDashboard.putNumber("Right Drive Power", rightPower*power);//TODO correct if needed
 	}
 
 	public void setArmPower(double armPower) {
@@ -135,6 +139,8 @@ public class Outputs extends Component {
 		armMotor1.set(ControlMode.PercentOutput, armPower*power);
 		armMotor2.set(ControlMode.PercentOutput, -armPower*power);
 		System.out.println(in.manualHeight);
+		SmartDashboard.putNumber("Arm Motor 1 Power", armPower*power);//TODO correct if needed
+		SmartDashboard.putNumber("Arm Motor 2(inverted) Power", armPower*power);//TODO correct if needed
 	}
 
 	
@@ -142,22 +148,27 @@ public class Outputs extends Component {
 		double restriction = in.manualHeight;//FIXME: this is a hack
 		elevator1.set(ControlMode.PercentOutput, power * restriction); //TODO please good 
 		elevator2.set(ControlMode.PercentOutput, -power * restriction);
+		SmartDashboard.putNumber("Elevator Motor 1 Power", power*restriction);//TODO correct if needed
+		SmartDashboard.putNumber("Elevator Motor 2(inverted) Power", power*restriction);//TODO correct if needed
 	}
 	
 	public void setElevatorPosition(double elevatorPosition) {
 		elevator1.set(ControlMode.Position,  elevatorPosition * ElectroBach.TICKS_PER_INCH_HEIGHT); //sets position for the elevation device (lift for british)
-	}
+		SmartDashboard.putNumber("Elevator Height", elevatorPosition*ElectroBach.TICKS_PER_INCH_HEIGHT);//TODO correct if needed
+		}
 		
 	
 	public void setArmPosition(double armPosition) {
 		armMotor1.set(ControlMode.Position, armPosition * ElectroBach.TICKS_PER_DEGREE); 
-		
+		SmartDashboard.putNumber("Arm Position", armPosition*ElectroBach.TICKS_PER_DEGREE);//TODO correct if needed
 	}
 
 	public void setGatherPower(double leftPower, double rightPower) {
 		double restriction = in.manualHeight;
 		gatherLeft.set(ControlMode.PercentOutput, leftPower*restriction);
 		gatherRight.set(ControlMode.PercentOutput, rightPower*restriction);
+		SmartDashboard.putNumber("Left Gather Power", leftPower*restriction);//TODO correct if needed
+		SmartDashboard.putNumber("Right Gather Power", rightPower*restriction);//TODO correct if needed
 		//System.out.println(in.manualHeight);
 
 	}
@@ -166,6 +177,8 @@ public class Outputs extends Component {
 		double restriction = in.manualHeight;
 		climber1.set(ControlMode.PercentOutput, power1*restriction);
 		climber2.set(ControlMode.PercentOutput, power2*restriction);
+		SmartDashboard.putNumber("Climber Motor 1", power1*restriction);//TODO correct if needed
+		SmartDashboard.putNumber("Climber Motor 2", power2*restriction);//TODO correct if needed
 	}
 	
 }
