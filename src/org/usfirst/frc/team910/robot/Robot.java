@@ -29,7 +29,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
  */
 public class Robot extends TimedRobot {
 	
-	AutonMain auton;
+	//AutonMain auton;
 	DriveTrain drive;
 	Climber climb;
 	Elevator elevate;
@@ -46,7 +46,7 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void robotInit() {
-		auton = new AutonMain();
+		//auton = new AutonMain();
 		output = new Outputs();
 		drive = new DriveTrain();
 		climb = new Climber();
@@ -63,7 +63,7 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void autonomousInit() {
-		auton.init();
+		//auton.init();
 	}
 
 	/**
@@ -73,7 +73,7 @@ public class Robot extends TimedRobot {
 	public void autonomousPeriodic() {
 		sensor.read();
 		view.run();
-		auton.run();
+		//auton.run();
 		
 		drive.run();
 		//climb.run();

@@ -133,14 +133,15 @@ public class Outputs extends Component {
 	public void setArmPower(double armPower) {
 		double power = in.manualHeight;//FIXME: this is a hack
 		armMotor1.set(ControlMode.PercentOutput, armPower*power);
-		armMotor2.set(ControlMode.PercentOutput, armPower*power);
+		armMotor2.set(ControlMode.PercentOutput, -armPower*power);
+		System.out.println(in.manualHeight);
 	}
 
 	
 	public void setElevatorPower(double power) {
 		double restriction = in.manualHeight;//FIXME: this is a hack
 		elevator1.set(ControlMode.PercentOutput, power * restriction); //TODO please good 
-		elevator2.set(ControlMode.PercentOutput, power * restriction);
+		elevator2.set(ControlMode.PercentOutput, -power * restriction);
 	}
 	
 	public void setElevatorPosition(double elevatorPosition) {
@@ -157,7 +158,7 @@ public class Outputs extends Component {
 		double restriction = in.manualHeight;
 		gatherLeft.set(ControlMode.PercentOutput, leftPower*restriction);
 		gatherRight.set(ControlMode.PercentOutput, rightPower*restriction);
-		System.out.println(in.manualHeight);
+		//System.out.println(in.manualHeight);
 
 	}
 	

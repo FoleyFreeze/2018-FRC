@@ -12,6 +12,48 @@ import edu.wpi.first.networktables.EntryListenerFlags;
 import edu.wpi.first.wpilibj.Timer;
 import java.lang.Math;
 
+/**
+ * HOW TO INITIALIZE ALL THIS STUFF:
+ *  
+ * 1. Create an instance of the VisionServer (the system should only have one VisionServer object)
+ * 2. Ping the Raspberry Pi; the Pi will wait for a ping request and will not send any object info until it receives and replies to a ping
+ * 3. Parse the VisionPingInfo object returned by the ping
+ * 4. Check the values as you want to see if they make sense; if you're using 2 Pixy cameras, did the ping return 2 Pixy cameras
+ * 5. Enable the VisionServer to save object info from the Pi for each Pixy you want to use
+ * 6. For each Pixy you want to get object data from, provide a queue into which the vision package will put object data
+ * 7. Profit
+ * 
+ * Actual Java code which implements the steps above (not tested):
+ * VisionServer vs = new VisionServer();
+ * 
+ * VisionPingInfo pi;
+ * 
+ * pi = vs.ping(1000); // Wait 1 second for Pi to respond to ping request
+ * 
+ * if (!pi.result ) {
+ * 
+ *     // ping worked
+ *     
+ *     // At a minimum, check for the number of Pixy cameras
+ *     // This code is not here
+ *     
+ * }
+ * 
+ * Let's say there are 2 Pixy cameras
+ *
+ * vs.toSaveOrNotToSave(1, true);
+ * vs.toSaveOrNorToSave(2, true);
+ *
+ * vs.sBlockingQueue<VisionData> queue1 = new ArrayBlockingQueue<VisionData>(1024); // queue 1
+ * vs.sBlockingQueue<VisionData> queue1 = new ArrayBlockingQueue<VisionData>(1024); // queue 2
+ *
+ * Now object info will be put in the queues, if Pixy recognizes something
+ * 
+ * You can use any of the methods in the BlockingQueue interface to manipulate the queues
+ * Please see:
+ * https://docs.oracle.com/javase/7/docs/api/java/util/concurrent/BlockingQueue.html
+ * 
+ */
 public class VisionServer {
 
 	public VisionServer() {
@@ -133,7 +175,7 @@ public class VisionServer {
 	}
 
 	// associate camera with a queue and start listening for messages from the
-	// associated network table entyy for the
+	// associated network table entry for the
 	// specified Pixy
 	public boolean queueForPixyN(int pixyNumber, BlockingQueue queue) {
 
@@ -142,13 +184,13 @@ public class VisionServer {
 		switch (pixyNumber) {
 		case 1:
 			this.pixy1 = queue;
-			l1 = new VisionObjectDataPixy1Listener();
+			l1 = new VisionObjectDataPixy1Listener(queue);
 			table.addEntryListener("pixy1objdata", l1, EntryListenerFlags.kNew | EntryListenerFlags.kUpdate);
 			result = true;
 			break;
 		case 2:
 			this.pixy2 = queue;
-			l2 = new VisionObjectDataPixy2Listener();
+			l2 = new VisionObjectDataPixy2Listener(queue);
 			table.addEntryListener("pixy2objdata", l2, EntryListenerFlags.kNew | EntryListenerFlags.kUpdate);
 			result = true;
 			break;

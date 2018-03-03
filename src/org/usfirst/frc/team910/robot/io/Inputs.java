@@ -67,8 +67,6 @@ public class Inputs extends Component {
 		rightDrive = -rightStick.getY();
 		dynamicBrake = leftStick.getTrigger();
 		driveStraight = rightStick.getTrigger();
-		//gather = rightStick.getRawButton(3);
-		//shoot =rightStick.getRawButton(5);
 		//all elevator heights 
 		//goes in order of high to low
 		if(controlBoard.getRawButton(19)){
