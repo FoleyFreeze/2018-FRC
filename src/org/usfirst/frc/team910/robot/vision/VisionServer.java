@@ -142,13 +142,13 @@ public class VisionServer {
 		switch (pixyNumber) {
 		case 1:
 			this.pixy1 = queue;
-			l1 = new VisionObjectDataPixy1Listener();
+			l1 = new VisionObjectDataPixy1Listener(queue);
 			table.addEntryListener("pixy1objdata", l1, EntryListenerFlags.kNew | EntryListenerFlags.kUpdate);
 			result = true;
 			break;
 		case 2:
 			this.pixy2 = queue;
-			l2 = new VisionObjectDataPixy2Listener();
+			l2 = new VisionObjectDataPixy2Listener(queue);
 			table.addEntryListener("pixy2objdata", l2, EntryListenerFlags.kNew | EntryListenerFlags.kUpdate);
 			result = true;
 			break;
