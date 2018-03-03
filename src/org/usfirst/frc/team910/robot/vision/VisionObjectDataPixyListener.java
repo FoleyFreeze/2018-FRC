@@ -9,75 +9,116 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.NetworkTableValue;
 
-public class VisionObjectDataPixy1Listener implements TableEntryListener {
+public class VisionObjectDataPixyListener implements TableEntryListener {
 
-	public VisionObjectDataPixy1Listener(BlockingQueue<VisionData> queue) {
-
-		this.queue = queue;
+	public VisionObjectDataPixyListener() {
 
 	}
 
+	public void setQueueFront(BlockingQueue queue) {
+		
+		queueFront = queue;
+	}
+	
+    public void setQueueBack(BlockingQueue queue) {
+	
+    	queueBack = queue;
+		
+	}
+    public void saveValuesFront(boolean save) {
+    
+    	if(save == true) {
+    		saveFront = true;
+    	} else {
+    		saveFront = false;
+    	}
+    }
+    public void saveValuesBack(boolean save) {
+        
+    	if(save == true) {
+    		saveBack = true;
+    	} else {
+    		saveBack = false;
+    	}
+    }
+    
+    public void setPixyIDFront(int Id) {
+    	
+        pixyFrontId = Id;
+		
+	}
+    public void setPixyIDBack(int Id) {
+    	
+    	 pixyBackId = Id;
+    	
+	}
 	public void valueChanged(NetworkTable table, java.lang.String key, NetworkTableEntry entry, NetworkTableValue value,
 			int flags) {
 
-		if (saveValue) { // save object data if enabled
-			// Data from Network Table goes here from entry "pixy1objdata"
-			// It's the most recent object data update
-			String msg = value.getString();
+		int currentPixy;
+		BlockingQueue<VisionData> currentQueue;
 
-			// Elements of message sent by Pi area separated by ','
-			String[] msg_parsed = msg.split(",");
-			int numBlocks = 0;
-			int BLOCK_SIZE = 6;
-			int frameNum = 0;
+		// Data from Network Table goes here from entry "pixy1objdata"
+		// It's the most recent object data update
+		String msg = value.getString();
 
-			VisionData newData = null;
+		// Elements of message sent by Pi area separated by ','
+		String[] msg_parsed = msg.split(",");
+		
+		// Get the pixy in this message
+		currentPixy = Integer.parseInt(msg_parsed[0]);
+		
+		// Set the right queue based on the pixy in this Pi message
+		if (currentPixy == pixyFrontId && saveFront == true ) {
+			currentQueue = queueFront;
+		} else if (currentPixy == pixyBackId && saveBack == true ) {
+			currentQueue = queueBack;
+		} else {
+			return;
+		}
 
-			try { // BlockQueue can raise exceptions
+		int numBlocks = 0;
+		int frameNum = 0;
 
-				// Check if there are any blocks in this message
-				numBlocks = Integer.parseInt(msg_parsed[2]);
+		VisionData newData = null;
 
-				if (numBlocks > 0) {
+		try { // BlockingQueue can raise exceptions
 
-					frameNum = Integer.parseInt(msg_parsed[1]);
+			// Check if there are any blocks in this message
+			numBlocks = Integer.parseInt(msg_parsed[2]);
 
-					// Convert message data into VisionData object data
-					for (int i = 0; i < numBlocks; i++) {
+			if (numBlocks > 0) {
 
-						newData = new VisionData();
-						newData.timestamp = Timer.getFPGATimestamp();
-						newData.blockID = Integer.parseInt(msg_parsed[(i * (BLOCK_SIZE + 0)) + 2]); // block ID
-						newData.sig = Integer.parseInt(msg_parsed[(i * (BLOCK_SIZE + 1)) + 2]); // signature
-						newData.x = Integer.parseInt(msg_parsed[(i * (BLOCK_SIZE + 2)) + 2]); // x
-						newData.y = Integer.parseInt(msg_parsed[(i * (BLOCK_SIZE + 3)) + 2]); // y
-						newData.w = Integer.parseInt(msg_parsed[(i * (BLOCK_SIZE + 4)) + 2]); // width
-						newData.h = Integer.parseInt(msg_parsed[(i * (BLOCK_SIZE + 5)) + 2]); // height
-						newData.frame = frameNum;
-					}
-					// Add this vision data to the queue
-					queue.put(newData);
+				frameNum = Integer.parseInt(msg_parsed[1]);
+
+				// Convert message data into VisionData object data
+				for (int i = 0; i < numBlocks; i++) {
+
+					newData = new VisionData();
+					newData.timestamp = Timer.getFPGATimestamp();
+					newData.blockID = Integer.parseInt(msg_parsed[(i * (BLOCK_SIZE + 0)) + 2]); // block ID
+					newData.sig = Integer.parseInt(msg_parsed[(i * (BLOCK_SIZE + 1)) + 2]); // signature
+					newData.x = Integer.parseInt(msg_parsed[(i * (BLOCK_SIZE + 2)) + 2]); // x
+					newData.y = Integer.parseInt(msg_parsed[(i * (BLOCK_SIZE + 3)) + 2]); // y
+					newData.w = Integer.parseInt(msg_parsed[(i * (BLOCK_SIZE + 4)) + 2]); // width
+					newData.h = Integer.parseInt(msg_parsed[(i * (BLOCK_SIZE + 5)) + 2]); // height
+					newData.frame = frameNum;
 				}
-
-			} catch (InterruptedException e) {
-				Thread.currentThread().interrupt(); // set interrupt flag
+				// Add this vision data to the queue
+				currentQueue.put(newData);
 			}
 		}
-	}
-
-	// Set the object save mode pixy1
-	// flag == true, save object data for pixy1; flag == false, ignore the info.
-	public void saveValues(boolean flag) {
-
-		if (flag) {
-			saveValue = true;
-		} else {
-			saveValue = false;
+		 catch (InterruptedException e) {
+			Thread.currentThread().interrupt(); // set interrupt flag
 		}
-
 	}
 
-	private boolean saveValue;
-	private BlockingQueue<VisionData> queue;
+	private boolean saveFront;
+	private boolean saveBack;
+	private BlockingQueue<VisionData> queueFront;
+	private BlockingQueue<VisionData> queueBack;
+    private int pixyFrontId;
+    private int pixyBackId;
+	private static final int BLOCK_SIZE = 6;
 
 }
