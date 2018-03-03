@@ -18,10 +18,12 @@ import java.lang.Math;
  * 1. Create an instance of the VisionServer (the system should only have one VisionServer object)
  * 2. Ping the Raspberry Pi; the Pi will wait for a ping request and will not send any object info until it receives and replies to a ping
  * 3. Parse the VisionPingInfo object returned by the ping
- * 4. Check the values as you want to see if they make sense; if you're using 2 Pixy cameras, did the ping return 2 Pixy cameras
- * 5. Enable the VisionServer to save object info from the Pi for each Pixy you want to use
- * 6. For each Pixy you want to get object data from, provide a queue into which the vision package will put object data
- * 7. Profit
+ * 4. Check the values as you want to see if they make sense in VisionPingInfo
+ * 4a. For example, if you're using 2 Pixy cameras, did the ping return 2 Pixy cameras?
+ * 5. Associate a queue with each Pixy you want to get data from
+ * 6. Enable saving object info for a particular Pixy
+ * 7. Start the VisionServer to put object info in the queue
+ * 8. Profit
  * 
  * Actual Java code which implements the steps above (not tested):
  * VisionServer vs = new VisionServer();
@@ -39,17 +41,18 @@ import java.lang.Math;
  *     
  * }
  * 
- * Let's say there are 2 Pixy cameras
+ * Let's say there are 2 Pixy cameras (1 is Pixy front, 2 is Pixy back)
  *
  * vs.toSaveOrNotToSave(1, true);
  * vs.toSaveOrNorToSave(2, true);
  *
- * vs.sBlockingQueue<VisionData> queue1 = new ArrayBlockingQueue<VisionData>(1024); // queue 1
- * vs.sBlockingQueue<VisionData> queue1 = new ArrayBlockingQueue<VisionData>(1024); // queue 2
+ * vs.sBlockingQueue<VisionData> queueFront = new ArrayBlockingQueue<VisionData>(1024); // queue Front
+ * vs.sBlockingQueue<VisionData> queueFront = new ArrayBlockingQueue<VisionData>(1024); // queue Back
  *
+ * vs.start();
  * Now object info will be put in the queues, if Pixy recognizes something
  * 
- * You can use any of the methods in the BlockingQueue interface to manipulate the queues
+ * You can use any of the methods in the BlockingQueue interface to manipulate the queues that you provided to the VisionServer
  * Please see:
  * https://docs.oracle.com/javase/7/docs/api/java/util/concurrent/BlockingQueue.html
  * 
@@ -59,15 +62,14 @@ public class VisionServer {
 	public VisionServer() {
 
 		// Initialize queue references
-		pixy1 = null;
-		pixy2 = null;
+		pixyFront = null;
+		pixyBack = null;
 
 		pingComplete = false;
 		inst = null;
 		table = null;
 
-		l1 = null;
-		l2 = null;
+		listener = null;		
 
 		// No debug output by default
 		debug = false;
@@ -163,40 +165,50 @@ public class VisionServer {
 
 	}
 
+	public void setPixyIDFront(int id) {
+		
+		pixyIDFront = id;
+		
+	}
+	
+	public void setPixyIDBack(int id) {
+		
+		pixyIDBack = id;
+		
+	}
+	
 	// Enable / disable saving camera data
+	// orientation: 1 = front, 2 = back
 	// flag == true, debug enabled; flag == false, debug disabled
-	public void toSaveOrNotToSave(int pixyNumber, boolean flag) {
+	public void toSaveOrNotToSave(int orientation, boolean flag) {
 
-		if (pixyNumber == 1) {
-			l1.saveValues(flag);
-		} else if (pixyNumber == 2) {
-			l2.saveValues(flag);
+		if (orientation == 1) {
+			listener.saveValuesFront(flag);
+		} else if (orientation == 2) {
+			listener.saveValuesBack(flag);
 		}
 	}
 
+	
 	// associate camera with a queue and start listening for messages from the
 	// associated network table entry for the
 	// specified Pixy
-	public boolean queueForPixyN(int pixyNumber, BlockingQueue queue) {
+	public boolean queueForPixyN(int orientation, BlockingQueue queue) {
 
 		boolean result = false;
 
-		switch (pixyNumber) {
+		switch (orientation) {
 		case 1:
-			this.pixy1 = queue;
-			l1 = new VisionObjectDataPixy1Listener(queue);
-			table.addEntryListener("pixy1objdata", l1, EntryListenerFlags.kNew | EntryListenerFlags.kUpdate);
+			this.pixyFront = queue;
 			result = true;
 			break;
 		case 2:
-			this.pixy2 = queue;
-			l2 = new VisionObjectDataPixy2Listener(queue);
-			table.addEntryListener("pixy2objdata", l2, EntryListenerFlags.kNew | EntryListenerFlags.kUpdate);
+			this.pixyBack = queue;
 			result = true;
 			break;
 		default:
 			if (debug) {
-				String s = String.format("VisionServer.queueForPixyN: invalid pixy number %d\n", pixyNumber);
+				String s = String.format("VisionServer.queueForPixyN: invalid pixy number %d\n", orientation);
 				System.out.println(s);
 				SmartDashboard.putString("VisionServerDebug", s);
 			}
@@ -204,6 +216,19 @@ public class VisionServer {
 		return (result);
 	}
 
+	public void start() {
+		
+		listener = new VisionObjectDataPixyListener();
+		
+		listener.setPixyIDFront(pixyIDFront);
+		listener.setPixyIDBack(pixyIDBack);
+		
+		listener.setQueueBack(pixyFront);
+		listener.setQueueFront(pixyBack);
+		
+		table.addEntryListener("pixyobjdata", listener, EntryListenerFlags.kNew | EntryListenerFlags.kUpdate);
+
+	}
 	// Parse the single ping message string into the type VisionPingInfo
 	private void convertPingMsgFromAsciiToValues(String[] msg) {
 
@@ -216,8 +241,8 @@ public class VisionServer {
 
 	}
 
-	private BlockingQueue pixy1;
-	private BlockingQueue pixy2;
+	private BlockingQueue pixyFront;
+	private BlockingQueue pixyBack;
 
 	private boolean pingComplete;
 	private VisionPingInfo pInfo;
@@ -237,9 +262,11 @@ public class VisionServer {
 	private NetworkTableInstance inst;
 	private NetworkTable table;
 
-	private VisionObjectDataPixy1Listener l1;
-	private VisionObjectDataPixy2Listener l2;
+	private VisionObjectDataPixyListener listener;
 
 	private boolean debug;
 
+	private int pixyIDFront;
+	private int pixyIDBack;
+	
 }
