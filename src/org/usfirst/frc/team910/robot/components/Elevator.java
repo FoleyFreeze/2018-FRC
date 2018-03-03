@@ -2,6 +2,8 @@ package org.usfirst.frc.team910.robot.components;
 
 import org.usfirst.frc.team910.robot.Component;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 public class Elevator extends Component {
 	public static final double ARM_KP=0;
 	public static final double LIFT_KP=0;
@@ -58,7 +60,7 @@ public class Elevator extends Component {
 	
 	
 	public void run() {
-		if (in.highAngle) {
+		/*if (in.highAngle) {
 			out.setElevatorPower(1);//FIXME this is a hack
 		}
 		else if (in.middleAngle) {
@@ -75,9 +77,9 @@ public class Elevator extends Component {
 			out.setArmPower(0);
 		}
 		return;
+		*/
 		
 		
-		/*
 		//PART 1: determine our goal position based on controller input
 		
 		if(in.liftExchange) {
@@ -291,7 +293,8 @@ public class Elevator extends Component {
 			break;
 		}
 		
-		*/
+		SmartDashboard.putString("Goal Position", goalState.toString());
+		SmartDashboard.putString("Current State", currentState.toString());
 	}
 	
 	private double prevArmError = 0;
@@ -379,17 +382,27 @@ public class Elevator extends Component {
 		double liftPower = liftError * LIFT_KP + deltaLiftError * LIFT_KD;
 		
 		//drive motors
-		out.setArmPower(armPower);
-		out.setElevatorPower(liftPower);
+		//out.setArmPower(armPower);
+		//out.setElevatorPower(liftPower);
 		//out.setElevatorPosition(elevatorPosition);
 		
 		//hold onto error values
 		prevArmError = armError;
 		prevLiftError = liftError;
+		
+	
+		SmartDashboard.putNumber("Lift Goal", targetLift);
+		SmartDashboard.putNumber("Arm Goal", targetArm);
+		SmartDashboard.putNumber("Maximum Arm", armMax);
+		SmartDashboard.putNumber("Minimum Arm", armMin);
+		SmartDashboard.putNumber("Maximum Lift", liftMax);
+		SmartDashboard.putNumber("Minimum Lift", liftMin);
+		SmartDashboard.putNumber("Lift Power", liftPower);
+		SmartDashboard.putNumber("Arm Power", armPower);
 	}
 
 	public void elevate(double power) {
-		out.setElevatorPower(power);
+		//out.setElevatorPower(power);
 	}
 	
 	public static double interp(double[] axis, double[] table, double x) {
