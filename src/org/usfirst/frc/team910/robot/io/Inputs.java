@@ -3,8 +3,12 @@ package org.usfirst.frc.team910.robot.io;
 import org.usfirst.frc.team910.robot.Component;
 
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Inputs extends Component {
+
+	public static final double DEADBAND = 0.1;
+	
 	private Joystick leftStick;
 	private Joystick rightStick;
 	private Joystick controlBoard;
@@ -46,6 +50,7 @@ public class Inputs extends Component {
 	public boolean autoCube1 = false;
 	public boolean autoCube2 = false;
 	public boolean autoCube3 = false;
+	public boolean resetEnc = false;
 	
 	public int liftHeightMod = 0; //this can be 0, -1, 1 
 	
@@ -63,8 +68,14 @@ public class Inputs extends Component {
 	public void read() {
 		enableMP = false;
 		
+		resetEnc = leftStick.getRawButton(12) && rightStick.getRawButton(12);
+		
 		leftDrive = -leftStick.getY();
 		rightDrive = -rightStick.getY();
+		
+		if(Math.abs(leftDrive) < DEADBAND) leftDrive = 0;
+		if(Math.abs(rightDrive) < DEADBAND) rightDrive = 0;
+		
 		dynamicBrake = leftStick.getTrigger();
 		driveStraight = rightStick.getTrigger();
 		//all elevator heights 
@@ -91,7 +102,7 @@ public class Inputs extends Component {
 		
 		shift = controlBoard.getRawButton(1);
 		manualOverride = controlBoard.getRawButton(14);
-		liftFlip = controlBoard.getRawButton(15);
+		liftFlip = !controlBoard.getRawButton(15);
 		shoot = controlBoard.getRawButton(5);
 		gather = controlBoard.getRawButton(6);
 		autoGather = controlBoard.getRawButton(9);
@@ -105,5 +116,7 @@ public class Inputs extends Component {
 		autoCube3 = controlBoard.getRawButton(20);
 		
 		manualHeight = (controlBoard.getRawAxis(5) + 1) / 2;//TODO: double check this is the right axis
+		
+		SmartDashboard.putNumber("Manual Pwr", manualHeight);
 	}
 }

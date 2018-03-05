@@ -19,7 +19,8 @@ public class Sensors extends Component {
 	public double leftDist = 0;
 	public double rightDist = 0;
 	public double liftPos = 0;
-	public double armPos = 0;
+	public double armPosL= 0;
+	public double armPosR= 0;
 	// public double gatherLeftPos = 0;
 	// public double gatherRightPos = 0;
 	public PowerDistributionPanel pdp;
@@ -42,24 +43,31 @@ public class Sensors extends Component {
 	}
 
 	public void read() {
+		if(in.resetEnc) {
+			out.resetEncoders();
+		}
+		
 		out.readEncoders();
-		SmartDashboard.putNumber("Left Drive Enc", leftDist);
-		SmartDashboard.putNumber("Right Drive Enc", rightDist);
-		SmartDashboard.putNumber("Lift Position Enc", liftPos);
-		SmartDashboard.putNumber("Arm Position Enc", armPos);
+		SmartDashboard.putNumber("L Drive Enc", leftDist);
+		SmartDashboard.putNumber("R Drive Enc", rightDist);
+		SmartDashboard.putNumber("Lift Enc", liftPos);
+		SmartDashboard.putNumber("L Arm Enc", armPosL);
+		SmartDashboard.putNumber("R Arm Enc", armPosR);
 		// SmartDashboard.putNumber("Left Gather Enc", gatherLeftPos);
 		// SmartDashboard.putNumber("Right Gather Enc", gatherRightPos);
 
 		gameData = DriverStation.getInstance().getGameSpecificMessage();
 
-		if (gameData.charAt(0) == 'L' && gameData.charAt(1) == 'L') {
-			goalsLeft = true;
-		} else if (gameData.charAt(0) == 'R' && gameData.charAt(1) == 'R') {
-			goalsRight = true;
-		} else if (gameData.charAt(0) == 'L' && gameData.charAt(1) == 'R') {
-			goalsZig = true;
-		} else {
-			goalsZag = true;
+		if(gameData != null && gameData.length() > 3) {
+			if (gameData.charAt(0) == 'L' && gameData.charAt(1) == 'L') {
+				goalsLeft = true;
+			} else if (gameData.charAt(0) == 'R' && gameData.charAt(1) == 'R') {
+				goalsRight = true;
+			} else if (gameData.charAt(0) == 'L' && gameData.charAt(1) == 'R') {
+				goalsZig = true;
+			} else {
+				goalsZag = true;
+			}
 		}
 
 		robotAngle.set(-navx.getYaw());
@@ -67,7 +75,7 @@ public class Sensors extends Component {
 
 	public void reset() {
 		// zero encoders
-		out.resetEncoders();
+		//out.resetEncoders(); //FIXME: undo this before real competitions
 		out.readEncoders();
 
 		// zero navx

@@ -56,6 +56,8 @@ public class Robot extends TimedRobot {
 		input = new Inputs();
 		sensor = new Sensors();
 		Component.set(input, output, sensor, climb, drive, elevate, gather, view);
+		
+		sensor.reset();
 	}
 
 	/**
@@ -106,7 +108,7 @@ public class Robot extends TimedRobot {
 	@Override
 	public void disabledInit() {
 		input.enableMP = false;
-		output.driveMP.run(false);
+		//output.driveMP.run(false);
 	}
 	
 	/**
@@ -114,6 +116,7 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void disabledPeriodic() {
+		input.read();
 		sensor.read();
 	}
 

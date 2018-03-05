@@ -58,12 +58,13 @@ public class Outputs extends Component {
 		rightDrive1.setSensorPhase(true);
 		//rightDrive1.setSelectedSensorPosition(0, 0, 0);
 		
+		/* not needed when not using talons for motion profiling
 		driveMP = new MotionProfile(leftDrive1, rightDrive1);
 		rightDrive1.configPeakOutputForward(0.7, 0);
 		rightDrive1.configPeakOutputReverse(-0.7, 0);
 		leftDrive1.configPeakOutputForward(0.7, 0);
 		leftDrive1.configPeakOutputReverse(-0.7, 0);
-		
+		*/
 		
 
 		
@@ -73,18 +74,24 @@ public class Outputs extends Component {
 		elevator2.set(ControlMode.Follower, ElectroBach.ELEVATOR_CAN_1);
 		
 		elevator1.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
-		elevator1.setSensorPhase(false); //TODO look at gear box and find out if directions match
+		elevator1.setSensorPhase(false);
 		elevator1.setInverted(false); 
-		elevator2.setInverted(false); 
+		elevator2.setInverted(true); 
+		
+		elevator1.configOpenloopRamp(0.2, 0);
+		elevator2.configOpenloopRamp(0.2, 0);
 		
 		armMotor1 = new TalonSRX(ElectroBach.ARM_CAN_1);
 		armMotor2 = new TalonSRX(ElectroBach.ARM_CAN_2);
 		
-		armMotor2.set(ControlMode.Follower, ElectroBach.ARM_CAN_1);
+		armMotor2.follow(armMotor1);
 		
 		armMotor1.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
-		armMotor1.setSensorPhase(false); //TODO look at gear box and find out if directions match
-		armMotor1.setInverted(false);
+		armMotor1.setSensorPhase(false); 
+		armMotor2.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
+		armMotor2.setSensorPhase(false);
+		
+		armMotor1.setInverted(true);
 		armMotor2.setInverted(false);
 		
 		gatherLeft = new TalonSRX(ElectroBach.LEFT_GATHER_CAN);
@@ -103,7 +110,8 @@ public class Outputs extends Component {
 		sense.leftDist = leftDrive1.getSelectedSensorPosition(0) / ElectroBach.TICKS_PER_INCH;
 		sense.rightDist = rightDrive1.getSelectedSensorPosition(0) / ElectroBach.TICKS_PER_INCH;
 		sense.liftPos = elevator1.getSelectedSensorPosition(0)/ElectroBach.TICKS_PER_INCH_HEIGHT;
-		sense.armPos = armMotor1.getSelectedSensorPosition(0)/ElectroBach.TICKS_PER_DEGREE;
+		sense.armPosL = armMotor1.getSelectedSensorPosition(0)/ElectroBach.TICKS_PER_DEGREE;
+		sense.armPosR = armMotor2.getSelectedSensorPosition(0)/ElectroBach.TICKS_PER_DEGREE;
 		//sense.gatherLeftPos = gatherLeft.getSelectedSensorPosition(0)/ElectroBach.TICKS_PER_INCH;
 		//sense.gatherRightPos = gatherRight.getSelectedSensorPosition(0)/ElectroBach.TICKS_PER_INCH;
 		//System.out.format("L:%.2f R:%.2f\n",sense.leftDist,sense.rightDist);
@@ -120,6 +128,10 @@ public class Outputs extends Component {
 			System.out.println("Error in resetting right encoder position");
 			System.exit(-1);
 		}
+		
+		armMotor1.setSelectedSensorPosition(0, 0, 0);
+		armMotor2.setSelectedSensorPosition(0, 0, 0);
+		elevator1.setSelectedSensorPosition(0, 0, 0);
 	}
 	
 	public void setDrivePower(double leftPower, double rightPower) {
@@ -130,45 +142,50 @@ public class Outputs extends Component {
 		rightDrive1.set(ControlMode.PercentOutput, rightPower*power);
 		rightDrive2.set(ControlMode.PercentOutput, rightPower*power);
 		rightDrive3.set(ControlMode.PercentOutput, rightPower*power);
-		SmartDashboard.putNumber("Left Drive Power", leftPower*power);//TODO correct if needed
-		SmartDashboard.putNumber("Right Drive Power", rightPower*power);//TODO correct if needed
+		SmartDashboard.putNumber("L Drive Pwr", leftPower*power);//TODO correct if needed
+		SmartDashboard.putNumber("R Drive Pwr", rightPower*power);//TODO correct if needed
 	}
 
 	public void setArmPower(double armPower) {
 		double power = in.manualHeight;//FIXME: this is a hack
+		if(!in.manualOverride) power = 1;
+		
 		armMotor1.set(ControlMode.PercentOutput, armPower*power);
-		armMotor2.set(ControlMode.PercentOutput, -armPower*power);
-		System.out.println(in.manualHeight);
-		SmartDashboard.putNumber("Arm Motor 1 Power", armPower*power);//TODO correct if needed
-		SmartDashboard.putNumber("Arm Motor 2(inverted) Power", armPower*power);//TODO correct if needed
+		//armMotor2.set(ControlMode.PercentOutput, armPower*power);
+		//System.out.println(in.manualHeight);
+		SmartDashboard.putNumber("L Arm Pwr", armPower*power);//TODO correct if needed
+		SmartDashboard.putNumber("R Arm Pwr", armPower*power);//TODO correct if needed
 	}
 
 	
 	public void setElevatorPower(double power) {
 		double restriction = in.manualHeight;//FIXME: this is a hack
+		if(!in.manualOverride) restriction = 1;
+		
 		elevator1.set(ControlMode.PercentOutput, power * restriction); //TODO please good 
-		elevator2.set(ControlMode.PercentOutput, -power * restriction);
-		SmartDashboard.putNumber("Elevator Motor 1 Power", power*restriction);//TODO correct if needed
-		SmartDashboard.putNumber("Elevator Motor 2(inverted) Power", power*restriction);//TODO correct if needed
+		elevator2.set(ControlMode.PercentOutput, power * restriction);
+		SmartDashboard.putNumber("Lift 1 Pwr", power*restriction);//TODO correct if needed
+		SmartDashboard.putNumber("Lift 2 Pwr", power*restriction);//TODO correct if needed
 	}
 	
 	public void setElevatorPosition(double elevatorPosition) {
-		elevator1.set(ControlMode.Position,  elevatorPosition * ElectroBach.TICKS_PER_INCH_HEIGHT); //sets position for the elevation device (lift for british)
-		SmartDashboard.putNumber("Elevator Height", elevatorPosition*ElectroBach.TICKS_PER_INCH_HEIGHT);//TODO correct if needed
-		}
+		//elevator1.set(ControlMode.Position,  elevatorPosition * ElectroBach.TICKS_PER_INCH_HEIGHT); //sets position for the elevation device (lift for british)
+		//SmartDashboard.putNumber("Elevator Height", elevatorPosition*ElectroBach.TICKS_PER_INCH_HEIGHT);//TODO correct if needed
+	}
 		
 	
 	public void setArmPosition(double armPosition) {
-		armMotor1.set(ControlMode.Position, armPosition * ElectroBach.TICKS_PER_DEGREE); 
-		SmartDashboard.putNumber("Arm Position", armPosition*ElectroBach.TICKS_PER_DEGREE);//TODO correct if needed
+		//armMotor1.set(ControlMode.Position, armPosition * ElectroBach.TICKS_PER_DEGREE); 
+		//SmartDashboard.putNumber("Arm Position", armPosition*ElectroBach.TICKS_PER_DEGREE);//TODO correct if needed
 	}
 
 	public void setGatherPower(double leftPower, double rightPower) {
-		double restriction = in.manualHeight;
+		//double restriction = in.manualHeight;
+		double restriction = 1;
 		gatherLeft.set(ControlMode.PercentOutput, leftPower*restriction);
 		gatherRight.set(ControlMode.PercentOutput, rightPower*restriction);
-		SmartDashboard.putNumber("Left Gather Power", leftPower*restriction);//TODO correct if needed
-		SmartDashboard.putNumber("Right Gather Power", rightPower*restriction);//TODO correct if needed
+		SmartDashboard.putNumber("L Gather Pwr", leftPower*restriction);//TODO correct if needed
+		SmartDashboard.putNumber("R Gather Pwr", rightPower*restriction);//TODO correct if needed
 		//System.out.println(in.manualHeight);
 
 	}
@@ -177,8 +194,8 @@ public class Outputs extends Component {
 		double restriction = in.manualHeight;
 		climber1.set(ControlMode.PercentOutput, power1*restriction);
 		climber2.set(ControlMode.PercentOutput, power2*restriction);
-		SmartDashboard.putNumber("Climber Motor 1", power1*restriction);//TODO correct if needed
-		SmartDashboard.putNumber("Climber Motor 2", power2*restriction);//TODO correct if needed
+		SmartDashboard.putNumber("Climb 1 Pwr", power1*restriction);//TODO correct if needed
+		SmartDashboard.putNumber("Climb 2 Pwr", power2*restriction);//TODO correct if needed
 	}
 	
 }
