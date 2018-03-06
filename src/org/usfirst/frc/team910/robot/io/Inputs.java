@@ -106,15 +106,15 @@ public class Inputs extends Component {
 		liftExchange = controlBoard.getRawButton(8);
 		
 		//use last button pressed to set correct position
-		if(restButton)elevatorCommand = Elevator.liftState.REST_POSITION;
-		else if(switchButton)elevatorCommand = Elevator.liftState.F_SWITCH_POSITION;
-		else if(scaleButton)elevatorCommand = Elevator.liftState.F_SCALE_POSITION;
-		else if(liftExchange)elevatorCommand = Elevator.liftState.F_EXCHANGE_POSITION;
+		if(restButton) elevatorCommand = Elevator.liftState.REST_POSITION;
+		else if(switchButton) elevatorCommand = Elevator.liftState.F_SWITCH_POSITION;
+		else if(scaleButton) elevatorCommand = Elevator.liftState.F_SCALE_POSITION;
+		else if(liftExchange) elevatorCommand = Elevator.liftState.F_EXCHANGE_POSITION;
 		
 		//require gather button to be held down to gather
-		if(gather)elevatorCommand = Elevator.liftState.F_FLOOR_POSITION;
-		else if(elevatorCommand == Elevator.liftState.F_FLOOR_POSITION||
-				elevatorCommand == Elevator.liftState.R_FLOOR_POSITION) {
+		if(gather) elevatorCommand = Elevator.liftState.F_FLOOR_POSITION;
+		else if( elevatorCommand == Elevator.liftState.F_FLOOR_POSITION||
+				 elevatorCommand == Elevator.liftState.R_FLOOR_POSITION) {
 			elevatorCommand = Elevator.liftState.REST_POSITION;
 		}
 		

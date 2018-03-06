@@ -23,10 +23,10 @@ public class Elevator extends Component {
 	public static final double LIFT_DN_PWR_SHIFT = 0.5;
 	
 	//TODO figure this out properly
-	public static final double[] ARM_AXIS_MIN_HIGH = {-150, -120, -119.9, -105, 105, 106, 165, 277};
+	public static final double[] ARM_AXIS_MIN_HIGH = {-150, -120, -119.9, -108, 108, 106, 165, 277};
 	public static final double[] LIFT_TABLE_MIN_HIGH = {28,   10,      9,    0,   0,  32,  67,  70};
 	
-	public static final double[] ARM_AXIS_MIN_LOW= {-150, -120, -119.9, -105, 105, 141};
+	public static final double[] ARM_AXIS_MIN_LOW= {-150, -120, -119.9, -108, 108, 141};
 	public static final double[] LIFT_TABLE_MIN_LOW= {28,   10,      9,    0,   0,  21};
 	
 	public static final double[] ARM_AXIS_MAX_HIGH=  {-150, -90, -55, -21, 0, 10, 26, 46, 277};
@@ -56,7 +56,7 @@ public class Elevator extends Component {
 	public static final double LIFT_MAX = 70.5;
 	public static final double LIFT_SCALE_MIN = 60;
 	public static final double LIFT_SWITCH_MIN = 15;
-	public static final double LIFT_EXCHANGE_MIN = 4;
+	public static final double LIFT_EXCHANGE_MIN = 2;
 	public static final double LIFT_MIN = -1; //this is not a temp value, it is supposed to be -1
 	//public static final double ARM_REAR = -1;
 	//public static final double ARM_FRONT = -1;
@@ -67,7 +67,7 @@ public class Elevator extends Component {
 	
 	public static final double LIFT_SCALE = 70;
 	public static final double LIFT_SWITCH = 20;
-	public static final double LIFT_EXCHANGE = 6;
+	public static final double LIFT_EXCHANGE = 3;
 	public static final double LIFT_FLOOR = 0.5;
 	public static final double LIFT_REST = LIFT_FLOOR;
 	public static final double ARM_SCALE = 90;
@@ -84,8 +84,8 @@ public class Elevator extends Component {
 
 	}
 
-	private liftState goalState = liftState.F_FLOOR_POSITION;
-	private liftState currentState = liftState.F_FLOOR_POSITION;
+	private liftState goalState;
+	public liftState currentState = liftState.F_FLOOR_POSITION;
 	private boolean flipState;
 	
 	
@@ -191,7 +191,7 @@ public class Elevator extends Component {
 			//PART 3: figure out where to move to so we get closer to our goal
 			switch (currentState) {
 			case REST_POSITION:
-				if(currentState==goalState) {
+				if(currentState.equals(goalState)) {
 					setPosition(goalState);
 				}else if(goalState==liftState.F_FLOOR_POSITION || goalState==liftState.R_FLOOR_POSITION || goalState==liftState.F_EXCHANGE_POSITION || goalState==liftState.R_EXCHANGE_POSITION) {
 					setPosition(goalState);
@@ -204,10 +204,10 @@ public class Elevator extends Component {
 						
 				}
 			case F_FLOOR_POSITION:
-				if (currentState == goalState) {
+				if (currentState.equals(goalState)) {
 					setPosition(goalState);
 					
-				}else if (goalState == liftState.F_EXCHANGE_POSITION || goalState == liftState.F_SWITCH_POSITION || goalState == liftState.R_FLOOR_POSITION) {
+				}else if (goalState == liftState.F_EXCHANGE_POSITION || goalState == liftState.F_SWITCH_POSITION || goalState == liftState.R_FLOOR_POSITION || goalState == liftState.REST_POSITION) {
 					setPosition(goalState);
 				}else {
 					if (goalState == liftState.R_EXCHANGE_POSITION || goalState == liftState.R_SWITCH_POSITION) {
@@ -221,7 +221,7 @@ public class Elevator extends Component {
 				break;
 				
 			case R_FLOOR_POSITION:
-				if (currentState == goalState) {
+				if (currentState.equals(goalState)) {
 					setPosition(goalState);
 				}else if (goalState == liftState.R_EXCHANGE_POSITION || goalState == liftState.R_SWITCH_POSITION || goalState == liftState.F_FLOOR_POSITION || goalState == liftState.REST_POSITION) {
 					setPosition(goalState);
@@ -233,7 +233,7 @@ public class Elevator extends Component {
 				break;
 	
 			case F_EXCHANGE_POSITION:
-				if (currentState == goalState) {
+				if (currentState.equals(goalState)) {
 					setPosition(goalState);
 				}else if (goalState == liftState.F_FLOOR_POSITION || goalState == liftState.F_SWITCH_POSITION || goalState == liftState.REST_POSITION) {
 					setPosition(goalState);
@@ -250,7 +250,7 @@ public class Elevator extends Component {
 				break;
 	
 			case R_EXCHANGE_POSITION:
-				if (currentState == goalState) {
+				if (currentState.equals(goalState)) {
 					setPosition(goalState);
 				}else if (goalState == liftState.R_FLOOR_POSITION || goalState == liftState.R_SWITCH_POSITION || goalState == liftState.REST_POSITION) {
 					setPosition(goalState);
@@ -260,7 +260,7 @@ public class Elevator extends Component {
 				break;
 				
 			case F_SWITCH_POSITION:
-				if (currentState == goalState) {
+				if (currentState.equals(goalState)) {
 					setPosition(goalState);
 				}else if (goalState == liftState.F_FLOOR_POSITION || goalState == liftState.F_SCALE_POSITION || goalState == liftState.F_EXCHANGE_POSITION) {
 					setPosition(goalState);
@@ -275,7 +275,7 @@ public class Elevator extends Component {
 				break;
 	
 			case R_SWITCH_POSITION:
-				if (currentState == goalState) {
+				if (currentState.equals(goalState)) {
 					setPosition(goalState);
 				}else if (goalState == liftState.R_FLOOR_POSITION || goalState == liftState.R_EXCHANGE_POSITION) {
 					setPosition(goalState);
@@ -287,7 +287,7 @@ public class Elevator extends Component {
 				break;
 	
 			case F_SCALE_POSITION:
-				if (currentState == goalState) {
+				if (currentState.equals(goalState)) {
 					setPosition(goalState);
 				}else if (goalState == liftState.R_SCALE_POSITION || goalState == liftState.F_SWITCH_POSITION) {
 					setPosition(goalState);
@@ -299,7 +299,7 @@ public class Elevator extends Component {
 				break;
 	
 			case R_SCALE_POSITION:
-				if (currentState == goalState) {
+				if (currentState.equals(goalState)) {
 					setPosition(goalState);
 				}else if (goalState == liftState.F_SCALE_POSITION) {
 					setPosition(goalState);

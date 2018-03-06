@@ -21,21 +21,21 @@ public class Gatherer extends Component {
 
 	public void run() {
 
-		if (in.gather) {
+		if (elevate.currentState == Elevator.liftState.F_FLOOR_POSITION || elevate.currentState == Elevator.liftState.R_FLOOR_POSITION) {
 			//gather(0.5, 1);
 			//gatherS = gatherState.INIT;
 
 			switch (gatherS) {
 			// initially, run through
 			case INIT:
-				gather(.5, 0.7);
+				gather(.5, 0.6);
 				ejectTime = Timer.getFPGATimestamp() + .5;
 				gatherS = gatherState.SPIN;
 				
 				break;
 			// take in the cube
 			case SPIN:
-				gather(.5, 0.7);
+				gather(.5, 0.6);
 				if (sense.pdp.getCurrent(ElectroBach.LEFT_GATHER_CAN)
 						+ sense.pdp.getCurrent(ElectroBach.RIGHT_GATHER_CAN) > JAMMED_CURRENT
 						&& Timer.getFPGATimestamp() > ejectTime) {
@@ -46,10 +46,10 @@ public class Gatherer extends Component {
 				break;
 			// spit out cube briefly if stuck
 			case EJECT:
-				gather(-.7, .7);
+				gather(-.55, .7);
 				if (Timer.getFPGATimestamp() > ejectTime) {
 					gatherS = gatherState.REGATHER;
-					ejectTime = Timer.getFPGATimestamp() + 0.3;
+					ejectTime = Timer.getFPGATimestamp() + 0.5;
 				}
 				break;
 			// retake-in cube, currently not used
