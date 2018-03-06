@@ -79,7 +79,7 @@ public class Elevator extends Component {
 	public Elevator() {
 
 	}
-	private enum liftState {
+	public enum liftState {
 		F_FLOOR_POSITION, R_FLOOR_POSITION, F_EXCHANGE_POSITION, R_EXCHANGE_POSITION, F_SWITCH_POSITION, R_SWITCH_POSITION, F_SCALE_POSITION, R_SCALE_POSITION, REST_POSITION;
 
 	}
@@ -94,10 +94,10 @@ public class Elevator extends Component {
 		if(in.manualOverride) {
 			firstAuto = true;
 			
-			if (in.highAngle) {
+			if (in.scaleButton) {
 				out.setElevatorPower(1);//FIXME this is a hack
 			}
-			else if (in.middleAngle) {
+			else if (in.switchButton) {
 				out.setElevatorPower(-1);
 			} else {
 				out.setElevatorPower(0);
@@ -114,24 +114,7 @@ public class Elevator extends Component {
 		} else {
 		
 			//PART 1: determine our goal position based on controller input
-			
-			if(in.liftExchange) {
-				goalState = liftState.F_EXCHANGE_POSITION;
-			}
-			//goal to raise elevator to front exchange
-			else if (in.elevatorHeight == 1) {
-				goalState = liftState.F_FLOOR_POSITION;
-			}
-			//goal to raise elevator to front switch
-			else if (in.elevatorHeight == 2) {
-				goalState = liftState.F_SWITCH_POSITION;
-			}
-			//goal to raise elevator to front scale
-			else if (in.elevatorHeight == 3) {
-				goalState = liftState.F_SCALE_POSITION;
-			}else {
-				goalState = liftState.REST_POSITION;
-			}
+			goalState = in.elevatorCommand;
 			
 			//liftflip is the switch on control board
 			//when it is in the front position it is on

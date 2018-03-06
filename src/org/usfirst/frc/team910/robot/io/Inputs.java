@@ -1,6 +1,7 @@
 package org.usfirst.frc.team910.robot.io;
 
 import org.usfirst.frc.team910.robot.Component;
+import org.usfirst.frc.team910.robot.components.Elevator;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -34,11 +35,11 @@ public class Inputs extends Component {
 	public boolean shift = false;
 	public boolean manualOverride = false;
 	public boolean liftFlip = false;
-	public int elevatorHeight = 0;
+	public int scaleAngle = 0;
 	public double manualHeight = 0;
-	public boolean lowAngle = false;
-	public boolean middleAngle = false;
-	public boolean highAngle = false;
+	public boolean restButton = false;
+	public boolean switchButton = false;
+	public boolean scaleButton = false;
 	public boolean shoot = false;
 	public boolean gather = false;
 	public boolean autoGather = false;
@@ -51,6 +52,8 @@ public class Inputs extends Component {
 	public boolean autoCube2 = false;
 	public boolean autoCube3 = false;
 	public boolean resetEnc = false;
+	public Elevator.liftState elevatorCommand = Elevator.liftState.REST_POSITION;
+	
 	
 	public int liftHeightMod = 0; //this can be 0, -1, 1 
 	
@@ -82,31 +85,44 @@ public class Inputs extends Component {
 		//goes in order of high to low
 		if(controlBoard.getRawButton(19)){
 			//scale height
-			elevatorHeight = 3;
+			scaleAngle = 3;
 		} else if(controlBoard.getRawButton(16)){
 			//floor height
-			elevatorHeight = 1;
+			scaleAngle = 1;
 		} else {
 			//switch height
-			elevatorHeight = 2;
+			scaleAngle = 2;
 		}
 		
-		//rising edge for angle buttons so you dont have to hold them
+		//rising edge for angle buttons so you don't have to hold them
 		//lowAngle = !prevLowAngle && controlBoard.getRawButton(2);
 		//middleAngle = !prevMiddleAngle && controlBoard.getRawButton(3);
 		//highAngle = !prevHighAngle && controlBoard.getRawButton(4);
 		
-		lowAngle = controlBoard.getRawButton(2);
-		middleAngle = controlBoard.getRawButton(3);
-		highAngle = controlBoard.getRawButton(4);
+		restButton = controlBoard.getRawButton(2);
+		switchButton = controlBoard.getRawButton(3);
+		scaleButton = controlBoard.getRawButton(4);
+		gather = controlBoard.getRawButton(6);
+		liftExchange = controlBoard.getRawButton(8);
+		
+		//use last button pressed to set correct position
+		if(restButton)elevatorCommand = Elevator.liftState.REST_POSITION;
+		else if(switchButton)elevatorCommand = Elevator.liftState.F_SWITCH_POSITION;
+		else if(scaleButton)elevatorCommand = Elevator.liftState.F_SCALE_POSITION;
+		else if(liftExchange)elevatorCommand = Elevator.liftState.F_EXCHANGE_POSITION;
+		
+		//require gather button to be held down to gather
+		if(gather)elevatorCommand = Elevator.liftState.F_FLOOR_POSITION;
+		else if(elevatorCommand == Elevator.liftState.F_FLOOR_POSITION||
+				elevatorCommand == Elevator.liftState.R_FLOOR_POSITION) {
+			elevatorCommand = Elevator.liftState.REST_POSITION;
+		}
 		
 		shift = controlBoard.getRawButton(1);
 		manualOverride = controlBoard.getRawButton(14);
 		liftFlip = !controlBoard.getRawButton(15);
 		shoot = controlBoard.getRawButton(5);
-		gather = controlBoard.getRawButton(6);
 		autoGather = controlBoard.getRawButton(9);
-		liftExchange = controlBoard.getRawButton(8);
 		cameraLights = controlBoard.getRawButton(12);
 		deployClimb = controlBoard.getRawButton(7);
 		climb = controlBoard.getRawButton(10);

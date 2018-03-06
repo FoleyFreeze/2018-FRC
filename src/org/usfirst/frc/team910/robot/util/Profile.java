@@ -24,7 +24,19 @@ public class Profile {
 		
 		//start at 0, countup
 		for (int i=0; i<numPaths; i++ ) {
-			
+			//if the path is straight / no angle
+			if(route[1][i] == 0) {
+				double Vf = Math.sqrt(inVel[i] * inVel[i] + 2 * MAX_ACCEL * route[0][i] );
+				outVel[i] = Math.min(outVel[i], Vf);
+				
+				if(i != numPaths - 1) {
+					inVel[i + 1] = outVel[i];
+				}
+			//if the path is a curve / some angle	
+			}else {
+				double Vf = Math.sqrt(inVel[i] * inVel[i] + 2 * MAX_ACCEL * route[0][i] );
+				
+			}
 			
 		}
 		
