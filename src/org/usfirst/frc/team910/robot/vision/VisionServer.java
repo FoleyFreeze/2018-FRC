@@ -220,6 +220,7 @@ public class VisionServer {
 		
 		listener = new VisionObjectDataPixyListener();
 		
+		listener.setDebug(debug);
 		listener.setPixyIDFront(pixyIDFront);
 		listener.setPixyIDBack(pixyIDBack);
 		
