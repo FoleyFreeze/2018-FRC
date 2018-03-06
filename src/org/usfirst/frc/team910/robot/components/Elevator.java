@@ -7,11 +7,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class Elevator extends Component {
 	public static final double ARM_KP = 0.05; //power per deg
 	public static final double LIFT_KP = 0.2; //power per inch
-	public static final double ARM_KD = 0;//0.2
-	public static final double LIFT_KD = 0;//1.0
+	public static double ARM_KD = 0;//0.2
+	public static double LIFT_KD = 0;//1.0
 	
-	public static final double LIFT_DEADBAND = 0.75;
-	public static final double ARM_DEADBAND = 2;
+	public static final double LIFT_DEADBAND = 0;
+	public static final double ARM_DEADBAND = 0;
 	
 	public static final double ARM_UP_PWR = 0.7;
 	public static final double ARM_DN_PWR = 0.5;
@@ -68,7 +68,7 @@ public class Elevator extends Component {
 	public static final double LIFT_SCALE = 70;
 	public static final double LIFT_SWITCH = 20;
 	public static final double LIFT_EXCHANGE = 6;
-	public static final double LIFT_FLOOR = 2;
+	public static final double LIFT_FLOOR = 0.5;
 	public static final double LIFT_REST = LIFT_FLOOR;
 	public static final double ARM_SCALE = 90;
 	public static final double ARM_SWITCH = 80;
@@ -432,6 +432,19 @@ public class Elevator extends Component {
 		double deltaLiftError = liftError - prevLiftError;
 		
 		double armFeedFwd = interp(FEED_FORWARD_AXIS, FEED_FORWARD_TABLE, targetArm);
+		
+		if(liftError <= 10) {
+			LIFT_KD = 1;
+		}else {
+			LIFT_KD = 0;
+		}
+		
+		if(armError <= 10) {
+			ARM_KD = 0.2;
+		}else {
+			ARM_KD = 0;
+		}
+		
 		
 		double armPower = armError * ARM_KP + deltaArmError * ARM_KD + armFeedFwd;
 		double liftPower = liftError * LIFT_KP + deltaLiftError * LIFT_KD;
