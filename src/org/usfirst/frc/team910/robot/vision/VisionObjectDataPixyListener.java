@@ -5,6 +5,7 @@ import java.util.concurrent.BlockingQueue;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.TableEntryListener;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.NetworkTableValue;
@@ -13,6 +14,8 @@ public class VisionObjectDataPixyListener implements TableEntryListener {
 
 	public VisionObjectDataPixyListener() {
 
+		debug = false;
+		
 	}
 
 	public void setQueueFront(BlockingQueue queue) {
@@ -52,16 +55,27 @@ public class VisionObjectDataPixyListener implements TableEntryListener {
     	pixyBackId = Id;
     	
 	}
+    
+    public void setDebug (boolean flag) {
+    	
+        debug = flag;
+    }
+    
 	public void valueChanged(NetworkTable table, java.lang.String key, NetworkTableEntry entry, NetworkTableValue value,
 			int flags) {
 
 		int currentPixy;
 		BlockingQueue<VisionData> currentQueue;
-
+        
 		// Data from Network Table goes here from entry "pixy1objdata"
 		// It's the most recent object data update
 		String msg = value.getString();
 
+		if (debug == true) {
+			System.out.println("VisionObjectDataPixyListener message received = " + msg);
+			SmartDashboard.putString("VisionServerDebug", msg);
+		}
+		
 		// Elements of message sent by Pi area separated by ','
 		String[] msg_parsed = msg.split(",");
 		
@@ -120,5 +134,6 @@ public class VisionObjectDataPixyListener implements TableEntryListener {
     private int pixyFrontId;
     private int pixyBackId;
 	private static final int BLOCK_SIZE = 6;
-
+    private boolean debug;
+    
 }
