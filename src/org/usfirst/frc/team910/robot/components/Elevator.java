@@ -417,13 +417,17 @@ public class Elevator extends Component {
 		double armFeedFwd = interp(FEED_FORWARD_AXIS, FEED_FORWARD_TABLE, targetArm);
 		
 		if(liftError <= 10) {
-			LIFT_KD = 1;
+			LIFT_KD = 0.9;
 		}else {
 			LIFT_KD = 0;
 		}
 		
-		if(armError <= 10) {
+		if(sense.armPosL <= 0 && Math.abs(armError) <= 10) {
+			ARM_KD = 0.4;
+			System.out.println("back");
+		}else if(sense.armPosL >= 0 && Math.abs(armError) <= 10) {
 			ARM_KD = 0.2;
+			System.out.println("front");
 		}else {
 			ARM_KD = 0;
 		}
