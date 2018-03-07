@@ -80,7 +80,7 @@ public class Inputs extends Component {
 		
 		leftDrive = ramp(leftYAxis, leftDrive);
 		rightDrive = ramp(rightYAxis, rightDrive);
-		driveStraightTurn = rightStick.getX();
+		driveStraightTurn = leftStick.getX();
 		
 		
 		
@@ -142,17 +142,18 @@ public class Inputs extends Component {
 		manualHeight = (controlBoard.getRawAxis(5) + 1) / 2;//TODO: double check this is the right axis
 		
 		SmartDashboard.putNumber("Manual Pwr", manualHeight);
+		SmartDashboard.putNumber("scaleAngle", scaleAngle);
 	}
 	public double ramp(double input, double output) { //Limit the motor output of the robot, prevents flipping
 		double diff = input - output;
 		
 		if(output > 0) {
-			if (diff>0) {
+			if (diff > 0) {
 				diff = Math.min(diff, RAMP_LIMIT);
 			}else{
 				diff = Math.max(diff, -output);
 			}
-		}else {
+		} else if(output < 0) {
 			if(diff < 0) {
 				diff = Math.max(diff, -RAMP_LIMIT);
 			}else {
@@ -161,7 +162,7 @@ public class Inputs extends Component {
 		}
 		
 		
-		output +=diff;
+		output += diff;
 		
 		return output;
 		

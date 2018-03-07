@@ -5,8 +5,8 @@ import org.usfirst.frc.team910.robot.Component;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Elevator extends Component {
-	public static final double ARM_KP = 0.05; //power per deg
-	public static final double LIFT_KP = 0.2; //power per inch
+	public static double ARM_KP = 0.05; //power per deg
+	public static double LIFT_KP = 0.2; //power per inch
 	public static double ARM_KD = 0;//0.2
 	public static double LIFT_KD = 0;//1.0
 	
@@ -38,14 +38,14 @@ public class Elevator extends Component {
 	public static final double[] LIFT_AXIS_MIN_FRONT= {   0, 5.9,  6, 41, 70};
 	public static final double[] ARM_TABLE_MIN_FRONT= {-105,-118, 10, 26, 46};
 	
-	public static final double[] LIFT_AXIS_MAX_FRONT= {  0, 21, 32, 67, 70};
-	public static final double[] ARM_TABLE_MAX_FRONT= {105,141,106,165,277};
+	public static final double[] LIFT_AXIS_MAX_FRONT= {  0, 21, 32, 67, 69};
+	public static final double[] ARM_TABLE_MAX_FRONT= {105,141,106,165,310};
 	
 	public static final double[] LIFT_AXIS_MIN_REAR= {   0,   9,  10,  28, 28.1, 70};
 	public static final double[] ARM_TABLE_MIN_REAR= {-105,-124,-120,-150,   26, 46};
 	
-	public static final double[] LIFT_AXIS_MAX_REAR = { 0, 7.9,   8,  24, 27, 32, 67, 70};
-	public static final double[] ARM_TABLE_MAX_REAR= {105, 118, -21, -55,-90,106,165,277};
+	public static final double[] LIFT_AXIS_MAX_REAR = { 0, 7.9,   8,  24, 27, 32, 67, 69};
+	public static final double[] ARM_TABLE_MAX_REAR= {105, 118, -21, -55,-90,106,165,310};
 	
 	public static final double ARM_AXIS_SWITCH=0;
 	public static final double LIFT_AXIS_SWITCH=32;
@@ -341,8 +341,28 @@ public class Elevator extends Component {
 				targetLift = LIFT_SWITCH;
 				break;
 			case F_SCALE_POSITION:
-				targetArm = ARM_SCALE;
-				targetLift = LIFT_SCALE;
+				switch(in.scaleAngle) {
+				case 1://low scale
+					targetArm = ARM_SCALE + 30;
+					targetLift = LIFT_SCALE;
+					break;
+					
+				case 2://med scale
+					targetArm = ARM_SCALE;
+					targetLift = LIFT_SCALE;
+					break;
+					
+				case 3://high scale
+					targetArm = ARM_SCALE - 30;
+					targetLift = LIFT_SCALE;
+					break;
+					
+				default:
+					targetArm = ARM_SCALE;
+					targetLift = LIFT_SCALE;
+					break;
+				}
+				
 				break;
 			case R_FLOOR_POSITION:
 				targetArm = -ARM_FLOOR;
@@ -357,8 +377,28 @@ public class Elevator extends Component {
 				targetLift = LIFT_SWITCH;
 				break;
 			case R_SCALE_POSITION:
-				targetArm = ARM_SCALE + 180;
-				targetLift = LIFT_SCALE;
+				
+				switch(in.scaleAngle) {
+				case 1://low scale
+					targetArm = ARM_SCALE + 150;
+					targetLift = LIFT_SCALE;
+					break;
+					
+				case 2://med scale
+					targetArm = ARM_SCALE + 180;
+					targetLift = LIFT_SCALE;
+					break;
+					
+				case 3://high scale
+					targetArm = ARM_SCALE + 210;
+					targetLift = LIFT_SCALE;
+					break;
+					
+				default:
+					targetArm = ARM_SCALE + 180;
+					targetLift = LIFT_SCALE;
+					break;
+				}
 				break;
 		}	
 		//Setting lift boundaries, by interpolation
@@ -422,12 +462,11 @@ public class Elevator extends Component {
 			LIFT_KD = 0;
 		}
 		
-		if(sense.armPosL <= 0 && Math.abs(armError) <= 10) {
-			ARM_KD = 0.4;
-			System.out.println("back");
+		if((sense.armPosL <= 0 || sense.armPosL > 180) && Math.abs(armError) <= 25) {
+			ARM_KD = 0.2;
+			//ARM_KP = 0.
 		}else if(sense.armPosL >= 0 && Math.abs(armError) <= 10) {
 			ARM_KD = 0.2;
-			System.out.println("front");
 		}else {
 			ARM_KD = 0;
 		}

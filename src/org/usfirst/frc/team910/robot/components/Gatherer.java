@@ -11,7 +11,7 @@ public class Gatherer extends Component {
 		INIT, SPIN, EJECT, REGATHER, WAIT, CENTER, STOP
 	}
 
-	public static final double JAMMED_CURRENT = 20;
+	public static final double JAMMED_CURRENT = 40;
 	public double ejectTime = 0;
 	public gatherState gatherS = gatherState.INIT;
 
