@@ -9,7 +9,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class Inputs extends Component {
 
 	public static final double DEADBAND = 0.1;
-	public static final double RAMP_LIMIT = .02; //Power per 20 ms
+	public static double RAMP_LIMIT = .02; //Power per 20 ms
+	//public static final double[] ELEVATOR_HEIGHT_AXIS = {  0,    10,   20,   30,   40,    50,     60,    70}; 
+	// public static final double[] RAMP_LIMIT_TABLE =     {.02, .0185, .017, .0165, .015, .0135, .0120, .0105};
 	
 	private Joystick leftStick;
 	private Joystick rightStick;
@@ -146,6 +148,9 @@ public class Inputs extends Component {
 	}
 	public double ramp(double input, double output) { //Limit the motor output of the robot, prevents flipping
 		double diff = input - output;
+		
+	//	Elevator.interp(ELEVATOR_HEIGHT_AXIS, RAMP_LIMIT_TABLE, RAMP_LIMIT);
+		
 		
 		if(output > 0) {
 			if (diff > 0) {
