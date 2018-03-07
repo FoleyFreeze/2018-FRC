@@ -28,8 +28,8 @@ public class Gatherer extends Component {
 			switch (gatherS) {
 			// initially, run through
 			case INIT:
-				gather(.5, 0.6);
-				ejectTime = Timer.getFPGATimestamp() + .5;
+				gather(0.5, 0.6);
+				ejectTime = Timer.getFPGATimestamp() + 1;
 				gatherS = gatherState.SPIN;
 				
 				break;
@@ -41,7 +41,7 @@ public class Gatherer extends Component {
 						&& Timer.getFPGATimestamp() > ejectTime) {
 					
 					gatherS = gatherState.EJECT;
-					ejectTime = Timer.getFPGATimestamp() + 0.15;
+					ejectTime = Timer.getFPGATimestamp() + 0.10;
 				}
 				break;
 			// spit out cube briefly if stuck
