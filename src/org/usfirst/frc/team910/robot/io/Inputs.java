@@ -143,7 +143,7 @@ public class Inputs extends Component {
 		
 		SmartDashboard.putNumber("Manual Pwr", manualHeight);
 	}
-	public double ramp(double input, double output) {
+	public double ramp(double input, double output) { //Limit the motor output of the robot, prevents flipping
 		double diff = input - output;
 		
 		if(output > 0) {

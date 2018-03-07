@@ -109,7 +109,7 @@ public class DriveTrain extends Component {
 			 initDiff = leftEncoder - rightEncoder;
 		}
 		
-		initDiff += DRIVE_STRAIGHT_TURN*in.driveStraightTurn;
+		initDiff += DRIVE_STRAIGHT_TURN*in.driveStraightTurn; //use right joystick to turn while driving straight
 		
 		//encoder tick difference between left and right encoder
 		double encDiff = leftEncoder - rightEncoder;
