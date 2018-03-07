@@ -9,11 +9,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class Inputs extends Component {
 
 	public static final double DEADBAND = 0.1;
+	public static final double RAMP_LIMIT = .02; //Power per 20 ms
 	
 	private Joystick leftStick;
 	private Joystick rightStick;
 	private Joystick controlBoard;
-	
 	
 	public boolean enableMP = false;
 	/*
@@ -27,6 +27,7 @@ public class Inputs extends Component {
 	//----------------------------------Driver Functions--------------------------------
 	public double leftDrive;
 	public double rightDrive;
+	public double driveStraightTurn;
 	public boolean dynamicBrake = false;
 	public boolean driveStraight = false;
 
@@ -69,12 +70,19 @@ public class Inputs extends Component {
 	boolean prevHighAngle;
 
 	public void read() {
+		double leftYAxis = -leftStick.getY();
+		double rightYAxis = -rightStick.getY();
+		
 		enableMP = false;
 		
 		resetEnc = leftStick.getRawButton(12) && rightStick.getRawButton(12);
 		
-		leftDrive = -leftStick.getY();
-		rightDrive = -rightStick.getY();
+		
+		leftDrive = ramp(leftYAxis, leftDrive);
+		rightDrive = ramp(rightYAxis, rightDrive);
+		driveStraightTurn = rightStick.getX();
+		
+		
 		
 		if(Math.abs(leftDrive) < DEADBAND) leftDrive = 0;
 		if(Math.abs(rightDrive) < DEADBAND) rightDrive = 0;
@@ -134,5 +142,28 @@ public class Inputs extends Component {
 		manualHeight = (controlBoard.getRawAxis(5) + 1) / 2;//TODO: double check this is the right axis
 		
 		SmartDashboard.putNumber("Manual Pwr", manualHeight);
+	}
+	public double ramp(double input, double output) { //Limit the motor output of the robot, prevents flipping
+		double diff = input - output;
+		
+		if(output > 0) {
+			if (diff>0) {
+				diff = Math.min(diff, RAMP_LIMIT);
+			}else{
+				diff = Math.max(diff, -output);
+			}
+		}else {
+			if(diff < 0) {
+				diff = Math.max(diff, -RAMP_LIMIT);
+			}else {
+				diff = Math.min(diff, -output);
+			}
+		}
+		
+		
+		output +=diff;
+		
+		return output;
+		
 	}
 }

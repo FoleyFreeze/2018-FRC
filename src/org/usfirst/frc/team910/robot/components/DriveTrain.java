@@ -10,6 +10,7 @@ import org.usfirst.frc.team910.robot.util.Path;
 public class DriveTrain extends Component {
 	public static final double DYN_BRAKE_KP = 0.0005; // This is power per inch of error
 	public static final double DRIVE_STRAIGHT_KP = 0.1; // Distance difference by inch
+	public static final double DRIVE_STRAIGHT_TURN = 5/50; //5 inches per second / 50
 	public static final double DRIVE_STRAIGHTNAVX_KP = 0.1;  //Distance difference by inch
 	public static final double DRIVEMP_KP = 0.1;
 	public static final double DRIVEMP_KD = 0.5;
@@ -107,6 +108,9 @@ public class DriveTrain extends Component {
 		if (first) {
 			 initDiff = leftEncoder - rightEncoder;
 		}
+		
+		initDiff += DRIVE_STRAIGHT_TURN*in.driveStraightTurn; //use right joystick to turn while driving straight
+		
 		//encoder tick difference between left and right encoder
 		double encDiff = leftEncoder - rightEncoder;
 		//how bad our initial difference is from current difference
