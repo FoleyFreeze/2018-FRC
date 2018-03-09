@@ -92,7 +92,14 @@ public class Gatherer extends Component {
 	}
 
 	private void gather(double leftPower, double rightPower) {
-		out.setGatherPower(leftPower, rightPower);
+		//System.out.println("gather right: " + in.manualGatherRight);
+		//System.out.println("in.gather: " + in.gather);
+		//if(in.manualOverride && in.gather) out.setGatherPower(in.manualGatherLeft, in.manualGatherRight);
+			//System.out.println("gather left: " + in.manualGatherLeft);
+			//System.out.println("gather right: " + in.manualGatherRight);
+		//}else {
+			out.setGatherPower(leftPower, rightPower);
+		//}
 	}
 
 }

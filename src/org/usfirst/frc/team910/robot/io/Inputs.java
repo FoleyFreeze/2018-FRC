@@ -40,6 +40,8 @@ public class Inputs extends Component {
 	public boolean liftFlip = false;
 	public int scaleAngle = 0;
 	public double manualHeight = 0;
+	public double manualGatherLeft = 0;
+	public double manualGatherRight = 0;
 	public boolean restButton = false;
 	public boolean switchButton = false;
 	public boolean scaleButton = false;
@@ -74,6 +76,8 @@ public class Inputs extends Component {
 	public void read() {
 		double leftYAxis = -leftStick.getY();
 		double rightYAxis = -rightStick.getY();
+		manualGatherLeft = leftStick.getThrottle();
+		manualGatherRight = rightStick.getThrottle();
 		
 		enableMP = false;
 		
@@ -116,7 +120,7 @@ public class Inputs extends Component {
 		liftExchange = controlBoard.getRawButton(8);
 		
 		//use last button pressed to set correct position
-		if(restButton) elevatorCommand = Elevator.liftState.REST_POSITION;
+		if(restButton) elevatorCommand = Elevator.liftState.F_FLOOR_POSITION;
 		else if(switchButton) elevatorCommand = Elevator.liftState.F_SWITCH_POSITION;
 		else if(scaleButton) elevatorCommand = Elevator.liftState.F_SCALE_POSITION;
 		else if(liftExchange) elevatorCommand = Elevator.liftState.F_EXCHANGE_POSITION;
