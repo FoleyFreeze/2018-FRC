@@ -5,8 +5,8 @@ import org.usfirst.frc.team910.robot.Component;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Elevator extends Component {
-	public static final double ARM_KP = 0.05; //power per deg
-	public static final double LIFT_KP = 0.2; //power per inch
+	public static double ARM_KP = 0.05; //power per deg
+	public static double LIFT_KP = 0.2; //power per inch
 	public static double ARM_KD = 0;//0.2
 	public static double LIFT_KD = 0;//1.0
 	
@@ -23,10 +23,10 @@ public class Elevator extends Component {
 	public static final double LIFT_DN_PWR_SHIFT = 0.5;
 	
 	//TODO figure this out properly
-	public static final double[] ARM_AXIS_MIN_HIGH = {-150, -120, -119.9, -105, 105, 106, 165, 277};
+	public static final double[] ARM_AXIS_MIN_HIGH = {-150, -120, -119.9, -108, 108, 106, 165, 277};
 	public static final double[] LIFT_TABLE_MIN_HIGH = {28,   10,      9,    0,   0,  32,  67,  70};
 	
-	public static final double[] ARM_AXIS_MIN_LOW= {-150, -120, -119.9, -105, 105, 141};
+	public static final double[] ARM_AXIS_MIN_LOW= {-150, -120, -119.9, -108, 108, 141};
 	public static final double[] LIFT_TABLE_MIN_LOW= {28,   10,      9,    0,   0,  21};
 	
 	public static final double[] ARM_AXIS_MAX_HIGH=  {-150, -90, -55, -21, 0, 10, 26, 46, 277};
@@ -38,14 +38,14 @@ public class Elevator extends Component {
 	public static final double[] LIFT_AXIS_MIN_FRONT= {   0, 5.9,  6, 41, 70};
 	public static final double[] ARM_TABLE_MIN_FRONT= {-105,-118, 10, 26, 46};
 	
-	public static final double[] LIFT_AXIS_MAX_FRONT= {  0, 21, 32, 67, 70};
-	public static final double[] ARM_TABLE_MAX_FRONT= {105,141,106,165,277};
+	public static final double[] LIFT_AXIS_MAX_FRONT= {  0, 21, 32, 67, 69};
+	public static final double[] ARM_TABLE_MAX_FRONT= {105,141,106,165,310};
 	
 	public static final double[] LIFT_AXIS_MIN_REAR= {   0,   9,  10,  28, 28.1, 70};
 	public static final double[] ARM_TABLE_MIN_REAR= {-105,-124,-120,-150,   26, 46};
 	
-	public static final double[] LIFT_AXIS_MAX_REAR = { 0, 7.9,   8,  24, 27, 32, 67, 70};
-	public static final double[] ARM_TABLE_MAX_REAR= {105, 118, -21, -55,-90,106,165,277};
+	public static final double[] LIFT_AXIS_MAX_REAR = { 0, 7.9,   8,  24, 27, 32, 67, 69};
+	public static final double[] ARM_TABLE_MAX_REAR= {105, 118, -21, -55,-90,106,165,310};
 	
 	public static final double ARM_AXIS_SWITCH=0;
 	public static final double LIFT_AXIS_SWITCH=32;
@@ -56,7 +56,7 @@ public class Elevator extends Component {
 	public static final double LIFT_MAX = 70.5;
 	public static final double LIFT_SCALE_MIN = 60;
 	public static final double LIFT_SWITCH_MIN = 15;
-	public static final double LIFT_EXCHANGE_MIN = 4;
+	public static final double LIFT_EXCHANGE_MIN = 2;
 	public static final double LIFT_MIN = -1; //this is not a temp value, it is supposed to be -1
 	//public static final double ARM_REAR = -1;
 	//public static final double ARM_FRONT = -1;
@@ -67,7 +67,7 @@ public class Elevator extends Component {
 	
 	public static final double LIFT_SCALE = 70;
 	public static final double LIFT_SWITCH = 20;
-	public static final double LIFT_EXCHANGE = 6;
+	public static final double LIFT_EXCHANGE = 3;
 	public static final double LIFT_FLOOR = 0.5;
 	public static final double LIFT_REST = LIFT_FLOOR;
 	public static final double ARM_SCALE = 90;
@@ -79,13 +79,13 @@ public class Elevator extends Component {
 	public Elevator() {
 
 	}
-	private enum liftState {
+	public enum liftState {
 		F_FLOOR_POSITION, R_FLOOR_POSITION, F_EXCHANGE_POSITION, R_EXCHANGE_POSITION, F_SWITCH_POSITION, R_SWITCH_POSITION, F_SCALE_POSITION, R_SCALE_POSITION, REST_POSITION;
 
 	}
 
-	private liftState goalState = liftState.F_FLOOR_POSITION;
-	private liftState currentState = liftState.F_FLOOR_POSITION;
+	private liftState goalState;
+	public liftState currentState = liftState.F_FLOOR_POSITION;
 	private boolean flipState;
 	
 	
@@ -94,10 +94,10 @@ public class Elevator extends Component {
 		if(in.manualOverride) {
 			firstAuto = true;
 			
-			if (in.highAngle) {
+			if (in.scaleButton) {
 				out.setElevatorPower(1);//FIXME this is a hack
 			}
-			else if (in.middleAngle) {
+			else if (in.switchButton) {
 				out.setElevatorPower(-1);
 			} else {
 				out.setElevatorPower(0);
@@ -114,24 +114,7 @@ public class Elevator extends Component {
 		} else {
 		
 			//PART 1: determine our goal position based on controller input
-			
-			if(in.liftExchange) {
-				goalState = liftState.F_EXCHANGE_POSITION;
-			}
-			//goal to raise elevator to front exchange
-			else if (in.elevatorHeight == 1) {
-				goalState = liftState.F_FLOOR_POSITION;
-			}
-			//goal to raise elevator to front switch
-			else if (in.elevatorHeight == 2) {
-				goalState = liftState.F_SWITCH_POSITION;
-			}
-			//goal to raise elevator to front scale
-			else if (in.elevatorHeight == 3) {
-				goalState = liftState.F_SCALE_POSITION;
-			}else {
-				goalState = liftState.REST_POSITION;
-			}
+			goalState = in.elevatorCommand;
 			
 			//liftflip is the switch on control board
 			//when it is in the front position it is on
@@ -208,7 +191,7 @@ public class Elevator extends Component {
 			//PART 3: figure out where to move to so we get closer to our goal
 			switch (currentState) {
 			case REST_POSITION:
-				if(currentState==goalState) {
+				if(currentState.equals(goalState)) {
 					setPosition(goalState);
 				}else if(goalState==liftState.F_FLOOR_POSITION || goalState==liftState.R_FLOOR_POSITION || goalState==liftState.F_EXCHANGE_POSITION || goalState==liftState.R_EXCHANGE_POSITION) {
 					setPosition(goalState);
@@ -221,10 +204,10 @@ public class Elevator extends Component {
 						
 				}
 			case F_FLOOR_POSITION:
-				if (currentState == goalState) {
+				if (currentState.equals(goalState)) {
 					setPosition(goalState);
 					
-				}else if (goalState == liftState.F_EXCHANGE_POSITION || goalState == liftState.F_SWITCH_POSITION || goalState == liftState.R_FLOOR_POSITION) {
+				}else if (goalState == liftState.F_EXCHANGE_POSITION || goalState == liftState.F_SWITCH_POSITION || goalState == liftState.R_FLOOR_POSITION || goalState == liftState.REST_POSITION) {
 					setPosition(goalState);
 				}else {
 					if (goalState == liftState.R_EXCHANGE_POSITION || goalState == liftState.R_SWITCH_POSITION) {
@@ -238,7 +221,7 @@ public class Elevator extends Component {
 				break;
 				
 			case R_FLOOR_POSITION:
-				if (currentState == goalState) {
+				if (currentState.equals(goalState)) {
 					setPosition(goalState);
 				}else if (goalState == liftState.R_EXCHANGE_POSITION || goalState == liftState.R_SWITCH_POSITION || goalState == liftState.F_FLOOR_POSITION || goalState == liftState.REST_POSITION) {
 					setPosition(goalState);
@@ -250,7 +233,7 @@ public class Elevator extends Component {
 				break;
 	
 			case F_EXCHANGE_POSITION:
-				if (currentState == goalState) {
+				if (currentState.equals(goalState)) {
 					setPosition(goalState);
 				}else if (goalState == liftState.F_FLOOR_POSITION || goalState == liftState.F_SWITCH_POSITION || goalState == liftState.REST_POSITION) {
 					setPosition(goalState);
@@ -267,7 +250,7 @@ public class Elevator extends Component {
 				break;
 	
 			case R_EXCHANGE_POSITION:
-				if (currentState == goalState) {
+				if (currentState.equals(goalState)) {
 					setPosition(goalState);
 				}else if (goalState == liftState.R_FLOOR_POSITION || goalState == liftState.R_SWITCH_POSITION || goalState == liftState.REST_POSITION) {
 					setPosition(goalState);
@@ -277,7 +260,7 @@ public class Elevator extends Component {
 				break;
 				
 			case F_SWITCH_POSITION:
-				if (currentState == goalState) {
+				if (currentState.equals(goalState)) {
 					setPosition(goalState);
 				}else if (goalState == liftState.F_FLOOR_POSITION || goalState == liftState.F_SCALE_POSITION || goalState == liftState.F_EXCHANGE_POSITION) {
 					setPosition(goalState);
@@ -292,7 +275,7 @@ public class Elevator extends Component {
 				break;
 	
 			case R_SWITCH_POSITION:
-				if (currentState == goalState) {
+				if (currentState.equals(goalState)) {
 					setPosition(goalState);
 				}else if (goalState == liftState.R_FLOOR_POSITION || goalState == liftState.R_EXCHANGE_POSITION) {
 					setPosition(goalState);
@@ -304,7 +287,7 @@ public class Elevator extends Component {
 				break;
 	
 			case F_SCALE_POSITION:
-				if (currentState == goalState) {
+				if (currentState.equals(goalState)) {
 					setPosition(goalState);
 				}else if (goalState == liftState.R_SCALE_POSITION || goalState == liftState.F_SWITCH_POSITION) {
 					setPosition(goalState);
@@ -316,7 +299,7 @@ public class Elevator extends Component {
 				break;
 	
 			case R_SCALE_POSITION:
-				if (currentState == goalState) {
+				if (currentState.equals(goalState)) {
 					setPosition(goalState);
 				}else if (goalState == liftState.F_SCALE_POSITION) {
 					setPosition(goalState);
@@ -358,8 +341,28 @@ public class Elevator extends Component {
 				targetLift = LIFT_SWITCH;
 				break;
 			case F_SCALE_POSITION:
-				targetArm = ARM_SCALE;
-				targetLift = LIFT_SCALE;
+				switch(in.scaleAngle) {
+				case 1://low scale
+					targetArm = ARM_SCALE + 30;
+					targetLift = LIFT_SCALE;
+					break;
+					
+				case 2://med scale
+					targetArm = ARM_SCALE;
+					targetLift = LIFT_SCALE;
+					break;
+					
+				case 3://high scale
+					targetArm = ARM_SCALE - 30;
+					targetLift = LIFT_SCALE;
+					break;
+					
+				default:
+					targetArm = ARM_SCALE;
+					targetLift = LIFT_SCALE;
+					break;
+				}
+				
 				break;
 			case R_FLOOR_POSITION:
 				targetArm = -ARM_FLOOR;
@@ -374,8 +377,28 @@ public class Elevator extends Component {
 				targetLift = LIFT_SWITCH;
 				break;
 			case R_SCALE_POSITION:
-				targetArm = ARM_SCALE + 180;
-				targetLift = LIFT_SCALE;
+				
+				switch(in.scaleAngle) {
+				case 1://low scale
+					targetArm = ARM_SCALE + 150;
+					targetLift = LIFT_SCALE;
+					break;
+					
+				case 2://med scale
+					targetArm = ARM_SCALE + 180;
+					targetLift = LIFT_SCALE;
+					break;
+					
+				case 3://high scale
+					targetArm = ARM_SCALE + 210;
+					targetLift = LIFT_SCALE;
+					break;
+					
+				default:
+					targetArm = ARM_SCALE + 180;
+					targetLift = LIFT_SCALE;
+					break;
+				}
 				break;
 		}	
 		//Setting lift boundaries, by interpolation
@@ -434,12 +457,15 @@ public class Elevator extends Component {
 		double armFeedFwd = interp(FEED_FORWARD_AXIS, FEED_FORWARD_TABLE, targetArm);
 		
 		if(liftError <= 10) {
-			LIFT_KD = 1;
+			LIFT_KD = 0.9;
 		}else {
 			LIFT_KD = 0;
 		}
 		
-		if(armError <= 10) {
+		if((sense.armPosL <= 0 || sense.armPosL > 180) && Math.abs(armError) <= 25) {
+			ARM_KD = 0.2;
+			//ARM_KP = 0.
+		}else if(sense.armPosL >= 0 && Math.abs(armError) <= 10) {
 			ARM_KD = 0.2;
 		}else {
 			ARM_KD = 0;

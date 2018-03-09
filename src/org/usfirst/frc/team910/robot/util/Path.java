@@ -1,13 +1,21 @@
 package org.usfirst.frc.team910.robot.util;
 
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 
-public class Path {
+import org.usfirst.frc.team910.robot.Component;
+
+public class Path extends Component {
 
 	public ArrayList<Double> positions; //array of the recorded positions per loop
 	public ArrayList<Double> velocities;//array of the recorded velocities per loop
 	public ArrayList<Double> accelerations; // array of the recorded accelerations per loop
+	public ArrayList<Double> motorPower; //array of the recorded left motor power per loop
+
 
 	public static final double TOP_VELOC = 60.1; // inches per second, highest capable velocity of robot
 	public static final double ACCEL = 60; // inches per second squared
@@ -20,7 +28,10 @@ public class Path {
 	public Path() { //constructor to create the arrays
 		positions = new ArrayList<Double>();
 		velocities = new ArrayList<Double>();
-		accelerations = new ArrayList<Double>(); 
+		accelerations = new ArrayList<Double>();
+		motorPower = new ArrayList<Double>();
+
+		
 	}
 	
 	/**
@@ -147,6 +158,81 @@ public class Path {
 			//System.out.format("P: %.3f  V: %.2f  A: %.0f\n", position, velocity, tempAccel);
 		} 
 
+	}
+	
+	static boolean prevRecord = false;
+	static double prevPosL = 0;
+	static double prevPosR = 0;
+	static double prevVelL = 0;
+	static double prevVelR = 0;
+	static Path recPathL;
+	static Path recPathR;
+	public static void recordPath(boolean record) {
+		//record the following - position , velocity, acceleration, motor powers
+		//rising edge to record a new path
+		if(record && !prevRecord) {
+			recPathL = new Path();
+			recPathR = new Path();
+		}
+		
+		double positionL = sense.leftDist;
+		double positionR = sense.rightDist;
+		
+		double velocityL = (sense.leftDist - prevPosL) / DT;
+		double velocityR = (sense.rightDist - prevPosR) / DT;
+		
+		double accelL = (velocityL - prevVelL) / DT;
+		double accelR = (velocityR - prevVelR) / DT;
+		
+		prevPosL = positionL;
+		prevPosR = positionR;
+		prevVelL = velocityL;
+		prevVelR = velocityR;
+		
+		if(record) {
+			recPathL.positions.add(positionL);
+			recPathR.positions.add(positionR);
+			
+			recPathL.velocities.add(velocityL);
+			recPathR.velocities.add(velocityR);
+			
+			recPathL.accelerations.add(accelL);
+			recPathR.accelerations.add(accelR);
+		}
+		
+		if(!record && prevRecord) {
+			//ctrl + s;
+			
+			try {
+				BufferedWriter bw = new BufferedWriter(new FileWriter(new File("/home/lvuser/testPath.txt")));
+				
+				for(int i=0;i<recPathL.positions.size(); i++) {
+					bw.write(recPathL.positions.get(i).toString());
+					bw.newLine();
+					bw.write(recPathR.positions.get(i).toString());
+					bw.newLine();
+					bw.write(recPathL.velocities.get(i).toString());
+					bw.newLine();
+					bw.write(recPathR.velocities.get(i).toString());
+					bw.newLine();
+					bw.write(recPathL.accelerations.get(i).toString());
+					bw.newLine();
+					bw.write(recPathR.accelerations.get(i).toString());
+					bw.newLine();
+					bw.write(recPathL.motorPower.get(i).toString());
+					bw.newLine();
+					bw.write(recPathR.motorPower.get(i).toString());
+					bw.newLine();
+				}
+				//our auton is a toilet
+				bw.flush();
+				bw.close();
+				
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
+		}
 	}
 
 }
