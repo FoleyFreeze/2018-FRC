@@ -18,6 +18,7 @@ public class Inputs extends Component {
 	private Joystick controlBoard;
 	
 	public boolean enableMP = false;
+	public double powerLimiter;
 	/*
 
 	public boolean liftToScaleTrigger = false; //TODO set these based on buttons 
@@ -149,6 +150,11 @@ public class Inputs extends Component {
 		
 		SmartDashboard.putNumber("Manual Pwr", manualHeight);
 		SmartDashboard.putNumber("scaleAngle", scaleAngle);
+		if(modeSwitch) {
+			powerLimiter=.25;
+		}else {
+			powerLimiter=1;
+		}
 	}
 	public double ramp(double input, double output) { //Limit the motor output of the robot, prevents flipping
 		double diff = input - output;

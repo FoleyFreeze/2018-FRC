@@ -135,37 +135,73 @@ public class Outputs extends Component {
 	}
 	
 	public void setDrivePower(double leftPower, double rightPower) {
-		double power = 0.75;
-		leftDrive1.set(ControlMode.PercentOutput, leftPower*power);
-		leftDrive2.set(ControlMode.PercentOutput, leftPower*power);
-		leftDrive3.set(ControlMode.PercentOutput, leftPower*power);
-		rightDrive1.set(ControlMode.PercentOutput, rightPower*power);
-		rightDrive2.set(ControlMode.PercentOutput, rightPower*power);
-		rightDrive3.set(ControlMode.PercentOutput, rightPower*power);
-		SmartDashboard.putNumber("L Drive Pwr", leftPower*power);//TODO correct if needed
-		SmartDashboard.putNumber("R Drive Pwr", rightPower*power);//TODO correct if needed
+		double leftStorage;
+		double rightStorage;
+		//limiting logic
+		if(leftPower>in.powerLimiter) {
+			leftStorage=in.powerLimiter;
+		}else if(leftPower<-in.powerLimiter) {
+			leftStorage=-in.powerLimiter;
+		}else {
+			leftStorage=leftPower;
+		}
+		
+		//limiting logic
+		if(rightPower>in.powerLimiter) {
+			rightStorage=in.powerLimiter;
+		}else if(rightPower<-in.powerLimiter) {
+			rightStorage=-in.powerLimiter;
+		}else {
+			rightStorage=rightPower;
+		}
+		leftDrive1.set(ControlMode.PercentOutput, leftStorage);
+		leftDrive2.set(ControlMode.PercentOutput, leftStorage);
+		leftDrive3.set(ControlMode.PercentOutput, leftStorage);
+		rightDrive1.set(ControlMode.PercentOutput, rightStorage);
+		rightDrive2.set(ControlMode.PercentOutput, rightStorage);
+		rightDrive3.set(ControlMode.PercentOutput, rightStorage);
+		SmartDashboard.putNumber("L Drive Pwr", leftStorage);//TODO correct if needed
+		SmartDashboard.putNumber("R Drive Pwr", rightStorage);//TODO correct if needed
 	}
 
 	public void setArmPower(double armPower) {
-		double power = in.manualHeight;//FIXME: this is a hack
-		if(!in.manualOverride) power = 1;
+		double power = 1;
+		if(in.manualOverride) {
+			power=in.manualHeight;
+		}
 		
-		armMotor1.set(ControlMode.PercentOutput, armPower*power);
+		//limiting logic
+		if(armPower*power>in.powerLimiter) {
+			armPower=in.powerLimiter;
+		}else if(armPower*power<-in.powerLimiter) {
+			armPower=-in.powerLimiter;
+		}else {
+			armPower=armPower*power;
+		}
+		armMotor1.set(ControlMode.PercentOutput, armPower);
 		//armMotor2.set(ControlMode.PercentOutput, armPower*power);
 		//System.out.println(in.manualHeight);
-		SmartDashboard.putNumber("L Arm Pwr", armPower*power);//TODO correct if needed
-		SmartDashboard.putNumber("R Arm Pwr", armPower*power);//TODO correct if needed
+		SmartDashboard.putNumber("L Arm Pwr", armPower);//TODO correct if needed
+		SmartDashboard.putNumber("R Arm Pwr", armPower);//TODO correct if needed
 	}
 
 	
-	public void setElevatorPower(double power) {
-		double restriction = in.manualHeight;//FIXME: this is a hack
-		if(!in.manualOverride) restriction = 1;
+	public void setElevatorPower(double elevatorPower) {
+		double power = 1;
+		if(in.manualOverride) power = in.manualHeight;
+		elevatorPower=power*elevatorPower;
 		
-		elevator1.set(ControlMode.PercentOutput, power * restriction); //TODO please good 
-		elevator2.set(ControlMode.PercentOutput, power * restriction);
-		SmartDashboard.putNumber("Lift 1 Pwr", power*restriction);//TODO correct if needed
-		SmartDashboard.putNumber("Lift 2 Pwr", power*restriction);//TODO correct if needed
+		//limiting logic
+		if(elevatorPower>in.powerLimiter) {
+			elevatorPower=in.powerLimiter;
+		}else if(elevatorPower<-in.powerLimiter) {
+			elevatorPower=-in.powerLimiter;
+		}
+		
+		elevator1.set(ControlMode.PercentOutput, elevatorPower); //TODO please good 
+		elevator2.set(ControlMode.PercentOutput, elevatorPower);
+		SmartDashboard.putNumber("Lift 1 Pwr", elevatorPower);//TODO correct if needed
+		SmartDashboard.putNumber("Lift 2 Pwr", elevatorPower);//TODO correct if needed
 	}
 	
 	public void setElevatorPosition(double elevatorPosition) {
@@ -181,21 +217,49 @@ public class Outputs extends Component {
 
 	public void setGatherPower(double leftPower, double rightPower) {
 		//double restriction = in.manualHeight;
-		double restriction = 1;
-		gatherLeft.set(ControlMode.PercentOutput, leftPower*restriction);
-		gatherRight.set(ControlMode.PercentOutput, rightPower*restriction);
-		SmartDashboard.putNumber("L Gather Pwr", leftPower*restriction);//TODO correct if needed
-		SmartDashboard.putNumber("R Gather Pwr", rightPower*restriction);//TODO correct if needed
+		
+		//limiting logic
+		if(leftPower>in.powerLimiter) {
+			leftPower=in.powerLimiter;
+		}else if(leftPower<-in.powerLimiter) {
+			leftPower=in.powerLimiter;
+		}
+		
+		//limiting logic
+		if(rightPower>in.powerLimiter) {
+			rightPower=in.powerLimiter;
+		}else if(rightPower<-in.powerLimiter) {
+			rightPower=-in.powerLimiter;
+		}
+		gatherLeft.set(ControlMode.PercentOutput, leftPower);
+		gatherRight.set(ControlMode.PercentOutput, rightPower);
+		SmartDashboard.putNumber("L Gather Pwr", leftPower);//TODO correct if needed
+		SmartDashboard.putNumber("R Gather Pwr", rightPower);//TODO correct if needed
 		//System.out.println(in.manualHeight);
 
 	}
 	
 	public void setClimberPower(double power1, double power2) {
-		double restriction = in.manualHeight;
-		climber1.set(ControlMode.PercentOutput, power1*restriction);
-		climber2.set(ControlMode.PercentOutput, power2*restriction);
-		SmartDashboard.putNumber("Climb 1 Pwr", power1*restriction);//TODO correct if needed
-		SmartDashboard.putNumber("Climb 2 Pwr", power2*restriction);//TODO correct if needed
+		double power = 1;
+		if(in.manualOverride)power=in.manualHeight;
+		power1=power1*power;
+		power2=power2*power;
+		//limiting logic
+		if(power1>in.powerLimiter) {
+			power1=in.powerLimiter;
+		}else if(power1<-in.powerLimiter) {
+			power1=-in.powerLimiter;
+		}
+		
+		if(power2>in.powerLimiter) {
+			power2=in.powerLimiter;
+		}else if(power2<-in.powerLimiter) {
+			power2=-in.powerLimiter;
+		}
+		climber1.set(ControlMode.PercentOutput, power1);
+		climber2.set(ControlMode.PercentOutput, power2);
+		SmartDashboard.putNumber("Climb 1 Pwr", power1);//TODO correct if needed
+		SmartDashboard.putNumber("Climb 2 Pwr", power2);//TODO correct if needed
 	}
 	
 }
