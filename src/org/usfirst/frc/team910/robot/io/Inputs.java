@@ -58,6 +58,7 @@ public class Inputs extends Component {
 	public boolean autoCube2 = false;
 	public boolean autoCube3 = false;
 	public boolean resetEnc = false;
+	public boolean resetBreaker = false;
 	public Elevator.liftState elevatorCommand = Elevator.liftState.REST_POSITION;
 	
 	
@@ -83,6 +84,7 @@ public class Inputs extends Component {
 		enableMP = false;
 		
 		resetEnc = leftStick.getRawButton(12) && rightStick.getRawButton(12);
+		resetBreaker = leftStick.getRawButton(10) && rightStick.getRawButton(10);
 		
 		
 		leftDrive = ramp(leftYAxis, leftDrive);
