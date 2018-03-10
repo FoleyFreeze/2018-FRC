@@ -20,8 +20,16 @@ public class Gatherer extends Component {
 	}
 
 	public void run() {
+		if(in.manualOverride) {
+			if(in.gather) {
+				gather(in.manualGatherLeft, in.manualGatherRight);
+			}else {
+				gather(0,0);
+			}
+		}
+		
 
-		if (elevate.currentState == Elevator.liftState.F_FLOOR_POSITION || elevate.currentState == Elevator.liftState.R_FLOOR_POSITION) {
+		else if ((elevate.currentState == Elevator.liftState.F_FLOOR_POSITION || elevate.currentState == Elevator.liftState.R_FLOOR_POSITION) && in.gather) {
 			//gather(0.5, 1);
 			//gatherS = gatherState.INIT;
 
