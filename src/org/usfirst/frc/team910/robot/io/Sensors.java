@@ -1,9 +1,11 @@
 package org.usfirst.frc.team910.robot.io;
 
 import org.usfirst.frc.team910.robot.Component;
+import org.usfirst.frc.team910.robot.components.Elevator;
 
 import com.kauailabs.navx.frc.AHRS;
 
+import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
@@ -13,6 +15,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class Sensors extends Component {
 
 	private AHRS navx;
+	private AnalogInput frontCenter;
+	private AnalogInput frontRight;
+	private AnalogInput rearCenter;
+	private AnalogInput rearRight;
 
 	public Angle robotAngle;
 
@@ -33,13 +39,24 @@ public class Sensors extends Component {
 	public boolean goalsZig = false;
 	public boolean goalsZag = false;
 
+	//infrared distance sensors
+	public double distFC;
+	public double distFR;
+	public double distRC;
+	public double distRR;
 	
+	public static final double[] DIST_POINTS = {1.57, 2.36, 3.15, 3.94,  4.72, 5.51, 6.3,  7.09, 7.87, 8.66,  9.45, 10.24, 11.02, 11.81};
+	public static final double[] VOLT_POINTS = { 2.7,    2,  1.5,  1.3,   1.1,  0.9, 0.8,  0.75, 0.65,  0.6,  0.55,   0.5,  0.45,   0.4};
 
 	public Sensors() {
 		navx = new AHRS(SPI.Port.kMXP);
 		navx.zeroYaw();
 		robotAngle = new Angle(0);
 		pdp = new PowerDistributionPanel();
+		frontCenter = new AnalogInput(ElectroBach.F_CNT_DIST);
+		frontRight = new AnalogInput(ElectroBach.F_RGT_DIST);
+		rearCenter = new AnalogInput(ElectroBach.R_CNT_DIST);
+		rearRight = new AnalogInput(ElectroBach.R_RGT_DIST);
 	}
 
 	public void read() {
@@ -71,6 +88,16 @@ public class Sensors extends Component {
 		}
 
 		robotAngle.set(-navx.getYaw());
+		
+		distFC = Elevator.interp(VOLT_POINTS, DIST_POINTS, frontCenter.getVoltage());
+		distFR = Elevator.interp(VOLT_POINTS, DIST_POINTS, frontRight.getVoltage());
+		distRC = Elevator.interp(VOLT_POINTS, DIST_POINTS, rearCenter.getVoltage());
+		distRR = Elevator.interp(VOLT_POINTS, DIST_POINTS, rearRight.getVoltage());
+		
+		SmartDashboard.putNumber("distFC", distFC);
+		SmartDashboard.putNumber("distFR", distFR);
+		SmartDashboard.putNumber("distRC", distRC);
+		SmartDashboard.putNumber("distRR", distRR);
 	}
 
 	public void reset() {
