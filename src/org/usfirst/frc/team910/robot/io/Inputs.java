@@ -151,9 +151,9 @@ public class Inputs extends Component {
 		SmartDashboard.putNumber("Manual Pwr", manualHeight);
 		SmartDashboard.putNumber("scaleAngle", scaleAngle);
 		if(modeSwitch) {
-			powerLimiter=.25;
-		}else {
 			powerLimiter=1;
+		}else {
+			powerLimiter=0.25;
 		}
 	}
 	public double ramp(double input, double output) { //Limit the motor output of the robot, prevents flipping

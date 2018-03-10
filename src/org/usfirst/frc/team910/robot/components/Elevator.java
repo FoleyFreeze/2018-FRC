@@ -308,10 +308,11 @@ public class Elevator extends Component {
 				}
 				break;
 			}
+			
+			SmartDashboard.putString("Goal Position", goalState.toString());
+			SmartDashboard.putString("Current State", currentState.toString());
 		}
 			
-		SmartDashboard.putString("Goal Position", goalState.toString());
-		SmartDashboard.putString("Current State", currentState.toString());
 	}
 	
 	private double prevArmError = 0;
