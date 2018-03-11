@@ -60,9 +60,9 @@ public class Elevator extends Component {
 	public static final double LIFT_MIN = -1; //this is not a temp value, it is supposed to be -1
 	//public static final double ARM_REAR = -1;
 	//public static final double ARM_FRONT = -1;
-	public static final double ARM_REST_MAX = 10;
+	public static final double ARM_REST_MAX = 35;
 	public static final double ARM_REST_MID = 0;
-	public static final double ARM_REST_MIN = -10;
+	public static final double ARM_REST_MIN = -35;
 	public static final double R_SCALE_ARM_MIN = 180;
 	
 	public static final double LIFT_SCALE = 70;
@@ -74,7 +74,9 @@ public class Elevator extends Component {
 	public static final double ARM_SWITCH = 80;
 	public static final double ARM_EXCHANGE = 95;
 	public static final double ARM_FLOOR = 104; //104 from prototype testing
-	public static final double ARM_REST = 0;
+	public static final double ARM_FLOOR_SHIFT = 90;
+	public static final double F_ARM_REST = 30;
+	public static final double R_ARM_REST = -30;
 	
 	public Elevator() {
 
@@ -308,10 +310,11 @@ public class Elevator extends Component {
 				}
 				break;
 			}
+			
+			SmartDashboard.putString("Goal Position", goalState.toString());
+			SmartDashboard.putString("Current State", currentState.toString());
 		}
 			
-		SmartDashboard.putString("Goal Position", goalState.toString());
-		SmartDashboard.putString("Current State", currentState.toString());
 	}
 	
 	private double prevArmError = 0;
@@ -325,11 +328,15 @@ public class Elevator extends Component {
 		
 		switch(position) {
 			case REST_POSITION:
-				targetArm = ARM_REST;
+				if(in.liftFlip) targetArm = R_ARM_REST;
+				else targetArm = F_ARM_REST;
+				
 				targetLift = LIFT_REST;
 				break;
 			case F_FLOOR_POSITION:
-				targetArm = ARM_FLOOR;
+				if(in.shift) targetArm = ARM_FLOOR_SHIFT;
+				else targetArm = ARM_FLOOR_SHIFT;
+				
 				targetLift = LIFT_FLOOR;
 				break;
 			case F_EXCHANGE_POSITION:
@@ -365,7 +372,9 @@ public class Elevator extends Component {
 				
 				break;
 			case R_FLOOR_POSITION:
-				targetArm = -ARM_FLOOR;
+				if(in.shift) targetArm = -ARM_FLOOR_SHIFT;
+				else targetArm = -ARM_FLOOR;
+				
 				targetLift = LIFT_FLOOR;
 				break;
 			case R_EXCHANGE_POSITION:

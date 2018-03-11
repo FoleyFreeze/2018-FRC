@@ -23,4 +23,9 @@ public class ElectroBach {
 	
 	public static final int CLIMBER_CAN_1=3;
 	public static final int CLIMBER_CAN_2=12;
+	//infrared distance sensors
+	public static final int F_CNT_DIST = -1;
+	public static final int R_CNT_DIST = -1;
+	public static final int F_RGT_DIST = -1;
+	public static final int R_RGT_DIST = -1;
 }

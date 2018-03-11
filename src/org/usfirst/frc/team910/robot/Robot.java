@@ -81,6 +81,7 @@ public class Robot extends TimedRobot {
 		//climb.run();
 		//elevate.run();
 		//gather.run();
+		output.circuitBreaker();
 	}
 	
 	/**
@@ -103,6 +104,7 @@ public class Robot extends TimedRobot {
 		drive.run();
 		climb.run();
 		elevate.run();
+		output.circuitBreaker();
 	}
 	
 	@Override
@@ -118,6 +120,7 @@ public class Robot extends TimedRobot {
 	public void disabledPeriodic() {
 		input.read();
 		sensor.read();
+		output.circuitBreaker();
 	}
 
 	/**

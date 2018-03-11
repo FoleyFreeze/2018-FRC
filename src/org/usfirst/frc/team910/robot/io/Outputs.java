@@ -8,6 +8,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Outputs extends Component {
@@ -165,6 +166,12 @@ public class Outputs extends Component {
 	}
 
 	public void setArmPower(double armPower) {
+		//Do not drive if motor is burning out
+		if (overloaded[ElectroBach.ARM_CAN_1] || overloaded[ElectroBach.ARM_CAN_2]) {
+			armMotor1.set(ControlMode.PercentOutput, 0);
+			return;
+		}
+		
 		double power = 1;
 		if(in.manualOverride) {
 			power=in.manualHeight;
@@ -187,6 +194,13 @@ public class Outputs extends Component {
 
 	
 	public void setElevatorPower(double elevatorPower) {
+		//Do not drive if motor is burning out
+		if (overloaded[ElectroBach.ELEVATOR_CAN_1] || overloaded[ElectroBach.ELEVATOR_CAN_2] ) {
+			elevator1.set(ControlMode.PercentOutput, 0);
+			elevator2.set(ControlMode.PercentOutput, 0);
+			return;
+		}
+		
 		double power = 1;
 		if(in.manualOverride) power = in.manualHeight;
 		elevatorPower=power*elevatorPower;
@@ -216,6 +230,12 @@ public class Outputs extends Component {
 	}
 
 	public void setGatherPower(double leftPower, double rightPower) {
+		//Do not drive if motor is burning out
+		if(overloaded[ElectroBach.LEFT_GATHER_CAN] || overloaded[ElectroBach.RIGHT_GATHER_CAN]) {
+			gatherLeft.set(ControlMode.PercentOutput, 0);
+			gatherRight.set(ControlMode.PercentOutput, 0);
+		}
+		
 		//double restriction = in.manualHeight;
 		
 		//limiting logic
@@ -240,6 +260,13 @@ public class Outputs extends Component {
 	}
 	
 	public void setClimberPower(double power1, double power2) {
+		//Do not drive if motor is burning out
+		if(overloaded[ElectroBach.CLIMBER_CAN_1] || overloaded[ElectroBach.CLIMBER_CAN_2]) {
+			climber1.set(ControlMode.PercentOutput, 0);
+			climber2.set(ControlMode.PercentOutput, 0);
+			return;
+		}
+		
 		double power = 1;
 		if(in.manualOverride)power=in.manualHeight;
 		power1=power1*power;
@@ -261,5 +288,38 @@ public class Outputs extends Component {
 		SmartDashboard.putNumber("Climb 1 Pwr", power1);//TODO correct if needed
 		SmartDashboard.putNumber("Climb 2 Pwr", power2);//TODO correct if needed
 	}
+	
+	private double[] filteredCurrent = new double[16];
+	private boolean[] overloaded = new boolean[16];
+	public static final double[] CURRENT_LIMITS = {100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100};
+	public static final double[] TIME_LIMIT = {0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5};
+	private double[] overloadTime = new double[16];
+	public static final double FILT = 0.5;
+	public static final double RESET_TIME = 10;
+	
+	public void circuitBreaker() {
+		for (int i = 0; i < 16; i++) { //for every pdp channel
+			filteredCurrent[i] += FILT * (sense.pdp.getCurrent(i) - filteredCurrent[i]); //filter current
+			
+			if(overloaded[i]) { //if burning out, wait until reset
+				if (Timer.getFPGATimestamp() > overloadTime[i] || in.resetBreaker) {
+					overloaded[i] = false;
+				}
+			} else { //if running
+				if (filteredCurrent[i] > CURRENT_LIMITS[i]) { //if violating limits
+					if (overloadTime[i] < Timer.getFPGATimestamp()) {//if violates for too long, overloaded
+						overloaded[i] = true;
+						overloadTime[i] = Timer.getFPGATimestamp() + RESET_TIME;
+					}
+				}else { //keep reseting time when limits met
+					overloadTime[i] = Timer.getFPGATimestamp() + TIME_LIMIT[i];
+				}
+			}
+		}
+		SmartDashboard.putBooleanArray("Overloaded", overloaded);
+		SmartDashboard.putNumberArray("Overload Time", overloadTime);
+		
+	}
+	
 	
 }

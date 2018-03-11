@@ -58,6 +58,7 @@ public class Inputs extends Component {
 	public boolean autoCube2 = false;
 	public boolean autoCube3 = false;
 	public boolean resetEnc = false;
+	public boolean resetBreaker = false;
 	public Elevator.liftState elevatorCommand = Elevator.liftState.REST_POSITION;
 	
 	
@@ -83,6 +84,7 @@ public class Inputs extends Component {
 		enableMP = false;
 		
 		resetEnc = leftStick.getRawButton(12) && rightStick.getRawButton(12);
+		resetBreaker = leftStick.getRawButton(10) && rightStick.getRawButton(10);
 		
 		
 		leftDrive = ramp(leftYAxis, leftDrive);
@@ -151,9 +153,9 @@ public class Inputs extends Component {
 		SmartDashboard.putNumber("Manual Pwr", manualHeight);
 		SmartDashboard.putNumber("scaleAngle", scaleAngle);
 		if(modeSwitch) {
-			powerLimiter=.25;
-		}else {
 			powerLimiter=1;
+		}else {
+			powerLimiter=0.25;
 		}
 	}
 	public double ramp(double input, double output) { //Limit the motor output of the robot, prevents flipping
