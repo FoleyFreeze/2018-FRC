@@ -11,7 +11,9 @@ import org.usfirst.frc.team910.robot.auton.steps.EndStep;
 import org.usfirst.frc.team910.robot.auton.steps.IfInterface;
 import org.usfirst.frc.team910.robot.auton.steps.IfSet;
 import org.usfirst.frc.team910.robot.auton.steps.SeriesSet;
+import org.usfirst.frc.team910.robot.auton.steps.ShootStep;
 import org.usfirst.frc.team910.robot.auton.steps.StartStep;
+import org.usfirst.frc.team910.robot.auton.steps.WaitStep;
 import org.usfirst.frc.team910.robot.components.Elevator;
 
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -91,9 +93,8 @@ public class AutonMain extends Component {
 						      options.selectedStart == RIGHT && !options.switchIsLeft;
 					}
 				}));
-				//FIXME: actually add these classes
-				//b.add(new ShootStep());
-				//b.add(new DoNothingStep());
+				b.add(new ShootStep());
+				b.add(new WaitStep(0));
 				b.end();
 				
 			b.add(new EndStep());

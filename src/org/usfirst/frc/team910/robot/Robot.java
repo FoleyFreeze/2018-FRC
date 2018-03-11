@@ -124,7 +124,7 @@ public class Robot extends TimedRobot {
 		output.disableBrake();
 		output.circuitBreaker();
 		elevate.updateDerivatives();
-		
+		auton.selectAuton();
 	}
 
 	/**
