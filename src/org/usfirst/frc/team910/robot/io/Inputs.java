@@ -10,8 +10,8 @@ public class Inputs extends Component {
 
 	public static final double DEADBAND = 0.1;
 	public static double RAMP_LIMIT = .02; //Power per 20 ms
-	//public static final double[] ELEVATOR_HEIGHT_AXIS = {  0,    10,   20,   30,   40,    50,     60,    70}; 
-	// public static final double[] RAMP_LIMIT_TABLE =     {.02, .0185, .017, .0165, .015, .0135, .0120, .0105};
+	public static final double[] ELEVATOR_HEIGHT_AXIS = {    0,     10,    20,     30,    40,     50,    60,     70}; 
+	public static final double[] RAMP_LIMIT_TABLE =     {0.025, 0.0235, 0.022, 0.0205, 0.019, 0.0175, 0.016, 0.0145};
 	
 	private Joystick leftStick;
 	private Joystick rightStick;
@@ -161,7 +161,7 @@ public class Inputs extends Component {
 	public double ramp(double input, double output) { //Limit the motor output of the robot, prevents flipping
 		double diff = input - output;
 		
-	//	Elevator.interp(ELEVATOR_HEIGHT_AXIS, RAMP_LIMIT_TABLE, RAMP_LIMIT);
+	RAMP_LIMIT = Elevator.interp(ELEVATOR_HEIGHT_AXIS, RAMP_LIMIT_TABLE, sense.liftPos );
 		
 		
 		if(output > 0) {

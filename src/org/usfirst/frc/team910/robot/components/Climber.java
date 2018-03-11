@@ -11,12 +11,12 @@ public class Climber extends Component {
 	
 	public void run() {
 		if(in.climb) {
-			climb(1,1);
+			climb(0.5,0.5);
 		} else {
 			climb(0,0);
 		}
 		if(in.climb && in.shift) {
-			climb(-1,-1); //FIXME set to tested power
+			climb(1,1); //FIXME set to tested power
 		}
 	}
 	
