@@ -5,10 +5,10 @@ import org.usfirst.frc.team910.robot.Component;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Elevator extends Component {
-	public static double ARM_KP = 0.05; //power per deg
-	public static double LIFT_KP = 0.2; //power per inch
-	public static double ARM_KD = 0;//0.2
-	public static double LIFT_KD = 0;//1.0
+	public static final double ARM_KP = 0.05; //power per deg
+	public static final double LIFT_KP = 0.2; //power per inch
+	public static final double ARM_KD = 0.05;//0.2
+	public static final double LIFT_KD = 0.5;//1.0
 	
 	public static final double LIFT_DEADBAND = 0;
 	public static final double ARM_DEADBAND = 0;
@@ -55,7 +55,7 @@ public class Elevator extends Component {
 	
 	public static final double LIFT_MAX = 70.5;
 	public static final double LIFT_SCALE_MIN = 60;
-	public static final double LIFT_SWITCH_MIN = 15;
+	public static final double LIFT_SWITCH_MIN = 4;  //MUST be less than LIFE_SWITCH !!!
 	public static final double LIFT_EXCHANGE_MIN = 2;
 	public static final double LIFT_MIN = -1; //this is not a temp value, it is supposed to be -1
 	//public static final double ARM_REAR = -1;
@@ -66,17 +66,17 @@ public class Elevator extends Component {
 	public static final double R_SCALE_ARM_MIN = 180;
 	
 	public static final double LIFT_SCALE = 70;
-	public static final double LIFT_SWITCH = 20;
+	public static final double LIFT_SWITCH = 6;
 	public static final double LIFT_EXCHANGE = 3;
 	public static final double LIFT_FLOOR = 0.5;
 	public static final double LIFT_REST = LIFT_FLOOR;
 	public static final double ARM_SCALE = 90;
-	public static final double ARM_SWITCH = 80;
+	public static final double ARM_SWITCH = 90;
 	public static final double ARM_EXCHANGE = 95;
 	public static final double ARM_FLOOR = 104; //104 from prototype testing
 	public static final double ARM_FLOOR_SHIFT = 90;
-	public static final double F_ARM_REST = 30;
-	public static final double R_ARM_REST = -30;
+	public static final double F_ARM_REST = 20;
+	public static final double R_ARM_REST = -20;
 	
 	public Elevator() {
 
@@ -315,10 +315,16 @@ public class Elevator extends Component {
 			SmartDashboard.putString("Current State", currentState.toString());
 		}
 			
+		updateDerivatives();
 	}
 	
-	private double prevArmError = 0;
-	private double prevLiftError = 0;
+	public void updateDerivatives() {
+		prevArmError = sense.armPosL;
+		prevLiftError = sense.liftPos;
+	}
+	
+	public double prevArmError = 0;
+	public double prevLiftError = 0;
 	private double prevArmSetpoint = 0;
 	private double prevLiftSetpoint = 0;
 	private boolean firstAuto = true;
@@ -335,7 +341,7 @@ public class Elevator extends Component {
 				break;
 			case F_FLOOR_POSITION:
 				if(in.shift) targetArm = ARM_FLOOR_SHIFT;
-				else targetArm = ARM_FLOOR_SHIFT;
+				else targetArm = ARM_FLOOR;
 				
 				targetLift = LIFT_FLOOR;
 				break;
@@ -460,25 +466,11 @@ public class Elevator extends Component {
 		double liftError = targetLift - sense.liftPos;
 		
 		//find error from previous error
-		double deltaArmError = armError - prevArmError;
-		double deltaLiftError = liftError - prevLiftError;
+		//use "process variable" in order to eliminate derivative kick
+		double deltaArmError = -sense.armPosL + prevArmError;
+		double deltaLiftError = -sense.liftPos + prevLiftError;
 		
 		double armFeedFwd = interp(FEED_FORWARD_AXIS, FEED_FORWARD_TABLE, targetArm);
-		
-		if(liftError <= 10) {
-			LIFT_KD = 0.9;
-		}else {
-			LIFT_KD = 0;
-		}
-		
-		if((sense.armPosL <= 0 || sense.armPosL > 180) && Math.abs(armError) <= 25) {
-			ARM_KD = 0.2;
-			//ARM_KP = 0.
-		}else if(sense.armPosL >= 0 && Math.abs(armError) <= 10) {
-			ARM_KD = 0.2;
-		}else {
-			ARM_KD = 0;
-		}
 		
 		
 		double armPower = armError * ARM_KP + deltaArmError * ARM_KD + armFeedFwd;
@@ -542,8 +534,10 @@ public class Elevator extends Component {
 		out.setElevatorPower(liftPower);
 		
 		//hold onto error values
-		prevArmError = armError;
-		prevLiftError = liftError;
+		//use sensor data to eliminate derivative kick
+		//these are now set above so they will update even in manual mode and disabled to prevent kick
+		//prevArmError = sense.armPosL;
+		//prevLiftError = sense.liftPos;
 		
 		SmartDashboard.putString("TargetPos", position.toString());
 		SmartDashboard.putNumber("Lift Goal", targetLift);
@@ -554,6 +548,9 @@ public class Elevator extends Component {
 		SmartDashboard.putNumber("Minimum Lift", liftMin);
 		SmartDashboard.putNumber("Lift Power", liftPower);
 		SmartDashboard.putNumber("Arm Power", armPower);
+		
+		SmartDashboard.putNumber("ArmD", deltaArmError);
+		SmartDashboard.putNumber("LiftD", deltaLiftError);
 	}
 
 	public void elevate(double power) {

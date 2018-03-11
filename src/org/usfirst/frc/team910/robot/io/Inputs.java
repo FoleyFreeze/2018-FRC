@@ -129,7 +129,7 @@ public class Inputs extends Component {
 		else if(liftExchange) elevatorCommand = Elevator.liftState.F_EXCHANGE_POSITION;
 		
 		//require gather button to be held down to gather
-		if(gather) elevatorCommand = Elevator.liftState.F_FLOOR_POSITION;
+		if(gather && !switchButton) elevatorCommand = Elevator.liftState.F_FLOOR_POSITION;
 		else if( elevatorCommand == Elevator.liftState.F_FLOOR_POSITION ||
 				 elevatorCommand == Elevator.liftState.R_FLOOR_POSITION) {
 			elevatorCommand = Elevator.liftState.REST_POSITION;

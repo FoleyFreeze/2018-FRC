@@ -29,7 +29,7 @@ public class Gatherer extends Component {
 		}
 		
 
-		else if ((elevate.currentState == Elevator.liftState.F_FLOOR_POSITION || elevate.currentState == Elevator.liftState.R_FLOOR_POSITION) && in.gather) {
+		else if (in.gather) {
 			//gather(0.5, 1);
 			//gatherS = gatherState.INIT;
 
@@ -43,7 +43,7 @@ public class Gatherer extends Component {
 				break;
 			// take in the cube
 			case SPIN:
-				gather(.5, 0.6);
+				gather(0.5, 0.6);
 				if (sense.pdp.getCurrent(ElectroBach.LEFT_GATHER_CAN)
 						+ sense.pdp.getCurrent(ElectroBach.RIGHT_GATHER_CAN) > JAMMED_CURRENT
 						&& Timer.getFPGATimestamp() > ejectTime) {
@@ -65,6 +65,7 @@ public class Gatherer extends Component {
 				gather(.7, .7);
 				if(Timer.getFPGATimestamp() > ejectTime) {
 					gatherS = gatherState.WAIT;
+					ejectTime = Timer.getFPGATimestamp() + 1;
 				}
 				break;
 				
@@ -72,29 +73,68 @@ public class Gatherer extends Component {
 				gather(0,0);
 				if(Math.abs(sense.armPosL) < 70) {
 					gatherS = gatherState.CENTER;
+					ejectTime = Timer.getFPGATimestamp() + 0.25;
+				} else if(Timer.getFPGATimestamp() > ejectTime) {
+					gatherS = gatherState.INIT;
 				}
 				break;
 				
 			case CENTER:
 				gather(0.8,0.8);
-				if(Math.abs(sense.armPosL) < 15) {
+				if(Math.abs(sense.armPosL) < 35) {
 					gatherS = gatherState.STOP;
+				} else if (Timer.getFPGATimestamp() > ejectTime) {
+					gatherS = gatherState.INIT;
 				}
 				break;
 				
 			case STOP:
-				gather(0,0);
+				gatherS = gatherState.INIT;
+				//gather(0,0);
 				break;
 			}
+			
+			//shoot logic
 		} else if (in.shoot) {
 			gather(-0.6, -0.6);
 			gatherS = gatherState.INIT;
 		} else if (in.shift && in.shoot) {
 			gather(-0.8, -0.8);
 			gatherS = gatherState.INIT;
+			
+			//if no button pressed
 		} else {
-			gather(0, 0);
-			gatherS = gatherState.INIT;
+			switch(gatherS) {
+			case INIT:
+			case SPIN:
+			case EJECT:
+			case REGATHER:
+			case WAIT:
+				gather(0,0);
+				if(Math.abs(sense.armPosL) < 70) {
+					gatherS = gatherState.CENTER;
+					ejectTime = Timer.getFPGATimestamp() + 0.25;
+				} else if(Timer.getFPGATimestamp() > ejectTime) {
+					gatherS = gatherState.STOP;
+				}
+				break;
+				
+			case CENTER:
+				gather(0.8,0.8);
+				if(Math.abs(sense.armPosL) < 35) {
+					gatherS = gatherState.STOP;
+				} else if(Timer.getFPGATimestamp() > ejectTime) {
+					gatherS = gatherState.STOP;
+				}
+				break;
+				
+			default:
+				gather(0,0);
+				gatherS = gatherState.STOP;
+			}
+			
+			//gather(0, 0);
+			//gatherS = gatherState.INIT;
 		}
 
 	}

@@ -6,6 +6,7 @@ import org.usfirst.frc.team910.robot.components.Elevator;
 import com.ctre.phoenix.ErrorCode;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.wpilibj.Timer;
@@ -321,5 +322,17 @@ public class Outputs extends Component {
 		
 	}
 	
+	public void enableBrake() {
+		elevator1.setNeutralMode(NeutralMode.Brake);
+		elevator2.setNeutralMode(NeutralMode.Brake);
+		armMotor1.setNeutralMode(NeutralMode.Brake);
+		armMotor2.setNeutralMode(NeutralMode.Brake);
+	}
 	
+	public void disableBrake() {
+		elevator1.setNeutralMode(NeutralMode.Coast);
+		elevator2.setNeutralMode(NeutralMode.Coast);
+		armMotor1.setNeutralMode(NeutralMode.Coast);
+		armMotor2.setNeutralMode(NeutralMode.Coast);
+	}
 }
