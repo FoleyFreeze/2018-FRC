@@ -97,6 +97,7 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void teleopPeriodic() {
+		output.enableBrake();
 		input.read();
 		sensor.read();
 		view.run();
@@ -120,7 +121,9 @@ public class Robot extends TimedRobot {
 	public void disabledPeriodic() {
 		input.read();
 		sensor.read();
+		output.disableBrake();
 		output.circuitBreaker();
+		elevate.updateDerivatives();
 	}
 
 	/**
