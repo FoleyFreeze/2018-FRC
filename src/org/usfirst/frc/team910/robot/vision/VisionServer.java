@@ -13,41 +13,22 @@ import edu.wpi.first.wpilibj.Timer;
 import java.lang.Math;
 
 /**
- * HOW TO INITIALIZE ALL THIS STUFF:
- *  
- * 1. Create an instance of the VisionServer (the system should only have one VisionServer object)
- * 2. Ping the Raspberry Pi; the Pi will wait for a ping request and will not send any object info until it receives and replies to a ping
- * 3. Parse the VisionPingInfo object returned by the ping
- * 4. Check the values as you want to see if they make sense in VisionPingInfo
- * 4a. For example, if you're using 2 Pixy cameras, did the ping return 2 Pixy cameras?
- * 5. Associate a queue with each Pixy you want to get data from
- * 6. Enable saving object info for a particular Pixy
- * 7. Start the VisionServer to put object info in the queue
- * 8. Profit
- * 
- * Actual Java code which implements the steps above (not tested):
- * VisionServer vs = new VisionServer();
- * 
- * VisionPingInfo pi;
- * 
- * pi = vs.ping(1000); // Wait 1 second for Pi to respond to ping request
- * 
- * if (!pi.result ) {
- * 
- *     // ping worked
- *     
- *     // At a minimum, check for the number of Pixy cameras
- *     // This code is not here
- *     
- * }
+ * How to use vision stuff:
  * 
  * Let's say there are 2 Pixy cameras (1 is Pixy front, 2 is Pixy back)
- *
+ * Also assume front Pixy has ID 1234 and back Pixy has ID 5678
+ * NOTE: Pi currently only supports one Pixy
+ * 
+ * VisionServer vs = new VisionServer();
+ * 
  * vs.toSaveOrNotToSave(1, true);
  * vs.toSaveOrNorToSave(2, true);
  *
- * vs.sBlockingQueue<VisionData> queueFront = new ArrayBlockingQueue<VisionData>(1024); // queue Front
- * vs.sBlockingQueue<VisionData> queueFront = new ArrayBlockingQueue<VisionData>(1024); // queue Back
+ * vs.setPixyIDFront(1234);
+ * vs.setPixyIDBack(5678);
+ * 
+ * ArrayBlockingQueue<VisionData> queueFront = new ArrayBlockingQueue<VisionData>(1024); // object info for front camera goes in this queue
+ * ArrayBlockingQueue<VisionData> queueBack = new ArrayBlockingQueue<VisionData>(1024); // object info for back camera goes in this queue
  *
  * vs.start();
  * Now object info will be put in the queues, if Pixy recognizes something
