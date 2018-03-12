@@ -55,7 +55,7 @@ public class Elevator extends Component {
 	
 	public static final double LIFT_MAX = 70.5;
 	public static final double LIFT_SCALE_MIN = 60;
-	public static final double LIFT_SWITCH_MIN = 4;  //MUST be less than LIFE_SWITCH !!!
+	public static final double LIFT_SWITCH_MIN = 4;  //MUST be less than LIFT_SWITCH !!!
 	public static final double LIFT_EXCHANGE_MIN = 2;
 	public static final double LIFT_MIN = -1; //this is not a temp value, it is supposed to be -1
 	//public static final double ARM_REAR = -1;
@@ -66,7 +66,7 @@ public class Elevator extends Component {
 	public static final double R_SCALE_ARM_MIN = 180;
 	
 	public static final double LIFT_SCALE = 70;
-	public static final double LIFT_SWITCH = 6;
+	public static final double LIFT_SWITCH = 12;
 	public static final double LIFT_EXCHANGE = 3;
 	public static final double LIFT_FLOOR = 0.5;
 	public static final double LIFT_REST = LIFT_FLOOR;

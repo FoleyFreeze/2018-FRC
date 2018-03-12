@@ -38,6 +38,9 @@ public class Sensors extends Component {
 	public boolean goalsRight = false;
 	public boolean goalsZig = false;
 	public boolean goalsZag = false;
+	
+	public boolean switchIsLeft;
+	public boolean scaleIsLeft;
 
 	//infrared distance sensors
 	public double distFC;
@@ -75,7 +78,12 @@ public class Sensors extends Component {
 
 		gameData = DriverStation.getInstance().getGameSpecificMessage();
 
-		if(gameData != null && gameData.length() > 3) {
+		if(gameData != null && gameData.length() == 3) {
+			if(gameData.charAt(0) == 'L') switchIsLeft = true;
+			else switchIsLeft = false;
+			if(gameData.charAt(1) == 'L') scaleIsLeft = true;
+			else scaleIsLeft = false;
+			
 			if (gameData.charAt(0) == 'L' && gameData.charAt(1) == 'L') {
 				goalsLeft = true;
 			} else if (gameData.charAt(0) == 'R' && gameData.charAt(1) == 'R') {

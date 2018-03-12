@@ -4,11 +4,14 @@ import java.util.ArrayList;
 
 public class SeriesSet extends AutonSet {
 	private ArrayList<AutonStep> steps;
+	
+	public SeriesSet() {
+		steps = new ArrayList<>();
+	}
+	
 	@Override
 	public void addStep(AutonStep newStep) {
 		steps.add(newStep);
-		
-		
 	}
 
 	@Override
@@ -19,13 +22,14 @@ public class SeriesSet extends AutonSet {
 	int currentStep = 0;//int is step that currently needs to happen
 	@Override
 	public void run() {//run step that is supposed to be happening at time
+		steps.get(currentStep).run();
+		
 		if(steps.get(currentStep).isError()) {//if there is an error, everything stops
 			error=true;
 		}else if(steps.get(currentStep).isDone()) {//go to and initialize next step
 			currentStep++;
 			steps.get(currentStep).init();
 		}
-		
 	}
 
 	@Override

@@ -22,7 +22,9 @@ public class AutonBuilder {
 	
 	//puts a new set on stack
 	public void add(AutonSet set) {
-		setStack.peek().addStep(set);
+		if(!setStack.empty()) {
+			setStack.peek().addStep(set);
+		}
 		setStack.push(set);
 	}
 	

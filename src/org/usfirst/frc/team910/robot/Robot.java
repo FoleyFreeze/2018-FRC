@@ -75,13 +75,14 @@ public class Robot extends TimedRobot {
 	public void autonomousPeriodic() {
 		sensor.read();
 		view.run();
-		//auton.run();
+		auton.run();
 		
 		drive.run();
 		//climb.run();
-		//elevate.run();
-		//gather.run();
+		elevate.run();
+		gather.run();
 		output.circuitBreaker();
+		auton.getGameData();
 	}
 	
 	/**
