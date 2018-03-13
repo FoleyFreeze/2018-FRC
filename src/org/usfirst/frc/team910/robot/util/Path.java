@@ -44,8 +44,26 @@ public class Path extends Component {
 	 * @param startVel velocity we start with at start of path
 	 * @param endVel velocity we end with at end of path
 	 */
+	double accelMax;
+	double velocMax;
+	double dist;
+	double startPos;
+	double startVel;
+	double endVel;
+	
 	public void buildPath(double accelMax, double velocMax, double dist, double startPos, double startVel, double endVel ) { // distance as an input, total path distance
 
+		this.accelMax = accelMax;
+		this.velocMax = velocMax;
+		this.dist = dist;
+		this.startPos = startPos;
+		this.startVel = startVel;
+		this.endVel = endVel;
+		
+		positions = new ArrayList<Double>();
+		velocities = new ArrayList<Double>();
+		accelerations = new ArrayList<Double>();
+		motorPower = new ArrayList<Double>();
 		
 		double velocity = startVel; //initial velocity
 		double position = startPos; //initial position
