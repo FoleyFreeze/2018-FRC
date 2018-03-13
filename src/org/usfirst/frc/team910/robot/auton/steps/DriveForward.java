@@ -26,13 +26,13 @@ public class DriveForward extends AutonStep {
 	public void run() {
 		in.driveStraight = true; //don't drive crooked
 		in.dynamicBrake = false; //we are driving, not braking, just making sure
-		in.rightDrive = 0.8; //power for DriveForward 
+		in.rightDrive = 0.5; //power for DriveForward 
 	}
 	
 	@Override
 	public boolean isDone() {
 		//we are done after 60 inches / 5ft
-		if(sense.leftDist - initDist >= targetDist|| Timer.getFPGATimestamp() > startTime + targetTime) {
+		if(sense.leftDist - initDist >= targetDist || Timer.getFPGATimestamp() > startTime + targetTime) {
 			in.rightDrive = 0.0; //ensures we stop driving when at desired distance
 			in.driveStraight = false; //turn this off
 			return true; 

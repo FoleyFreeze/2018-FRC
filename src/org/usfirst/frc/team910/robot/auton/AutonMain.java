@@ -3,9 +3,11 @@ package org.usfirst.frc.team910.robot.auton;
 import java.util.ArrayList;
 
 import org.usfirst.frc.team910.robot.Component;
+import org.usfirst.frc.team910.robot.auton.steps.AutonSet;
 import org.usfirst.frc.team910.robot.auton.steps.AutonStep;
 import org.usfirst.frc.team910.robot.auton.steps.DriveForward;
 import org.usfirst.frc.team910.robot.auton.steps.DrivePath;
+import org.usfirst.frc.team910.robot.auton.steps.DriveTurnStep;
 import org.usfirst.frc.team910.robot.auton.steps.ElevatorPosition;
 import org.usfirst.frc.team910.robot.auton.steps.EndStep;
 import org.usfirst.frc.team910.robot.auton.steps.IfInterface;
@@ -22,7 +24,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class AutonMain extends Component {
 
-	private ArrayList<AutonStep> steps;
+	//private ArrayList<AutonStep> steps;
+	private AutonSet currentAuton;
 	
 	final String startPosition = "default";
 	final String PositionLeft = "Left";
@@ -31,8 +34,9 @@ public class AutonMain extends Component {
 	
 	private SeriesSet driveForward;
 	private SeriesSet onlySwitch;
+	private SeriesSet centerSwitch;
 	
-	public int currentStep = 0;
+	//public int currentStep = 0;
 	
 	public static final int STRAIGHT_ONLY = 0;
 	public static final int LEFT = 1;
@@ -66,6 +70,7 @@ public class AutonMain extends Component {
 		startLocation.addObject("Right", RIGHT);
 		SmartDashboard.putData("AutoStartLocation", startLocation);
 		
+		priority = new SendableChooser<>();
 		priority.addDefault("Scale", SCALE);
 		priority.addObject("Switch", SWITCH);
 		priority.addObject("Exchange", EXCHANGE);
@@ -77,15 +82,15 @@ public class AutonMain extends Component {
 		AutonBuilder b = new AutonBuilder(driveForward);
 			b.add(new StartStep());
 			b.add(new ElevatorPosition(Elevator.liftState.REST_POSITION));
-			b.add(new DriveForward(125, 3)); //10 feet plus a little bit
+			b.add(new DriveForward(105, 1.5));
 			b.add(new EndStep());
-		b.end();
+			b.end();
 		
 		onlySwitch = new SeriesSet();
 		b.add(onlySwitch);
 			b.add(new StartStep());
 			b.add(new ElevatorPosition(Elevator.liftState.F_SWITCH_POSITION));
-			b.add(new DriveForward(140, 3));
+			b.add(new DriveForward(120, 1.5));
 			
 				b.add(new IfSet(new IfInterface() {
 					public boolean choice() { //if the switch we are in front of is the one we should score on
@@ -98,12 +103,42 @@ public class AutonMain extends Component {
 				b.end();
 				
 			b.add(new EndStep());
-		b.end();
+			b.end();
+		
+		centerSwitch = new SeriesSet();
+		b.add(centerSwitch);
+			b.add(new StartStep());
+			b.add(new ElevatorPosition(Elevator.liftState.F_SWITCH_POSITION));
+			b.add(new DriveForward(10, 0.25));
+			
+				b.add(new IfSet(new IfInterface() {
+					public boolean choice() { //is the switch on the left or right
+						return options.switchIsLeft;
+					}
+				}));
+				b.add(new DriveTurnStep(-0.1, 0.5, 0.5)); //turn left
+				b.add(new DriveTurnStep(0.5, -0.1, 0.5)); //turn right
+				b.end();
+			
+			b.add(new DriveForward(75, 1.25));
+				b.add(new IfSet(new IfInterface() {
+					public boolean choice() { //is the switch on the left or right
+						return options.switchIsLeft;
+					}
+				}));
+				b.add(new DriveTurnStep(0, -0.2, 0.2)); //turn right
+				b.add(new DriveTurnStep(-0.2, 0, 0.2));//turn left
+				b.end();
+				
+			b.add(new WaitStep(.25));
+			b.add(new ShootStep());
+			b.add(new EndStep());
+			b.end();
 	}
 	
 	
 	public void init() {
-		currentStep = 0;
+		//currentStep = 0;
 	}
 	
 	
@@ -119,24 +154,38 @@ public class AutonMain extends Component {
 		options.exchangeIfSwitch = SmartDashboard.getBoolean("ExchangeIfSwitch", false);
 		options.switchBeforeScale = SmartDashboard.getBoolean("SwitchBeforeScale", false);
 		
+		getGameData();
 		
 		switch(options.selectedStart) {
 		case STRAIGHT_ONLY:
+			currentAuton = driveForward;
 			break;
 			
 		case LEFT:
+			currentAuton = onlySwitch;
 			break;
 			
 		case CENTER:
+			currentAuton = centerSwitch;
 			break;
 			
 		case RIGHT:
+			currentAuton = onlySwitch;
 			break;
 		}
 		
 	}
 	
+	public void getGameData() {
+		options.switchIsLeft = sense.switchIsLeft;
+		options.scaleIsLeft = sense.scaleIsLeft;
+	}
+	
 	public void run() {
+		
+		currentAuton.run();
+		
+		/*
 		steps.get(currentStep).run(); //run the functions of the step we are on
 		//if step has error we move to the next step
 		if(steps.get(currentStep).isError()) {
@@ -147,7 +196,7 @@ public class AutonMain extends Component {
 			currentStep++;
 			steps.get(currentStep).init(); //run initial code for next step
 		}
-
+		*/
 	}
 
 }

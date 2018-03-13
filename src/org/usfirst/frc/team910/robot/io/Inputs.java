@@ -158,11 +158,12 @@ public class Inputs extends Component {
 			powerLimiter=0.25;
 		}
 	}
+	
+	
 	public double ramp(double input, double output) { //Limit the motor output of the robot, prevents flipping
 		double diff = input - output;
 		
-	RAMP_LIMIT = Elevator.interp(ELEVATOR_HEIGHT_AXIS, RAMP_LIMIT_TABLE, sense.liftPos );
-		
+		RAMP_LIMIT = Elevator.interp(ELEVATOR_HEIGHT_AXIS, RAMP_LIMIT_TABLE, sense.liftPos );
 		
 		if(output > 0) {
 			if (diff > 0) {

@@ -7,6 +7,11 @@ public class ParallelSet extends AutonSet {
 	private ArrayList<AutonStep> steps;
 	private ArrayList<Boolean> stepDones;
 
+	public ParallelSet() {
+		steps = new ArrayList<>();
+		stepDones = new ArrayList<>();
+	}
+	
 	@Override
 	public void addStep(AutonStep newStep) {
 
