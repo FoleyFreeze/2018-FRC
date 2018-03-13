@@ -66,7 +66,7 @@ public class Elevator extends Component {
 	public static final double R_SCALE_ARM_MIN = 180;
 	
 	public static final double LIFT_SCALE = 70;
-	public static final double LIFT_SWITCH = 12;
+	public static final double LIFT_SWITCH = 18;
 	public static final double LIFT_EXCHANGE = 3;
 	public static final double LIFT_FLOOR = 0.5;
 	public static final double LIFT_REST = LIFT_FLOOR;
@@ -75,8 +75,8 @@ public class Elevator extends Component {
 	public static final double ARM_EXCHANGE = 95;
 	public static final double ARM_FLOOR = 104; //104 from prototype testing
 	public static final double ARM_FLOOR_SHIFT = 90;
-	public static final double F_ARM_REST = 20;
-	public static final double R_ARM_REST = -20;
+	public static final double F_ARM_REST = 0;
+	public static final double R_ARM_REST = 0;
 	
 	public Elevator() {
 

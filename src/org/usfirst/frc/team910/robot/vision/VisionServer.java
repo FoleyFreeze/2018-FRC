@@ -77,8 +77,7 @@ public class VisionServer {
 						// the delimiter ','
 
 		// Put ping request in the table
-		NetworkTableInstance inst = NetworkTableInstance.getDefault();
-		NetworkTable table = inst.getTable(PIXY_TABLE);
+	
 		NetworkTableEntry pingout, pingin;
 		pingout = table.getEntry(PING_OUT_KEY);
 		pingout.setNumber(PING_OUT_DATA);
@@ -198,6 +197,9 @@ public class VisionServer {
 	}
 
 	public void start() {
+	
+		NetworkTableInstance inst = NetworkTableInstance.getDefault();
+		NetworkTable table = inst.getTable(PIXY_TABLE);
 		
 		listener = new VisionObjectDataPixyListener();
 		

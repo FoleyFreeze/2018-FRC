@@ -235,6 +235,7 @@ public class Outputs extends Component {
 		if(overloaded[ElectroBach.LEFT_GATHER_CAN] || overloaded[ElectroBach.RIGHT_GATHER_CAN]) {
 			gatherLeft.set(ControlMode.PercentOutput, 0);
 			gatherRight.set(ControlMode.PercentOutput, 0);
+			return;
 		}
 		
 		//double restriction = in.manualHeight;

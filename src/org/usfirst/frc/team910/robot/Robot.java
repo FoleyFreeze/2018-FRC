@@ -81,7 +81,7 @@ public class Robot extends TimedRobot {
 		//climb.run();
 		elevate.run();
 		gather.run();
-		output.circuitBreaker();
+		//output.circuitBreaker();
 		auton.getGameData();
 	}
 	
@@ -98,7 +98,7 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void teleopPeriodic() {
-		output.enableBrake();
+		//output.enableBrake();
 		input.read();
 		sensor.read();
 		view.run();
@@ -106,7 +106,7 @@ public class Robot extends TimedRobot {
 		drive.run();
 		climb.run();
 		elevate.run();
-		output.circuitBreaker();
+		//output.circuitBreaker();
 	}
 	
 	@Override
@@ -122,8 +122,8 @@ public class Robot extends TimedRobot {
 	public void disabledPeriodic() {
 		input.read();
 		sensor.read();
-		output.disableBrake();
-		output.circuitBreaker();
+		//output.disableBrake();
+		//output.circuitBreaker();
 		elevate.updateDerivatives();
 		auton.selectAuton();
 	}
