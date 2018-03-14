@@ -28,4 +28,6 @@ public class ElectroBach {
 	public static final int R_CNT_DIST = 1;
 	public static final int F_RGT_DIST = 2;
 	public static final int R_RGT_DIST = 3;
+	public static final int F_LFT_DIST = 4;
+	public static final int R_LEFT_DIST = 5;
 }
