@@ -1,33 +1,23 @@
 package org.usfirst.frc.team910.robot.vision;
 
-import java.util.concurrent.BlockingQueue;
+import java.util.ArrayList;
 
+import edu.wpi.first.networktables.EntryListenerFlags;
 import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.TableEntryListener;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.networktables.NetworkTableValue;
 
-public class VisionObjectDataPixyListener implements TableEntryListener {
+public class VisionObjectDataPixyListener  {
 
 	public VisionObjectDataPixyListener() {
+		
+		inst = null;
+		table = null;
 
 		debug = false;
 		
 	}
-
-	public void setQueueFront(BlockingQueue queue) {
-		
-		queueFront = queue;
-	}
 	
-    public void setQueueBack(BlockingQueue queue) {
-	
-    	queueBack = queue;
-		
-	}
     public void saveValuesFront(boolean save) {
     
     	if(save == true) {
@@ -58,82 +48,106 @@ public class VisionObjectDataPixyListener implements TableEntryListener {
     
     public void setDebug (boolean flag) {
     	
-        debug = flag;
-    }
-    
-	public void valueChanged(NetworkTable table, java.lang.String key, NetworkTableEntry entry, NetworkTableValue value,
-			int flags) {
-
-		int currentPixy;
-		BlockingQueue<VisionData> currentQueue;
-        
-		// Data from Network Table goes here from entry "pixy1objdata"
-		// It's the most recent object data update
-		String msg = value.getString();
-
-		if (debug == true) {
-			System.out.println("VisionObjectDataPixyListener message received = " + msg);
-			SmartDashboard.putString("VisionServerDebug", msg);
-		}
-		
-		// Elements of message sent by Pi area separated by ','
-		String[] msg_parsed = msg.split(",");
-		
-		// Get the pixy in this message
-		currentPixy = Integer.parseInt(msg_parsed[0]);
-		
-		// Set the right queue based on the pixy in this Pi message
-		if (currentPixy == pixyFrontId && saveFront == true ) {
-			currentQueue = queueFront;
-		} else if (currentPixy == pixyBackId && saveBack == true ) {
-			currentQueue = queueBack;
+		if (flag) {
+			debug = true;
 		} else {
-			return;
+			debug = false;
 		}
 
-		int numBlocks = 0;
-		int frameNum = 0;
+    }
+ // associate Pixy with a list and start listening for messages from the
+ 	// associated network table entry for this Pixy
+ 	public void listForPixyFront(ArrayList list) {
 
-		VisionData newData = null;
+		this.listFront = list;
 
-		try { // BlockingQueue can raise exceptions
+ 	}
 
-			// Check if there are any blocks in this message
-			numBlocks = Integer.parseInt(msg_parsed[2]);
+ 	public void listForPixyBack(ArrayList list) {
 
-			if (numBlocks > 0) {
+		this.listBack = list;
 
-				frameNum = Integer.parseInt(msg_parsed[1]);
+ 	}
+ 	
+public void start() {
+		
+		inst = NetworkTableInstance.getDefault();
+		 table = inst.getTable(PIXY_TABLE);
+		table.addEntryListener(PIXY_DATA, (table, key,  entry, value, flags) -> {
 
-				// Convert message data into VisionData object data
-				for (int i = 0; i < numBlocks; i++) {
+			int currentPixy;
+			
+			ArrayList<VisionData> currentList;
+	        
+			// Data from Network Table goes here from entry PIXY_DATA
+			// It's the most recent object data update
+			String msg = value.getString();
 
-					newData = new VisionData();
-					newData.timestamp = Timer.getFPGATimestamp();
-					newData.blockID = Integer.parseInt(msg_parsed[(i * (BLOCK_SIZE + 0)) + 2]); // block ID
-					newData.sig = Integer.parseInt(msg_parsed[(i * (BLOCK_SIZE + 1)) + 2]); // signature
-					newData.x = Integer.parseInt(msg_parsed[(i * (BLOCK_SIZE + 2)) + 2]); // x
-					newData.y = Integer.parseInt(msg_parsed[(i * (BLOCK_SIZE + 3)) + 2]); // y
-					newData.w = Integer.parseInt(msg_parsed[(i * (BLOCK_SIZE + 4)) + 2]); // width
-					newData.h = Integer.parseInt(msg_parsed[(i * (BLOCK_SIZE + 5)) + 2]); // height
-					newData.frame = frameNum;
-				}
-				// Add this vision data to the queue
-				currentQueue.put(newData);
+			if (debug == true) {
+				System.out.println("VisionObjectDataPixyListener message received = " + msg);
 			}
-		}
-		 catch (InterruptedException e) {
-			Thread.currentThread().interrupt(); // set interrupt flag
-		}
-	}
+			
+			// Elements of message sent by Pi area separated by ','
+			String[] msg_parsed = msg.split(",");
+			
+			// Get the pixy in this message
+			currentPixy = Integer.parseInt(msg_parsed[0]);
+			
+			// Set the right queue based on the pixy in this Pi message
+			if (currentPixy == pixyFrontId && saveFront == true ) {
+				currentList = listFront;
+			} else if (currentPixy == pixyBackId && saveBack == true ) {
+				currentList = listBack;
+			} else {
+				return;
+			}
 
+			int numBlocks = 0;
+			int frameNum = 0;
+            int blockIndex = 3;
+            
+			VisionData newData = null;
+
+				// Check if there are any blocks in this message
+				numBlocks = Integer.parseInt(msg_parsed[2]);
+
+				if (numBlocks > 0) {
+
+					frameNum = Integer.parseInt(msg_parsed[1]);
+
+					// Convert message data into VisionData object data
+					for (int i = 0; i < numBlocks; i++) {
+
+						newData = new VisionData();
+						newData.timestamp = Timer.getFPGATimestamp();
+						newData.blockID = Integer.parseInt(msg_parsed[blockIndex + 0]);
+						newData.sig = Integer.parseInt(msg_parsed[blockIndex + 1]);
+						newData.x = Integer.parseInt(msg_parsed[blockIndex + 2]);
+						newData.y = Integer.parseInt(msg_parsed[blockIndex + 3]);
+						newData.w = Integer.parseInt(msg_parsed[blockIndex + 4]);
+						newData.h = Integer.parseInt(msg_parsed[blockIndex + 5]);
+						newData.frame = frameNum;
+						blockIndex += BLOCK_SIZE;
+						
+					}
+					// Add new vision data to the list
+					currentList.add(newData);
+				}
+			
+		}, EntryListenerFlags.kNew | EntryListenerFlags.kUpdate);
+
+	}
+	
 	private boolean saveFront;
 	private boolean saveBack;
-	private BlockingQueue<VisionData> queueFront;
-	private BlockingQueue<VisionData> queueBack;
+	private ArrayList<VisionData> listFront;
+	private ArrayList<VisionData> listBack;
     private int pixyFrontId;
     private int pixyBackId;
 	private static final int BLOCK_SIZE = 6;
     private boolean debug;
-    
+	private static final String PIXY_TABLE = "pixy";
+	private static final String PIXY_DATA = "pixyobjdata";
+	private NetworkTableInstance inst;
+	private NetworkTable table;
 }
