@@ -116,20 +116,29 @@ public class AutonMain extends Component {
 						return options.switchIsLeft;
 					}
 				}));
-				b.add(new DriveTurnStep(-0.1, 0.5, 0.5)); //turn left
-				b.add(new DriveTurnStep(0.5, -0.1, 0.5)); //turn right
+				b.add(new DriveTurnStep(-0.1, 0.5, 0.6)); //turn left
+				b.add(new DriveTurnStep(0.5, -0.1, 0.55)); //turn right
 				b.end();
-			
-			b.add(new DriveForward(75, 1.25));
+				
 				b.add(new IfSet(new IfInterface() {
 					public boolean choice() { //is the switch on the left or right
 						return options.switchIsLeft;
 					}
 				}));
-				b.add(new DriveTurnStep(0, -0.2, 0.2)); //turn right
-				b.add(new DriveTurnStep(-0.2, 0, 0.2));//turn left
+				b.add(new DriveForward(85, 1.25));//left
+				b.add(new DriveForward(80, 1.25));//right
 				b.end();
 				
+				b.add(new IfSet(new IfInterface() {
+					public boolean choice() { //is the switch on the left or right
+						return options.switchIsLeft;
+					}
+				}));
+				b.add(new DriveTurnStep(0, -0.3, 0.2)); //turn right
+				b.add(new DriveTurnStep(-0.3, 0, 0.2));//turn left
+				b.end();
+				
+			b.add(new DriveForward(10,.25));	
 			b.add(new WaitStep(.25));
 			b.add(new ShootStep());
 			b.add(new EndStep());

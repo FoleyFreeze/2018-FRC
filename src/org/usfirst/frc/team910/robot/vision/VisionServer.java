@@ -8,8 +8,6 @@ public class VisionServer {
 
 	public VisionServer() {
 
-	
-
 	}
 
 	

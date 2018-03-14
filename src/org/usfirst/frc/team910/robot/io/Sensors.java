@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Sensors extends Component {
@@ -17,8 +18,12 @@ public class Sensors extends Component {
 	private AHRS navx;
 	private AnalogInput frontCenter;
 	private AnalogInput frontRight;
+	private AnalogInput frontLeft;
 	private AnalogInput rearCenter;
 	private AnalogInput rearRight;
+	private AnalogInput rearLeft;
+	
+	
 
 	public Angle robotAngle;
 
@@ -47,6 +52,8 @@ public class Sensors extends Component {
 	public double distFR;
 	public double distRC;
 	public double distRR;
+	public double distFL;
+	public double distRL;
 	
 	public static final double[] DIST_POINTS = {1.57, 2.36, 3.15, 3.94,  4.72, 5.51, 6.3,  7.09, 7.87, 8.66,  9.45, 10.24, 11.02, 11.81};
 	public static final double[] VOLT_POINTS = { 2.7,    2,  1.5,  1.3,   1.1,  0.9, 0.8,  0.75, 0.65,  0.6,  0.55,   0.5,  0.45,   0.4};
@@ -58,18 +65,52 @@ public class Sensors extends Component {
 		pdp = new PowerDistributionPanel();
 		frontCenter = new AnalogInput(ElectroBach.F_CNT_DIST);
 		frontRight = new AnalogInput(ElectroBach.F_RGT_DIST);
+		frontLeft = new AnalogInput(ElectroBach.F_LFT_DIST);
 		rearCenter = new AnalogInput(ElectroBach.R_CNT_DIST);
 		rearRight = new AnalogInput(ElectroBach.R_RGT_DIST);
+		rearLeft = new AnalogInput(ElectroBach.R_LEFT_DIST);
+		
 	}
+	
+	public double prevLeftPos;
+	public double prevRightPos;
+	public double leftVel;
+	public double rightVel;
+	public double prevLeftVel;
+	public double prevRightVel;
+	public double leftAccel;
+	public double rightAccel;
+	public double dt;
+	public double oldTime;
 
 	public void read() {
+		double time = Timer.getFPGATimestamp();
+		dt = time - oldTime;
+		oldTime = time;
+		
 		if(in.resetEnc) {
 			out.resetEncoders();
 		}
 		
 		out.readEncoders();
+		
+		leftVel = (leftDist - prevLeftPos) / dt;
+		rightVel = (rightDist - prevRightPos) / dt;
+		leftAccel = (leftVel - prevLeftVel) / dt;
+		rightAccel = (rightVel - prevRightVel) / dt;
+		
+		prevLeftPos = leftDist;
+		prevRightPos = rightDist;
+		prevLeftVel = leftVel;
+		prevRightVel = rightVel;
+		
+		SmartDashboard.putNumber("DT", dt);
 		SmartDashboard.putNumber("L Drive Enc", leftDist);
 		SmartDashboard.putNumber("R Drive Enc", rightDist);
+		SmartDashboard.putNumber("L Drive Vel", leftVel);
+		SmartDashboard.putNumber("R Drive Vel", rightVel);
+		SmartDashboard.putNumber("L Drive Accel", leftAccel);
+		SmartDashboard.putNumber("R Drive Accel", rightAccel);
 		SmartDashboard.putNumber("Lift Enc", liftPos);
 		SmartDashboard.putNumber("L Arm Enc", armPosL);
 		SmartDashboard.putNumber("R Arm Enc", armPosR);
@@ -99,13 +140,17 @@ public class Sensors extends Component {
 		
 		distFC = Elevator.interp(VOLT_POINTS, DIST_POINTS, frontCenter.getVoltage());
 		distFR = Elevator.interp(VOLT_POINTS, DIST_POINTS, frontRight.getVoltage());
+		distFL = Elevator.interp(VOLT_POINTS, DIST_POINTS, frontLeft.getVoltage());
 		distRC = Elevator.interp(VOLT_POINTS, DIST_POINTS, rearCenter.getVoltage());
 		distRR = Elevator.interp(VOLT_POINTS, DIST_POINTS, rearRight.getVoltage());
+		distRL = Elevator.interp(VOLT_POINTS, DIST_POINTS, rearLeft.getVoltage());
 		
 		SmartDashboard.putNumber("distFC", distFC);
 		SmartDashboard.putNumber("distFR", distFR);
+		SmartDashboard.putNumber("distFL", distFL);
 		SmartDashboard.putNumber("distRC", distRC);
 		SmartDashboard.putNumber("distRR", distRR);
+		SmartDashboard.putNumber("distRL", distRL);
 	}
 
 	public void reset() {
