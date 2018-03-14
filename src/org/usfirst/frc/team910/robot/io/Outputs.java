@@ -122,13 +122,13 @@ public class Outputs extends Component {
 	public void resetEncoders() {
 		if(leftDrive1.setSelectedSensorPosition(0, 0, 50) != ErrorCode.OK) {
 			System.out.println("Error in resetting left encoder position");
-			//TODO: instead of crashing, propegate this error to auton isError() 
+			//TODO: instead of crashing, propagate this error to auton isError() 
 			//in order to prevent auton from running when encoders are broken
-			System.exit(-1); 
+			//System.exit(-1); 
 		}
 		if(rightDrive1.setSelectedSensorPosition(0, 0, 50) != ErrorCode.OK) {
 			System.out.println("Error in resetting right encoder position");
-			System.exit(-1);
+			//System.exit(-1);
 		}
 		
 		armMotor1.setSelectedSensorPosition(0, 0, 0);
