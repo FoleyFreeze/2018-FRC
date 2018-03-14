@@ -1,37 +1,30 @@
 package org.usfirst.frc.team910.robot.components;
 
-import java.util.concurrent.ArrayBlockingQueue;
+import java.util.ArrayList;
 
 import org.usfirst.frc.team910.robot.Component;
-import org.usfirst.frc.team910.robot.vision.VisionData;
-import org.usfirst.frc.team910.robot.vision.VisionServer;
+import org.usfirst.frc.team910.robot.vision.*;
 
 public class Vision extends Component {
 	
-	ArrayBlockingQueue<VisionData> queueFront;
-	ArrayBlockingQueue<VisionData> queueBack;
+	ArrayList<VisionData> blocks = new ArrayList<VisionData>();
 	
 	public Vision(){
-		/*
-		
-		// See the comment for the VisionServer constructor for information about how to initialize vision stuff
-		VisionServer vs = new VisionServer();
-		vs.toSaveOrNotToSave(1, true);
-		//vs.toSaveOrNotToSave(2, true);
+	
+		VisionObjectDataPixyListener listener = new VisionObjectDataPixyListener();
+		listener.saveValuesFront( true);
+	
 		
 		//PIXY ID #9
-		vs.setPixyIDFront(-488255155);
-		//vs.setPixyIDBack();
+		listener.setPixyIDFront(-488255155);
 		
-		queueFront = new ArrayBlockingQueue<VisionData>(1024); // object info for front camera goes in this queue
-		queueBack = new ArrayBlockingQueue<VisionData>(1024); // object info for back camera goes in this queue
+			
+		listener.listForPixyFront(blocks);
 		
-		vs.queueForPixyN(1, queueFront);
-		//vs.queueForPixyN(2, queueBack);
+		listener.setDebug(true);
+		listener.start(); // vision data going into <blocks> now 
 		
-		vs.start();
-		
-		*/
+	
 	}
 	
 	public void run() {
