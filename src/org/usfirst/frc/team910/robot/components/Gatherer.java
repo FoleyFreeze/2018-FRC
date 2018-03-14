@@ -14,6 +14,10 @@ public class Gatherer extends Component {
 	public static final double JAMMED_CURRENT = 40;
 	public static final double SEARCH_DIST = 20;
 	public static final double DIST_TOLERANCE = 4;
+	
+	public static final double FAST_SPEED = 0.8;
+	public static final double MED_SPEED = 0.6;
+	public static final double SLOW_SPEED = 0.4;
 
 	public double stepTimer = 0;
 	public gatherState gatherS = gatherState.INIT;
@@ -52,7 +56,7 @@ public class Gatherer extends Component {
 
 			// initially, run through
 			case INIT:
-				gather(0.6, 0.6);
+				gather(MED_SPEED, MED_SPEED);
 				stepTimer = Timer.getFPGATimestamp() + 1;
 				gatherS = gatherState.SEARCH;
 
@@ -60,7 +64,7 @@ public class Gatherer extends Component {
 
 			// looks for cube with infrared sensors and moves towards it
 			case SEARCH:
-				gather(0.6, 0.6);
+				gather(MED_SPEED, MED_SPEED);
 				if (distR < SEARCH_DIST && distL < SEARCH_DIST && distC < SEARCH_DIST) {
 					gatherS = gatherState.SPIN;
 				}
@@ -72,23 +76,23 @@ public class Gatherer extends Component {
 				double minDist = Math.min(Math.min(distR, distC), distL);
 
 				if (maxDist - minDist < DIST_TOLERANCE) {
-					gather(.8,.8);
+					gather(FAST_SPEED, FAST_SPEED);
 					gatherS = gatherState.SUCK;
 					stepTimer = Timer.getFPGATimestamp() + .75;
 				} else if (distC < distR && distC < distL) {
-					gather(-.4, .8);
+					gather(-SLOW_SPEED, FAST_SPEED);
 				} else if (distC < distR && distC > distL) {
-					gather(.4, .8);
+					gather(SLOW_SPEED, FAST_SPEED);
 				} else if (distC > distR && distC < distL) {
-					gather(.8, .4);
+					gather(FAST_SPEED, SLOW_SPEED);
 				} else {
-					gather(-.4,.8);
+					gather(-SLOW_SPEED, FAST_SPEED);
 				}
 				break;
 			
 			//gathers the cube	
 			case SUCK:
-				gather(.8,.8);
+				gather(FAST_SPEED, FAST_SPEED);
 				if(Timer.getFPGATimestamp() > stepTimer) {
 					gatherS = gatherState.WAIT;
 					stepTimer = Timer.getFPGATimestamp() + 1;
@@ -97,7 +101,7 @@ public class Gatherer extends Component {
 			
 			//when arm comes 70 degrees, gather 
 			case WAIT:
-				gather(0, 0);
+				gather(0.1, 0.1);
 				if (Math.abs(sense.armPosL) < 70) {
 					gatherS = gatherState.CENTER;
 					stepTimer = Timer.getFPGATimestamp() + 0.25;
@@ -108,7 +112,7 @@ public class Gatherer extends Component {
 			
 			//when arm comes 35 degrees from the center gather
 			case CENTER:
-				gather(0.8, 0.8);
+				gather(FAST_SPEED, FAST_SPEED);
 				if (Math.abs(sense.armPosL) < 35) {
 					gatherS = gatherState.STOP;
 				} else if (Timer.getFPGATimestamp() > stepTimer) {
@@ -151,7 +155,7 @@ public class Gatherer extends Component {
 				break;
 
 			case CENTER:
-				gather(0.8, 0.8);
+				gather(FAST_SPEED, FAST_SPEED);
 				if (Math.abs(sense.armPosL) < 35) {
 					gatherS = gatherState.STOP;
 				} else if (Timer.getFPGATimestamp() > stepTimer) {

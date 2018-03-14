@@ -68,7 +68,7 @@ public class Sensors extends Component {
 		frontLeft = new AnalogInput(ElectroBach.F_LFT_DIST);
 		rearCenter = new AnalogInput(ElectroBach.R_CNT_DIST);
 		rearRight = new AnalogInput(ElectroBach.R_RGT_DIST);
-		rearLeft = new AnalogInput(ElectroBach.R_LEFT_DIST);
+		rearLeft = new AnalogInput(ElectroBach.R_LFT_DIST);
 		
 	}
 	
