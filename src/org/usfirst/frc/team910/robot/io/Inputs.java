@@ -12,6 +12,7 @@ public class Inputs extends Component {
 	public static double RAMP_LIMIT = .02; //Power per 20 ms
 	public static final double[] ELEVATOR_HEIGHT_AXIS = {    0,     10,    20,     30,    40,     50,    60,     70}; 
 	public static final double[] RAMP_LIMIT_TABLE =     {0.025, 0.0235, 0.022, 0.0205, 0.019, 0.0175, 0.016, 0.0145};
+	//public static final double[] RAMP_LIMIT_TABLE =     {1,1,1,1,1,1,1,1};
 	
 	private Joystick leftStick;
 	private Joystick rightStick;

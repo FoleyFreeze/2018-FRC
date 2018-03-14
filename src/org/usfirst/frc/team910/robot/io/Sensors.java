@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Sensors extends Component {
@@ -70,15 +71,46 @@ public class Sensors extends Component {
 		rearLeft = new AnalogInput(ElectroBach.R_LEFT_DIST);
 		
 	}
+	
+	public double prevLeftPos;
+	public double prevRightPos;
+	public double leftVel;
+	public double rightVel;
+	public double prevLeftVel;
+	public double prevRightVel;
+	public double leftAccel;
+	public double rightAccel;
+	public double dt;
+	public double oldTime;
 
 	public void read() {
+		double time = Timer.getFPGATimestamp();
+		dt = time - oldTime;
+		oldTime = time;
+		
 		if(in.resetEnc) {
 			out.resetEncoders();
 		}
 		
 		out.readEncoders();
+		
+		leftVel = (leftDist - prevLeftPos) / dt;
+		rightVel = (rightDist - prevRightPos) / dt;
+		leftAccel = (leftVel - prevLeftVel) / dt;
+		rightAccel = (rightVel - prevRightVel) / dt;
+		
+		prevLeftPos = leftDist;
+		prevRightPos = rightDist;
+		prevLeftVel = leftVel;
+		prevRightVel = rightVel;
+		
+		SmartDashboard.putNumber("DT", dt);
 		SmartDashboard.putNumber("L Drive Enc", leftDist);
 		SmartDashboard.putNumber("R Drive Enc", rightDist);
+		SmartDashboard.putNumber("L Drive Vel", leftVel);
+		SmartDashboard.putNumber("R Drive Vel", rightVel);
+		SmartDashboard.putNumber("L Drive Accel", leftAccel);
+		SmartDashboard.putNumber("R Drive Accel", rightAccel);
 		SmartDashboard.putNumber("Lift Enc", liftPos);
 		SmartDashboard.putNumber("L Arm Enc", armPosL);
 		SmartDashboard.putNumber("R Arm Enc", armPosR);

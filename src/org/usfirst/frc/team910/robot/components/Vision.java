@@ -12,15 +12,15 @@ public class Vision extends Component {
 	ArrayBlockingQueue<VisionData> queueBack;
 	
 	public Vision(){
-		/*
+		
 		
 		// See the comment for the VisionServer constructor for information about how to initialize vision stuff
 		VisionServer vs = new VisionServer();
-		vs.toSaveOrNotToSave(1, true);
-		//vs.toSaveOrNotToSave(2, true);
+		
+		vs.start();
 		
 		//PIXY ID #9
-		vs.setPixyIDFront(-488255155);
+		//vs.setPixyIDFront(-488255155);
 		//vs.setPixyIDBack();
 		
 		queueFront = new ArrayBlockingQueue<VisionData>(1024); // object info for front camera goes in this queue
@@ -29,9 +29,12 @@ public class Vision extends Component {
 		vs.queueForPixyN(1, queueFront);
 		//vs.queueForPixyN(2, queueBack);
 		
-		vs.start();
 		
-		*/
+		vs.debug(true);
+		
+		vs.toSaveOrNotToSave(1, true);
+		//vs.toSaveOrNotToSave(2, true);
+		
 	}
 	
 	public void run() {
