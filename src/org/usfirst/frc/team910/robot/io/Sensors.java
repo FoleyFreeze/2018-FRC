@@ -55,9 +55,11 @@ public class Sensors extends Component {
 	public double distFL;
 	public double distRL;
 	
-	public static final double[] DIST_POINTS = {1.57, 2.36, 3.15, 3.94,  4.72, 5.51, 6.3,  7.09, 7.87, 8.66,  9.45, 10.24, 11.02, 11.81};
-	public static final double[] VOLT_POINTS = { 2.7,    2,  1.5,  1.3,   1.1,  0.9, 0.8,  0.75, 0.65,  0.6,  0.55,   0.5,  0.45,   0.4};
-
+	//public static final double[] DIST_POINTS = {1.57, 2.36, 3.15, 3.94,  4.72, 5.51, 6.3,  7.09, 7.87, 8.66,  9.45, 10.24, 11.02, 11.81};
+	//public static final double[] VOLT_POINTS = { 2.7,    2,  1.5,  1.3,   1.1,  0.9, 0.8,  0.75, 0.65,  0.6,  0.55,   0.5,  0.45,   0.4};
+	public static final double[] VOLT_POINTS = { 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.75, 0.8, 0.9, 1.1, 1.3, 1.5, 2, 2.7};
+	public static final double[] DIST_POINTS = {11.81,11.02,10.24,9.45,8.66,7.87,7.09,6.3,5.51,4.72,3.94,3.15,2.36,1.57};
+	
 	public Sensors() {
 		navx = new AHRS(SPI.Port.kMXP);
 		navx.zeroYaw();
@@ -138,12 +140,12 @@ public class Sensors extends Component {
 
 		robotAngle.set(-navx.getYaw());
 		
-		distFC = Elevator.interp(VOLT_POINTS, DIST_POINTS, frontCenter.getVoltage());
-		distFR = Elevator.interp(VOLT_POINTS, DIST_POINTS, frontRight.getVoltage());
-		distFL = Elevator.interp(VOLT_POINTS, DIST_POINTS, frontLeft.getVoltage());
-		distRC = Elevator.interp(VOLT_POINTS, DIST_POINTS, rearCenter.getVoltage());
-		distRR = Elevator.interp(VOLT_POINTS, DIST_POINTS, rearRight.getVoltage());
-		distRL = Elevator.interp(VOLT_POINTS, DIST_POINTS, rearLeft.getVoltage());
+		distFC = Elevator.interp(VOLT_POINTS, DIST_POINTS, frontCenter.getAverageVoltage());
+		distFR = Elevator.interp(VOLT_POINTS, DIST_POINTS, frontRight.getAverageVoltage());
+		distFL = Elevator.interp(VOLT_POINTS, DIST_POINTS, frontLeft.getAverageVoltage());
+		distRC = Elevator.interp(VOLT_POINTS, DIST_POINTS, rearCenter.getAverageVoltage());
+		distRR = Elevator.interp(VOLT_POINTS, DIST_POINTS, rearRight.getAverageVoltage());
+		distRL = Elevator.interp(VOLT_POINTS, DIST_POINTS, rearLeft.getAverageVoltage());
 		
 		SmartDashboard.putNumber("distFC", distFC);
 		SmartDashboard.putNumber("distFR", distFR);

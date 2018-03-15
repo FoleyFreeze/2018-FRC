@@ -4,6 +4,7 @@ import org.usfirst.frc.team910.robot.Component;
 import org.usfirst.frc.team910.robot.io.ElectroBach;
 
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Gatherer extends Component {
 
@@ -168,6 +169,8 @@ public class Gatherer extends Component {
 				gather(0.1, 0.1);
 				gatherS = gatherState.STOP;
 			}
+			
+			SmartDashboard.putString("GatherState", gatherS.toString());
 
 			// gather(0, 0);
 			// gatherS = gatherState.INIT;
