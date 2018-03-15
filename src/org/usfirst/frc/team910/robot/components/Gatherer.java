@@ -30,6 +30,7 @@ public class Gatherer extends Component {
 		double distL;
 		double distR;
 		double distC;
+		
 		if (in.liftFlip) {
 			distL = sense.distRL;
 			distR = sense.distRR;

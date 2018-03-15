@@ -61,6 +61,7 @@ public class Inputs extends Component {
 	public boolean resetEnc = false;
 	public boolean resetBreaker = false;
 	public Elevator.liftState elevatorCommand = Elevator.liftState.REST_POSITION;
+	public boolean switchGather = false;
 	
 	
 	public int liftHeightMod = 0; //this can be 0, -1, 1 
@@ -117,24 +118,36 @@ public class Inputs extends Component {
 		//middleAngle = !prevMiddleAngle && controlBoard.getRawButton(3);
 		//highAngle = !prevHighAngle && controlBoard.getRawButton(4);
 		
-		restButton = controlBoard.getRawButton(2);
+		//restButton = controlBoard.getRawButton(2);
 		switchButton = controlBoard.getRawButton(3);
 		scaleButton = controlBoard.getRawButton(4);
-		gather = controlBoard.getRawButton(6);
+		gather = controlBoard.getRawButton(2);
 		liftExchange = controlBoard.getRawButton(8);
 		
 		//use last button pressed to set correct position
 		if(restButton) elevatorCommand = Elevator.liftState.F_FLOOR_POSITION;
-		else if(switchButton) elevatorCommand = Elevator.liftState.F_SWITCH_POSITION;
+		else if(switchButton) {
+			elevatorCommand = Elevator.liftState.F_SWITCH_POSITION;
+			if(gather) switchGather = true;
+		}
 		else if(scaleButton) elevatorCommand = Elevator.liftState.F_SCALE_POSITION;
 		else if(liftExchange) elevatorCommand = Elevator.liftState.F_EXCHANGE_POSITION;
 		
 		//require gather button to be held down to gather
-		if(gather && !switchButton) elevatorCommand = Elevator.liftState.F_FLOOR_POSITION;
+		if(gather && !switchGather) {
+			elevatorCommand = Elevator.liftState.F_FLOOR_POSITION;
+		}
+		//if we are transitioning out of the gather position
 		else if( elevatorCommand == Elevator.liftState.F_FLOOR_POSITION ||
 				 elevatorCommand == Elevator.liftState.R_FLOOR_POSITION) {
 			elevatorCommand = Elevator.liftState.REST_POSITION;
+		} 
+		//if we are transitioning out of the switch gather position
+		else if(!gather && switchGather) {
+			elevatorCommand = Elevator.liftState.REST_POSITION;
+			switchGather = false;
 		}
+		
 		
 		shift = controlBoard.getRawButton(1);
 		manualOverride = controlBoard.getRawButton(14);

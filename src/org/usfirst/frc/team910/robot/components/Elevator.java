@@ -67,6 +67,7 @@ public class Elevator extends Component {
 	
 	public static final double LIFT_SCALE = 70;
 	public static final double LIFT_SWITCH = 18;
+	public static final double LIFT_SWITCH_GATHER = 8;
 	public static final double LIFT_EXCHANGE = 3;
 	public static final double LIFT_FLOOR = 0.5;
 	public static final double LIFT_REST = LIFT_FLOOR;
@@ -336,23 +337,26 @@ public class Elevator extends Component {
 			case REST_POSITION:
 				if(in.liftFlip) targetArm = R_ARM_REST;
 				else targetArm = F_ARM_REST;
-				
 				targetLift = LIFT_REST;
 				break;
+				
 			case F_FLOOR_POSITION:
 				if(in.shift) targetArm = ARM_FLOOR_SHIFT;
 				else targetArm = ARM_FLOOR;
-				
 				targetLift = LIFT_FLOOR;
 				break;
+				
 			case F_EXCHANGE_POSITION:
 				targetArm = ARM_EXCHANGE;
 				targetLift = LIFT_EXCHANGE;
 				break;
+				
 			case F_SWITCH_POSITION:
 				targetArm = ARM_SWITCH;
-				targetLift = LIFT_SWITCH;
+				if(in.switchGather) targetLift = LIFT_SWITCH_GATHER;
+				else targetLift = LIFT_SWITCH;
 				break;
+				
 			case F_SCALE_POSITION:
 				switch(in.scaleAngle) {
 				case 1://low scale
@@ -375,22 +379,24 @@ public class Elevator extends Component {
 					targetLift = LIFT_SCALE;
 					break;
 				}
-				
 				break;
+				
 			case R_FLOOR_POSITION:
 				if(in.shift) targetArm = -ARM_FLOOR_SHIFT;
 				else targetArm = -ARM_FLOOR;
-				
 				targetLift = LIFT_FLOOR;
 				break;
+				
 			case R_EXCHANGE_POSITION:
 				targetArm = -ARM_EXCHANGE;
 				targetLift = LIFT_EXCHANGE;
 				break;
+				
 			case R_SWITCH_POSITION:
 				targetArm = -ARM_SWITCH;
 				targetLift = LIFT_SWITCH;
 				break;
+				
 			case R_SCALE_POSITION:
 				
 				switch(in.scaleAngle) {
@@ -416,6 +422,7 @@ public class Elevator extends Component {
 				}
 				break;
 		}	
+		
 		//Setting lift boundaries, by interpolation
 		double liftMax; 
 		double liftMin;
