@@ -69,10 +69,10 @@ public class VisionObjectDataPixyListener  {
 
  	}
  	
-public void start() {
+ 	public void start() {
 		
 		inst = NetworkTableInstance.getDefault();
-		 table = inst.getTable(PIXY_TABLE);
+		table = inst.getTable(PIXY_TABLE);
 		table.addEntryListener(PIXY_DATA, (table, key,  entry, value, flags) -> {
 
 			int currentPixy;

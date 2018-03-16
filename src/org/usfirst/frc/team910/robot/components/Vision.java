@@ -14,8 +14,8 @@ public class Vision extends Component {
 		VisionObjectDataPixyListener listener = new VisionObjectDataPixyListener();
 		listener.saveValuesFront(true);
 
-		// PIXY ID #9
-		listener.setPixyIDFront(-488255155);
+		// PIXY ID #8
+		listener.setPixyIDFront(-1225198266);
 
 		listener.listForPixyFront(blocks);
 
