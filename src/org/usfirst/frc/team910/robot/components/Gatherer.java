@@ -155,6 +155,7 @@ public class Gatherer extends Component {
 			case SUCK:
 				//if we were not in WAIT state, set the timer as if we were
 				stepTimer_IR = Timer.getFPGATimestamp() + 1;
+				gatherS_IR = gatherStateIR.WAIT;
 			case WAIT:
 				gather(0.1, 0.1);
 				if (Math.abs(sense.armPosL) < 70) {
@@ -275,6 +276,9 @@ public class Gatherer extends Component {
 			case SPIN:
 			case EJECT:
 			case REGATHER:
+				//if we were not in WAIT state, set the timer as if we were
+				stepTimer_C = Timer.getFPGATimestamp() + 1;
+				gatherS_C = gatherStateC.WAIT;
 			case WAIT:
 				gather(0,0);
 				if(Math.abs(sense.armPosL) < 70) {
