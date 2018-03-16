@@ -14,11 +14,12 @@ public class Elevator extends Component {
 	public static final double ARM_DEADBAND = 0;
 	
 	public static final double ARM_UP_PWR = 0.7;//was 0.9
+	public static final double ARM_UP_GTHR_PWR = 0.5;
 	public static final double ARM_DN_PWR = 0.7;
 	public static final double ARM_UP_PWR_SHIFT = 0.7;
 	public static final double ARM_DN_PWR_SHIFT = 0.5;
-	public static final double LIFT_UP_PWR = 0.55;//was 0.75
-	public static final double LIFT_DN_PWR = .3; //was 0.5; too hard!
+	public static final double LIFT_UP_PWR = 0.75;//was .5 //was 0.75
+	public static final double LIFT_DN_PWR = 0.4;//was .3 //was 0.5; too hard!
 	public static final double LIFT_UP_PWR_SHIFT = 0.5;
 	public static final double LIFT_DN_PWR_SHIFT = 0.25;
 	
@@ -344,6 +345,7 @@ public class Elevator extends Component {
 		prevLiftError = sense.liftPos;
 	}
 	
+	
 	public double prevArmError = 0;
 	public double prevLiftError = 0;
 	private double prevArmSetpoint = 0;
@@ -358,6 +360,12 @@ public class Elevator extends Component {
 				if(in.liftFlip) targetArm = R_ARM_REST;
 				else targetArm = F_ARM_REST;
 				targetLift = LIFT_REST;
+				
+				if(currentState == liftState.F_FLOOR_POSITION || currentState == liftState.R_FLOOR_POSITION) {
+					
+				} else {
+					
+				}
 				break;
 				
 			case F_FLOOR_POSITION:
@@ -560,7 +568,14 @@ public class Elevator extends Component {
 					armError < 0 && (sense.armPosL < 0 || sense.armPosL > 180)) {
 				armPwrLim = ARM_DN_PWR;
 			} else {
-				armPwrLim = ARM_UP_PWR;
+				//logic to limit power when lifting the arm after gathering
+				if((currentState == liftState.F_FLOOR_POSITION || currentState == liftState.R_FLOOR_POSITION)
+						&& position == liftState.REST_POSITION) {
+					armPwrLim = ARM_UP_GTHR_PWR;
+				} else {
+					armPwrLim = ARM_UP_PWR;
+				}
+				
 			}
 			
 			if(liftError > 0) {

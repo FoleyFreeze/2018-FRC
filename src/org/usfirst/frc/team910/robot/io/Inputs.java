@@ -85,7 +85,7 @@ public class Inputs extends Component {
 		
 		enableMP = false;
 		
-		resetEnc = leftStick.getRawButton(12) && rightStick.getRawButton(12);
+		resetEnc = leftStick.getRawButton(11) && rightStick.getRawButton(11);
 		resetBreaker = leftStick.getRawButton(10) && rightStick.getRawButton(10);
 		
 		

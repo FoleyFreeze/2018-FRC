@@ -139,11 +139,11 @@ public class Gatherer extends Component {
 			}
 
 			// shoot logic
-		} else if (in.shoot) {
-			gather(-0.3, -0.3);
-			gatherS_IR = gatherStateIR.INIT;
-		} else if (in.shift && in.shoot) {
+		} else if (in.shoot && in.shift) {
 			gather(-0.6, -0.6);
+			gatherS_IR = gatherStateIR.INIT;
+		} else if (in.shoot) {
+			gather(-0.35, -0.35);
 			gatherS_IR = gatherStateIR.INIT;
 
 			// if no button pressed
@@ -189,7 +189,9 @@ public class Gatherer extends Component {
 	public void run_current() {
 		if(in.manualOverride) {
 			if(in.gather) {
-				gather(in.manualGatherLeft, in.manualGatherRight);
+				gather(.8,.8);
+			}else if (in.shoot) {
+				gather(-0.4,-0.4);
 			}else {
 				gather(0,0);
 			}
@@ -262,11 +264,11 @@ public class Gatherer extends Component {
 			}
 			
 			//shoot logic
-		} else if (in.shoot) {
-			gather(-0.3, -0.3);
-			gatherS_C = gatherStateC.INIT;
-		} else if (in.shift && in.shoot) {
+		} else if (in.shoot && in.shift) {
 			gather(-0.6, -0.6);
+			gatherS_C = gatherStateC.INIT;
+		} else if (in.shoot) {
+			gather(-0.35, -0.35);
 			gatherS_C = gatherStateC.INIT;
 			
 			//if no button pressed
