@@ -293,11 +293,11 @@ public class Outputs extends Component {
 	
 	private double[] filteredCurrent = new double[16];
 	private boolean[] overloaded = new boolean[16];
-	public static final double[] CURRENT_LIMITS = {100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100};
-	public static final double[] TIME_LIMIT = {0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5};
+	public static final double[] CURRENT_LIMITS = {100, 100, 100, 100, 100, 30, 100, 100, 30, 100, 100, 100, 100, 100, 100, 100};
+	public static final double[] TIME_LIMIT = {0.5, 0.5, 0.5, 0.5, 0.5, 15, 0.5, 0.5, 15, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5};
 	private double[] overloadTime = new double[16];
 	public static final double FILT = 0.5;
-	public static final double RESET_TIME = 10;
+	public static final double RESET_TIME = 3;
 	
 	public void circuitBreaker() {
 		for (int i = 0; i < 16; i++) { //for every pdp channel

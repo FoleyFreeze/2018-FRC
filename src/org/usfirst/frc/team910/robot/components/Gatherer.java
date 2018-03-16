@@ -18,7 +18,7 @@ public class Gatherer extends Component {
 	public double stepTimer_C = 0;
 	public gatherStateC gatherS_C = gatherStateC.INIT;
 	
-	public static final double JAMMED_CURRENT = 40;
+	public static final double JAMMED_CURRENT = 30;
 	public static final double SEARCH_DIST = 20;
 	public static final double DIST_TOLERANCE = 4;
 

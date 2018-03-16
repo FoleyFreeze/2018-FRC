@@ -81,7 +81,7 @@ public class Robot extends TimedRobot {
 		//climb.run();
 		elevate.run();
 		gather.run();
-		//output.circuitBreaker();
+		output.circuitBreaker();
 		auton.getGameData();
 	}
 	
@@ -106,7 +106,7 @@ public class Robot extends TimedRobot {
 		drive.run();
 		climb.run();
 		elevate.run();
-		//output.circuitBreaker();
+		output.circuitBreaker();
 	}
 	
 	@Override
@@ -123,7 +123,7 @@ public class Robot extends TimedRobot {
 		input.read();
 		sensor.read();
 		output.disableBrake();
-		//output.circuitBreaker();
+		output.circuitBreaker();
 		elevate.updateDerivatives();
 		auton.selectAuton();
 	}

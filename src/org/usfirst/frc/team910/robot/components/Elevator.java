@@ -13,12 +13,12 @@ public class Elevator extends Component {
 	public static final double LIFT_DEADBAND = 0;
 	public static final double ARM_DEADBAND = 0;
 	
-	public static final double ARM_UP_PWR = 0.9;
+	public static final double ARM_UP_PWR = 0.7;//was 0.9
 	public static final double ARM_DN_PWR = 0.7;
 	public static final double ARM_UP_PWR_SHIFT = 0.7;
 	public static final double ARM_DN_PWR_SHIFT = 0.5;
-	public static final double LIFT_UP_PWR = 0.75;
-	public static final double LIFT_DN_PWR = .4; //was 0.5; too hard!
+	public static final double LIFT_UP_PWR = 0.55;//was 0.75
+	public static final double LIFT_DN_PWR = .3; //was 0.5; too hard!
 	public static final double LIFT_UP_PWR_SHIFT = 0.5;
 	public static final double LIFT_DN_PWR_SHIFT = 0.25;
 	

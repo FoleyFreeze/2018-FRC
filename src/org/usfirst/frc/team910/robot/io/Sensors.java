@@ -137,6 +137,7 @@ public class Sensors extends Component {
 				goalsZag = true;
 			}
 		}
+		SmartDashboard.putString("gameData", gameData);
 
 		robotAngle.set(-navx.getYaw());
 		
