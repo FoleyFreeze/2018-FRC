@@ -140,10 +140,10 @@ public class Gatherer extends Component {
 
 			// shoot logic
 		} else if (in.shoot) {
-			gather(-0.6, -0.6);
+			gather(-0.3, -0.3);
 			gatherS_IR = gatherStateIR.INIT;
 		} else if (in.shift && in.shoot) {
-			gather(-0.8, -0.8);
+			gather(-0.6, -0.6);
 			gatherS_IR = gatherStateIR.INIT;
 
 			// if no button pressed
@@ -263,10 +263,10 @@ public class Gatherer extends Component {
 			
 			//shoot logic
 		} else if (in.shoot) {
-			gather(-0.6, -0.6);
+			gather(-0.3, -0.3);
 			gatherS_C = gatherStateC.INIT;
 		} else if (in.shift && in.shoot) {
-			gather(-0.8, -0.8);
+			gather(-0.6, -0.6);
 			gatherS_C = gatherStateC.INIT;
 			
 			//if no button pressed
