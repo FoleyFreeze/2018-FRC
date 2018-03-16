@@ -365,6 +365,13 @@ public class Elevator extends Component {
 				case 1://low scale
 					targetArm = ARM_SCALE + 30;
 					targetLift = LIFT_SCALE;
+					
+					//on the way up to scale, dont allow the arm to be in the low position
+					//TODO: maybe make the switch position go higher so we don't have to do this
+					if(targetLift - sense.liftPos > 10) {
+						targetArm = ARM_SCALE;
+					}
+					
 					break;
 					
 				case 2://med scale
@@ -397,7 +404,8 @@ public class Elevator extends Component {
 				
 			case R_SWITCH_POSITION:
 				targetArm = -ARM_SWITCH;
-				targetLift = LIFT_SWITCH;
+				if(in.switchGather) targetLift = LIFT_SWITCH_GATHER;
+				else targetLift = LIFT_SWITCH;
 				break;
 				
 			case R_SCALE_POSITION:
