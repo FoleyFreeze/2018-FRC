@@ -112,8 +112,8 @@ public class Outputs extends Component {
 		sense.leftDist = leftDrive1.getSelectedSensorPosition(0) / ElectroBach.TICKS_PER_INCH;
 		sense.rightDist = rightDrive1.getSelectedSensorPosition(0) / ElectroBach.TICKS_PER_INCH;
 		sense.liftPos = elevator1.getSelectedSensorPosition(0)/ElectroBach.TICKS_PER_INCH_HEIGHT;
-		sense.armPosL = armMotor1.getSelectedSensorPosition(0)/ElectroBach.TICKS_PER_DEGREE;
-		sense.armPosR = armMotor2.getSelectedSensorPosition(0)/ElectroBach.TICKS_PER_DEGREE;
+		sense.armPosL = -armMotor1.getSelectedSensorPosition(0)/ElectroBach.TICKS_PER_DEGREE;
+		sense.armPosR = -armMotor2.getSelectedSensorPosition(0)/ElectroBach.TICKS_PER_DEGREE;
 		//sense.gatherLeftPos = gatherLeft.getSelectedSensorPosition(0)/ElectroBach.TICKS_PER_INCH;
 		//sense.gatherRightPos = gatherRight.getSelectedSensorPosition(0)/ElectroBach.TICKS_PER_INCH;
 		//System.out.format("L:%.2f R:%.2f\n",sense.leftDist,sense.rightDist);

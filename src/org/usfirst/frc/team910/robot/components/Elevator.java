@@ -38,8 +38,10 @@ public class Elevator extends Component {
 	public static final double[] LIFT_AXIS_MIN_FRONT= {   0, 5.9,  6, 41, 70};
 	public static final double[] ARM_TABLE_MIN_FRONT= {-105,-118, 10, 26, 46};
 	
-	public static final double[] LIFT_AXIS_MAX_FRONT= {  0, 21, 32, 67, 69};
-	public static final double[] ARM_TABLE_MAX_FRONT= {105,141,106,165,310};
+	//public static final double[] LIFT_AXIS_MAX_FRONT= {  0, 21, 32, 67, 69};
+	//public static final double[] ARM_TABLE_MAX_FRONT= {105,141,106,165,310};
+	public static final double[] LIFT_AXIS_MAX_FRONT= {  0, 21, 26, 42, 67, 69};
+	public static final double[] ARM_TABLE_MAX_FRONT= {105,141,30,  45,165,310};
 	
 	public static final double[] LIFT_AXIS_MIN_REAR= {   0,   9,  10,  28, 28.1, 70};
 	public static final double[] ARM_TABLE_MIN_REAR= {-105,-124,-120,-150,   26, 46};
@@ -370,11 +372,15 @@ public class Elevator extends Component {
 				break;
 				
 			case F_SWITCH_POSITION:
-				targetArm = ARM_SWITCH;
+				//if we are "passing through" point at the sky
+				if(goalState != liftState.F_SWITCH_POSITION) {
+					targetArm = 45;
+				} else {
+					targetArm = ARM_SWITCH;
+				}
+				
 				if(in.switchGather) targetLift = LIFT_SWITCH_GATHER;
 				else targetLift = LIFT_SWITCH;
-				
-				//targetLift = 8; //LIFT_SWITCH_GATHER;
 				
 				break;
 				
@@ -421,7 +427,13 @@ public class Elevator extends Component {
 				break;
 				
 			case R_SWITCH_POSITION:
-				targetArm = -ARM_SWITCH;
+				//if we are "passing through" point at the sky
+				if(goalState != liftState.R_SWITCH_POSITION) {
+					targetArm = -45;
+				} else {
+					targetArm = -ARM_SWITCH;
+				}
+				
 				if(in.switchGather) targetLift = LIFT_SWITCH_GATHER;
 				else targetLift = LIFT_SWITCH;
 				break;

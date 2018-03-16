@@ -98,8 +98,8 @@ public class Inputs extends Component {
 		if(Math.abs(leftDrive) < DEADBAND) leftDrive = 0;
 		if(Math.abs(rightDrive) < DEADBAND) rightDrive = 0;
 		
-		//moved to button 4
-		dynamicBrake = leftStick.getRawButton(4);
+		//moved to button 3
+		dynamicBrake = leftStick.getRawButton(3);
 		
 		driveStraight = rightStick.getTrigger();
 		//all elevator heights 
