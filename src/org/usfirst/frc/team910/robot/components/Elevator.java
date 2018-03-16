@@ -216,11 +216,11 @@ public class Elevator extends Component {
 			case REST_POSITION:
 				if(currentState.equals(goalState)) {
 					setPosition(goalState);
-				}else if(goalState==liftState.F_FLOOR_POSITION || goalState==liftState.R_FLOOR_POSITION || goalState==liftState.F_EXCHANGE_POSITION || goalState==liftState.R_EXCHANGE_POSITION) {
+				}else if(goalState==liftState.F_FLOOR_POSITION || goalState==liftState.R_FLOOR_POSITION || goalState==liftState.F_EXCHANGE_POSITION || goalState==liftState.R_EXCHANGE_POSITION||goalState==liftState.F_SWITCH_POSITION||goalState==liftState.R_SWITCH_POSITION) {
 					setPosition(goalState);
 				}else {
-					if(goalState==liftState.F_SCALE_POSITION||goalState==liftState.F_SWITCH_POSITION||goalState==liftState.R_SCALE_POSITION) {
-						setPosition(liftState.F_FLOOR_POSITION);
+					if(goalState==liftState.F_SCALE_POSITION||goalState==liftState.R_SCALE_POSITION) {
+						setPosition(liftState.F_SWITCH_POSITION);
 					}else {
 						setPosition(liftState.R_FLOOR_POSITION);
 					}
@@ -264,7 +264,7 @@ public class Elevator extends Component {
 					if(goalState == liftState.F_SCALE_POSITION || goalState == liftState.R_SCALE_POSITION) {
 						setPosition(liftState.F_SWITCH_POSITION);
 					} else {
-						setPosition(liftState.F_FLOOR_POSITION);
+						setPosition(liftState.REST_POSITION);
 					}
 				}
 				
@@ -285,13 +285,13 @@ public class Elevator extends Component {
 			case F_SWITCH_POSITION:
 				if (currentState.equals(goalState)) {
 					setPosition(goalState);
-				}else if (goalState == liftState.F_FLOOR_POSITION || goalState == liftState.F_SCALE_POSITION || goalState == liftState.F_EXCHANGE_POSITION) {
+				}else if (goalState == liftState.F_FLOOR_POSITION || goalState == liftState.F_SCALE_POSITION || goalState == liftState.F_EXCHANGE_POSITION|| goalState == liftState.REST_POSITION) {
 					setPosition(goalState);
 				}else { 
 					if(goalState == liftState.R_SCALE_POSITION) {
 						setPosition(liftState.F_SCALE_POSITION);
 					}else {
-						setPosition(liftState.F_FLOOR_POSITION);
+						setPosition(liftState.REST_POSITION);
 					}
 				}
 					
@@ -300,10 +300,10 @@ public class Elevator extends Component {
 			case R_SWITCH_POSITION:
 				if (currentState.equals(goalState)) {
 					setPosition(goalState);
-				}else if (goalState == liftState.R_FLOOR_POSITION || goalState == liftState.R_EXCHANGE_POSITION) {
+				}else if (goalState == liftState.R_FLOOR_POSITION || goalState == liftState.R_EXCHANGE_POSITION|| goalState == liftState.REST_POSITION) {
 					setPosition(goalState);
 				}else {
-					setPosition(liftState.R_FLOOR_POSITION);
+					setPosition(liftState.REST_POSITION);
 				}
 				
 						

@@ -64,9 +64,9 @@ public class AutonMain extends Component {
 	public AutonMain() {
 		
 		startLocation = new SendableChooser<>();
-		startLocation.addDefault("Straight Only", STRAIGHT_ONLY);
+		startLocation.addDefault("Center", CENTER);//was straight only
 		startLocation.addObject("Left", LEFT);
-		startLocation.addObject("Center", CENTER);
+		startLocation.addObject("Straight", STRAIGHT_ONLY);//was center 
 		startLocation.addObject("Right", RIGHT);
 		SmartDashboard.putData("AutoStartLocation", startLocation);
 		
