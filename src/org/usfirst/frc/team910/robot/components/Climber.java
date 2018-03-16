@@ -10,6 +10,7 @@ public class Climber extends Component {
 	}
 	
 	public void run() {
+		/*
 		if(in.climb) {
 			climb(0.5,0.5);
 		} else {
@@ -18,6 +19,7 @@ public class Climber extends Component {
 		if(in.climb && in.shift) {
 			climb(1,1); //FIXME set to tested power
 		}
+		*/
 	}
 	
 	public void climb(double power1, double power2) {

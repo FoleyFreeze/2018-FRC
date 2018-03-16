@@ -91,6 +91,8 @@ public class Elevator extends Component {
 	public liftState currentState = liftState.F_FLOOR_POSITION;
 	private boolean flipState;
 	
+	private boolean climbAllowed = false;
+	
 	
 	public void run() {
 		
@@ -102,7 +104,23 @@ public class Elevator extends Component {
 			}
 			else if (in.switchButton) {
 				out.setElevatorPower(-1);
-			} else {
+			} else if(in.climb) {
+				//when climb pressed, drive to 10in and hysterisis to 20in before resuming
+				if(sense.liftPos > 20) {
+					out.setElevatorPower(-1);
+					climbAllowed = true;
+				} else if(sense.liftPos > 10) {
+					if(climbAllowed) {
+						out.setElevatorPower(-1);
+					} else {
+						out.setElevatorPower(0);
+					}
+				} else {
+					climbAllowed = false;
+					out.setElevatorPower(0);
+				}
+			}
+			else {
 				out.setElevatorPower(0);
 			}
 			

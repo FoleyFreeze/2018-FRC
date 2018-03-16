@@ -98,7 +98,9 @@ public class Inputs extends Component {
 		if(Math.abs(leftDrive) < DEADBAND) leftDrive = 0;
 		if(Math.abs(rightDrive) < DEADBAND) rightDrive = 0;
 		
-		dynamicBrake = leftStick.getTrigger();
+		//moved to button 4
+		dynamicBrake = leftStick.getRawButton(4);
+		
 		driveStraight = rightStick.getTrigger();
 		//all elevator heights 
 		//goes in order of high to low
@@ -152,7 +154,10 @@ public class Inputs extends Component {
 		shift = controlBoard.getRawButton(1);
 		manualOverride = controlBoard.getRawButton(14);
 		liftFlip = !controlBoard.getRawButton(15);
-		shoot = controlBoard.getRawButton(5);
+		
+		//also give driver control of shooting
+		shoot = controlBoard.getRawButton(5) || leftStick.getTrigger();
+		
 		autoGather = controlBoard.getRawButton(9);
 		cameraLights = controlBoard.getRawButton(12);
 		deployClimb = controlBoard.getRawButton(7);

@@ -89,9 +89,9 @@ public class Outputs extends Component {
 		armMotor2.follow(armMotor1);
 		
 		armMotor1.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
-		armMotor1.setSensorPhase(true); 
+		armMotor1.setSensorPhase(false); 
 		armMotor2.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
-		armMotor2.setSensorPhase(true);
+		armMotor2.setSensorPhase(false);
 		
 		armMotor1.setInverted(true);
 		armMotor2.setInverted(false);
