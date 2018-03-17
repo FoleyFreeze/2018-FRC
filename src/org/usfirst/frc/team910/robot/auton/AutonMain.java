@@ -128,7 +128,7 @@ public class AutonMain extends Component {
 					}
 				}));
 				b.add(new DriveForward(50, 1.0));//left //85 linc
-				b.add(new DriveForward(50, 1.25));//right //85 linc
+				b.add(new DriveForward(45, 1.25));//right //85 linc
 				b.end();
 				
 				b.add(new IfSet(new IfInterface() {

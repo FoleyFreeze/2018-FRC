@@ -1,11 +1,8 @@
 package org.usfirst.frc.team910.robot.util;
-
-/*
-import java.nio.file.Paths;
 import java.util.ArrayList;
 
 public class PathRunner {
-
+/*
 	public static final double ROBOT_WIDTH = 23.2375;
 	
 	
@@ -33,9 +30,9 @@ public class PathRunner {
 				double time = pR.positions.size() * 0.02;
 				if(time == targetTime) break;
 				if(time < targetTime) maxVel = testVel;
-				else minVel = testVel;
-				
+				else minVel = testVel;	
 			}
+			
 		} else {
 			pR.buildPath(ACCEL, MAX_VEL, distR, endPosR, endVelR, endVel);
 			double targetTime = pR.positions.size() * 0.02;
@@ -62,14 +59,16 @@ public class PathRunner {
 	public static void main(String[] args) {
 		//
 
+		double totalTime = 0;
+		
 		ArrayList<Path> pathsL = new ArrayList<>();
 		ArrayList<Path> pathsR = new ArrayList<>();
 
 		//straight section
 		Path pathL = new Path();
 		Path pathR = new Path();
-		pathL.buildPath(ACCEL, MAX_VEL, 160, 0, 0, 70);//set for drive straight auton
-		pathR.buildPath(ACCEL, MAX_VEL, 160, 0, 0, 70);
+		pathL.buildPath(ACCEL, MAX_VEL, 24, 0, 0, MAX_VEL);//set for drive straight auton
+		pathR.buildPath(ACCEL, MAX_VEL, 24, 0, 0, MAX_VEL);
 		pathsL.add(pathL);
 		pathsR.add(pathR);
 		
@@ -79,6 +78,7 @@ public class PathRunner {
 		int lastIdxR = pathR.positions.size()-1;
 		endPosR = pathR.positions.get(lastIdxR);
 		endVelR = pathR.velocities.get(lastIdxR);
+		totalTime += pathL.positions.size();
 		
 		if(pathL.positions.size() != pathR.positions.size()) System.out.println("ERROR: BAD THINGS HAVE HAPPENED");
 		System.out.println("PathL = buildPath(" + pathL.accelMax + "," + pathL.velocMax + "," + pathL.dist + "," + pathL.startPos + "," + pathL.startVel + "," + pathL.endVel + ")");
@@ -89,7 +89,7 @@ public class PathRunner {
 		pathR = new Path();
 		//pathL.buildPath(500, 80, 124, lastPosL, 70, 80);
 		//pathR.buildPath(500, 64.5, 100, lastPosR, 70, 80);
-		buildTurn(pathL, pathR, 124, 105.5, MAX_VEL);
+		buildTurn(pathL, pathR, 71, 62, MAX_VEL);
 		
 		pathsL.add(pathL);
 		pathsR.add(pathR);
@@ -100,12 +100,14 @@ public class PathRunner {
 		lastIdxR = pathR.positions.size()-1;
 		endPosR = pathR.positions.get(lastIdxR);
 		endVelR = pathR.velocities.get(lastIdxR);
+		totalTime += pathL.positions.size();
 		
 		if(pathL.positions.size() != pathR.positions.size()) System.out.println("ERROR: BAD THINGS HAVE HAPPENED");
 		System.out.println("PathL = buildPath(" + pathL.accelMax + "," + pathL.velocMax + "," + pathL.dist + "," + pathL.startPos + "," + pathL.startVel + "," + pathL.endVel + ")");
 		System.out.println("PathR = buildPath(" + pathR.accelMax + "," + pathR.velocMax + "," + pathR.dist + "," + pathR.startPos + "," + pathR.startVel + "," + pathR.endVel + ")");
 		
 		//straight section
+		/*
 		pathL = new Path();
 		pathR = new Path();
 		pathL.buildPath(ACCEL, MAX_VEL, 70, endPosL, endVelL, 40);
@@ -119,32 +121,35 @@ public class PathRunner {
 		lastIdxR = pathR.positions.size()-1;
 		endPosR = pathR.positions.get(lastIdxR);
 		endVelR = pathR.velocities.get(lastIdxR);
+		totalTime += pathL.positions.size();
 		
 		if(pathL.positions.size() != pathR.positions.size()) System.out.println("ERROR: BAD THINGS HAVE HAPPENED");
 		System.out.println("PathL = buildPath(" + pathL.accelMax + "," + pathL.velocMax + "," + pathL.dist + "," + pathL.startPos + "," + pathL.startVel + "," + pathL.endVel + ")");
 		System.out.println("PathR = buildPath(" + pathR.accelMax + "," + pathR.velocMax + "," + pathR.dist + "," + pathR.startPos + "," + pathR.startVel + "," + pathR.endVel + ")");
-		
+		*
 		//turn section
 		pathL = new Path();
 		pathR = new Path();
 		//pathL.buildPath(500, 63.5, 100, lastPosL, 40, 0);
 		//pathR.buildPath(500, 80, 124, lastPosR, 40, 0);
-		buildTurn(pathL, pathR, 105, 124, 0);
+		buildTurn(pathL, pathR, 62.5, 72.5, 0);
 		pathsL.add(pathL);
 		pathsR.add(pathR);
 
+		totalTime += pathL.positions.size();
+		
 		if(pathL.positions.size() != pathR.positions.size()) System.out.println("ERROR: BAD THINGS HAVE HAPPENED");
 		System.out.println("PathL = buildPath(" + pathL.accelMax + "," + pathL.velocMax + "," + pathL.dist + "," + pathL.startPos + "," + pathL.startVel + "," + pathL.endVel + ")");
 		System.out.println("PathR = buildPath(" + pathR.accelMax + "," + pathR.velocMax + "," + pathR.dist + "," + pathR.startPos + "," + pathR.startVel + "," + pathR.endVel + ")");
 		
-		
+		System.out.println("time = " + (totalTime * .02));
 		
 		ArrayList<Double> x = new ArrayList<>();
 		ArrayList<Double> y = new ArrayList<>();
 		ArrayList<Double> theta = new ArrayList<>();
 
 		// start of robot
-		x.add(29.0);
+		x.add(162.0);
 		y.add(0.0);
 		theta.add(Math.PI / 2);
 
@@ -190,5 +195,5 @@ public class PathRunner {
 			System.out.println(x.get(i) + "\t" + y.get(i) + "\t" + theta.get(i));
 		}
 	}
-}
 */
+}

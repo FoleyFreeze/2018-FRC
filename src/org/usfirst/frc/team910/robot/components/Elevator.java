@@ -56,7 +56,7 @@ public class Elevator extends Component {
 	public static final double[] FEED_FORWARD_AXIS= {0,0,0,0};
 	public static final double[] FEED_FORWARD_TABLE= {0,0,0,0};
 	
-	public static final double LIFT_MAX = 70.5;
+	public static final double LIFT_MAX = 67; //was 70.5
 	public static final double LIFT_SCALE_MIN = 60;
 	public static final double LIFT_SWITCH_MIN = 4;  //MUST be less than LIFT_SWITCH !!!
 	public static final double LIFT_EXCHANGE_MIN = 2;
@@ -68,7 +68,7 @@ public class Elevator extends Component {
 	public static final double ARM_REST_MIN = -35;
 	public static final double R_SCALE_ARM_MIN = 180;
 	
-	public static final double LIFT_SCALE = 70;
+	public static final double LIFT_SCALE = 66;//was 70
 	public static final double LIFT_SWITCH = 18;
 	public static final double LIFT_SWITCH_GATHER = 8;
 	public static final double LIFT_EXCHANGE = 3;
