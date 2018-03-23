@@ -18,7 +18,7 @@ public class ElectroBach {
 	public static final int LEFT_GATHER_CAN = 4;
 	public static final int RIGHT_GATHER_CAN = 5;
 	
-	public static final double TICKS_PER_INCH = 317.2;
+	public static final double TICKS_PER_INCH = 317.2 * 2 / 3;
 	public static final double TICKS_PER_DEGREE = 4800/90; //TODO calculate or measure real value 
 	public static final double TICKS_PER_INCH_HEIGHT = 88676/70; //TODO calculate or measure real value please
 	

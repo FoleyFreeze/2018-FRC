@@ -28,7 +28,7 @@ public class SeriesSet extends AutonSet {
 			error=true;
 		}else if(steps.get(currentStep).isDone()) {//go to and initialize next step
 			currentStep++;
-			steps.get(currentStep).init();
+			if(currentStep < steps.size()) steps.get(currentStep).init();
 		}
 	}
 

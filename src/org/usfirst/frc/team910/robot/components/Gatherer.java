@@ -189,7 +189,7 @@ public class Gatherer extends Component {
 	public void run_current() {
 		if(in.manualOverride) {
 			if(in.gather) {
-				gather(.8,.8);
+				gather(.6,.6);
 			}else if (in.shoot) {
 				gather(-0.4,-0.4);
 			}else {
@@ -205,14 +205,14 @@ public class Gatherer extends Component {
 			switch (gatherS_C) {
 			// initially, run through
 			case INIT:
-				gather(0.5, 0.6);
+				gather(0.4, 0.5);
 				stepTimer_C = Timer.getFPGATimestamp() + 1;
 				gatherS_C = gatherStateC.SPIN;
 				
 				break;
 			// take in the cube
 			case SPIN:
-				gather(0.5, 0.6);
+				gather(0.4, 0.5);
 				if (sense.pdp.getCurrent(ElectroBach.LEFT_GATHER_CAN)
 						+ sense.pdp.getCurrent(ElectroBach.RIGHT_GATHER_CAN) > JAMMED_CURRENT
 						&& Timer.getFPGATimestamp() > stepTimer_C) {

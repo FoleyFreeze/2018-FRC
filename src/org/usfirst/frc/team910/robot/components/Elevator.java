@@ -18,8 +18,8 @@ public class Elevator extends Component {
 	public static final double ARM_DN_PWR = 0.7;
 	public static final double ARM_UP_PWR_SHIFT = 0.7;
 	public static final double ARM_DN_PWR_SHIFT = 0.5;
-	public static final double LIFT_UP_PWR = 0.75;//was .5 //was 0.75
-	public static final double LIFT_DN_PWR = 0.4;//was .3 //was 0.5; too hard!
+	public static final double LIFT_UP_PWR = 0.6;//was .5 //was 0.75
+	public static final double LIFT_DN_PWR = 0.45;//was .3 //was 0.5; too hard!
 	public static final double LIFT_UP_PWR_SHIFT = 0.5;
 	public static final double LIFT_DN_PWR_SHIFT = 0.25;
 	
@@ -56,7 +56,7 @@ public class Elevator extends Component {
 	public static final double[] FEED_FORWARD_AXIS= {0,0,0,0};
 	public static final double[] FEED_FORWARD_TABLE= {0,0,0,0};
 	
-	public static final double LIFT_MAX = 67; //was 70.5
+	public static final double LIFT_MAX = 69; //was 70.5
 	public static final double LIFT_SCALE_MIN = 60;
 	public static final double LIFT_SWITCH_MIN = 4;  //MUST be less than LIFT_SWITCH !!!
 	public static final double LIFT_EXCHANGE_MIN = 2;
@@ -68,7 +68,7 @@ public class Elevator extends Component {
 	public static final double ARM_REST_MIN = -35;
 	public static final double R_SCALE_ARM_MIN = 180;
 	
-	public static final double LIFT_SCALE = 66;//was 70
+	public static final double LIFT_SCALE = 68.5;//was 70
 	public static final double LIFT_SWITCH = 18;
 	public static final double LIFT_SWITCH_GATHER = 8;
 	public static final double LIFT_EXCHANGE = 3;

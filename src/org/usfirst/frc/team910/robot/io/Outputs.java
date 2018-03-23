@@ -119,6 +119,19 @@ public class Outputs extends Component {
 		//System.out.format("L:%.2f R:%.2f\n",sense.leftDist,sense.rightDist);
 	}
 	
+	public void resetDriveEncoders() {
+		if(leftDrive1.setSelectedSensorPosition(0, 0, 50) != ErrorCode.OK) {
+			System.out.println("Error in resetting left encoder position");
+			//TODO: instead of crashing, propagate this error to auton isError() 
+			//in order to prevent auton from running when encoders are broken
+			//System.exit(-1); 
+		}
+		if(rightDrive1.setSelectedSensorPosition(0, 0, 50) != ErrorCode.OK) {
+			System.out.println("Error in resetting right encoder position");
+			//System.exit(-1);
+		}
+	}
+	
 	public void resetEncoders() {
 		if(leftDrive1.setSelectedSensorPosition(0, 0, 50) != ErrorCode.OK) {
 			System.out.println("Error in resetting left encoder position");

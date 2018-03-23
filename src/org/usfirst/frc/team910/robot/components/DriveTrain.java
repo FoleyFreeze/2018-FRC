@@ -7,14 +7,19 @@ import org.usfirst.frc.team910.robot.io.Outputs;
 import org.usfirst.frc.team910.robot.io.Sensors;
 import org.usfirst.frc.team910.robot.util.Path;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 public class DriveTrain extends Component {
 	public static final double DYN_BRAKE_KP = 0.0005; // This is power per inch of error
 	public static final double DRIVE_STRAIGHT_KP = 0.1; // Distance difference by inch
 	public static final double DRIVE_STRAIGHT_TURN = 30.0 / 50.0; //5 inches per second / 50
 	public static final double DRIVE_STRAIGHTNAVX_KP = 0.1;  //Distance difference by inch
-	public static final double DRIVEMP_KP = 0.1;
-	public static final double DRIVEMP_KD = 0.5;
-	public static final double DRIVEMP_KFV = 0.05;
+	
+	public static final double DRIVEMP_KP = 0.3;
+	public static final double DRIVEMP_KD = 0.05;
+	public static final double DRIVEMP_KFV = 0.0;
+	public static final double DRIVEMP_REST_TIME = 0.5;
+	
 	public static final double CAM_DRIVE_KP = 0.5/45; //This is power per degree of error
 	public static final double CAM_DRIVE_KD = 0; //.5/45 * 50. This is power per degree per 20 milliseconds
 	
@@ -185,6 +190,8 @@ public class DriveTrain extends Component {
 	private int index = 0;
 	private double prevLError = 0;
 	private double prevRError = 0;
+	private double lError = 0;
+	private double rError = 0;
 	
 	private void driveMp () {
 		
@@ -196,17 +203,17 @@ public class DriveTrain extends Component {
 		
 		index++;
 		
-		double lError = leftPosition - sense.leftDist;
-		double rError = rightPosition - sense.rightDist;
+		lError = (leftPosition - sense.leftDist );//+ lError) / 2;
+		rError = (rightPosition - sense.rightDist);// + rError) / 2;
 		
-		double deltaLError = lError - prevLError;
-		double deltaRError = rError - prevRError;
+		double deltaLError = sense.leftDist - prevLError;
+		double deltaRError = sense.prevRightPos - prevRError;
 		
-		double powerL = (DRIVEMP_KP * lError) + (DRIVEMP_KD * deltaLError ) + (DRIVEMP_KFV * leftVelocity);
-		double powerR = (DRIVEMP_KP * rError) + (DRIVEMP_KD * deltaRError ) + (DRIVEMP_KFV * rightVelocity);
+		double powerL = (DRIVEMP_KP * lError) - (DRIVEMP_KD * deltaLError ) + (DRIVEMP_KFV * leftVelocity);
+		double powerR = (DRIVEMP_KP * rError) - (DRIVEMP_KD * deltaRError ) + (DRIVEMP_KFV * rightVelocity);
 		
-		prevLError = lError;
-		prevRError = rError;
+		prevLError = sense.leftDist;
+		prevRError = sense.rightDist;
 		
 		if (powerL > 1)
 			powerL = 1;
@@ -217,7 +224,10 @@ public class DriveTrain extends Component {
 		else if (powerR < -1)
 			powerR = -1;
 		
-		System.out.format("idx:%d lpwr:%.2f lerr:%.2f derr:%.2f lvel:%.2f\n", index, powerL,lError,deltaLError,leftVelocity);
+		System.out.format("idx:\t%d\tlpwr:\t%.2f\tlerr:\t%.2f\tderr:\t%.2f\tlvel:\t%.2f\n", index, powerL,lError,deltaLError,leftVelocity);
+		SmartDashboard.putNumber("leftError", lError);
+		SmartDashboard.putNumber("rightError", rError);
+		
 		
 		out.setDrivePower(powerL, powerR);
 		
@@ -225,8 +235,6 @@ public class DriveTrain extends Component {
 	
 	public boolean isMpDoneYet() {
 		return index == leftPath.positions.size();
-			
-		
 	}
 	
 	private double prevCamError;

@@ -6,7 +6,7 @@ import org.usfirst.frc.team910.robot.Component;
 import org.usfirst.frc.team910.robot.auton.steps.AutonSet;
 import org.usfirst.frc.team910.robot.auton.steps.AutonStep;
 import org.usfirst.frc.team910.robot.auton.steps.DriveForward;
-import org.usfirst.frc.team910.robot.auton.steps.DrivePath;
+import org.usfirst.frc.team910.robot.auton.steps.DriveStraightPath;
 import org.usfirst.frc.team910.robot.auton.steps.DriveTurnStep;
 import org.usfirst.frc.team910.robot.auton.steps.ElevatorPosition;
 import org.usfirst.frc.team910.robot.auton.steps.EndStep;
@@ -35,6 +35,7 @@ public class AutonMain extends Component {
 	private SeriesSet driveForward;
 	private SeriesSet onlySwitch;
 	private SeriesSet centerSwitch;
+	private SeriesSet straightScale;
 	
 	//public int currentStep = 0;
 	
@@ -73,8 +74,8 @@ public class AutonMain extends Component {
 		SmartDashboard.putData("AutoStartLocation", startLocation);
 		
 		priority = new SendableChooser<>();
-		priority.addDefault("Scale", SCALE);
-		priority.addObject("Switch", SWITCH);
+		priority.addDefault("Switch", SWITCH);
+		priority.addObject("Scale", SCALE);
 		priority.addObject("Exchange", EXCHANGE);
 		SmartDashboard.putData("AutoPriority", priority);
 		
@@ -118,7 +119,7 @@ public class AutonMain extends Component {
 						return options.switchIsLeft;
 					}
 				}));
-				b.add(new DriveTurnStep(-0.1, 0.4, 0.5)); //turn left
+				b.add(new DriveTurnStep(-0.1, 0.45, 0.5)); //turn left
 				b.add(new DriveTurnStep(0.4, -0.1, 0.45)); //turn right
 				b.end();
 				
@@ -127,7 +128,7 @@ public class AutonMain extends Component {
 						return options.switchIsLeft;
 					}
 				}));
-				b.add(new DriveForward(50, 1.0));//left //85 linc
+				b.add(new DriveForward(45, 1.05));//left //85 linc
 				b.add(new DriveForward(45, 1.25));//right //85 linc
 				b.end();
 				
@@ -140,11 +141,62 @@ public class AutonMain extends Component {
 				b.add(new DriveTurnStep(-0.3, 0, 0.2));//turn left
 				b.end();
 				
-			b.add(new DriveForward(5, 0.1));//was 10	
-			//b.add(new WaitStep(.25));
+			b.add(new DriveForward(5, 0.15));//was 10	
+			b.add(new WaitStep(.1));
 			b.add(new ShootStep());
+			
+			
+			//wait and then attempt to drive back to pick up front pyramid
+			b.add(new WaitStep(4));
+			
+				b.add(new IfSet(new IfInterface() {
+					public boolean choice() { //is the switch on the left or right
+						return options.switchIsLeft;
+					}
+				}));
+				b.add(new DriveTurnStep(-0.45, 0.1, 0.5)); //turn left
+				b.add(new DriveTurnStep(0.1, -0.4, 0.45)); //turn right
+				b.end();
+			
 			b.add(new EndStep());
 			b.end();
+			//b.add(new DriveForward());
+			
+		straightScale = new SeriesSet();
+		b.add(straightScale);
+			b.add(new StartStep());
+			
+			//drive to the scale
+			b.add(new DriveStraightPath());
+				//if we are on the same side as our scale, attempt to score
+				b.add(new IfSet(new IfInterface() {
+					public boolean choice() {
+						return options.selectedStart == LEFT && options.scaleIsLeft
+						    || options.selectedStart == RIGHT && !options.scaleIsLeft;
+					}
+				}));
+					//for the true case, run this series
+					b.add(new SeriesSet());
+					b.add(new ElevatorPosition(Elevator.liftState.F_SCALE_POSITION));
+					b.add(new WaitStep(2));
+						b.add(new IfSet(new IfInterface() {
+							public boolean choice() {
+								return options.selectedStart == LEFT;
+							}
+						}));
+						b.add(new DriveTurnStep(0.5, 0.05, 0.6));
+						b.add(new DriveTurnStep(0.05, 0.5, 0.6));
+						b.end();
+					b.add(new ShootStep());
+					b.end();
+				//for the false case, wait for now
+				b.add(new WaitStep(0));
+				b.end();
+			
+			b.add(new EndStep());
+			b.end();
+		
+		
 	}
 	
 	
@@ -182,6 +234,13 @@ public class AutonMain extends Component {
 			
 		case RIGHT:
 			currentAuton = onlySwitch;
+			break;
+		}
+		
+		//if scale is selected, do that one
+		switch(options.selectedPriority) {
+		case SCALE:
+			currentAuton = straightScale;
 			break;
 		}
 		
