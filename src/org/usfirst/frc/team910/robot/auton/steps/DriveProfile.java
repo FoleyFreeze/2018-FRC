@@ -3,26 +3,47 @@ package org.usfirst.frc.team910.robot.auton.steps;
 import org.usfirst.frc.team910.robot.util.Path;
 
 public class DriveProfile extends AutonStep {
-	
-	public Path [] pathsL;
-	public Path [] pathsR;
-	
+
+	public static final double REST_TIME = .25;
+
+	public Path[] pathsL;
+	public Path[] pathsR;
+
 	public int pathIdx;
-	
-	public DriveProfile(double [][] profile) {
-		
-		pathsL = new Path[profile.length/2];
-		pathsR = new Path[profile.length/2];
-		
-		//add values to paths(Left and Right)
-		for(int i=0; i<profile.length; i+=2) {
-			pathsL[i/2] = new Path();
-			pathsL[i/2].buildPath(profile[i][0], profile[i][1], profile[i][2], profile[i][3], profile[i][4], profile[i][5]);
-			pathsR[i/2] = new Path();
-			pathsR[i/2].buildPath(profile[i+1][0], profile[i+1][1], profile[i+1][2], profile[i+1][3], profile[i+1][4], profile[i+1][5]);
+
+	public DriveProfile(double[][] profile) {
+
+		pathsL = new Path[profile.length / 2];
+		pathsR = new Path[profile.length / 2];
+
+		// add values to paths(Left and Right)
+		for (int i = 0; i < profile.length; i += 2) {
+			pathsL[i / 2] = new Path();
+			pathsL[i / 2].buildPath(profile[i][0], profile[i][1], profile[i][2], profile[i][3], profile[i][4],profile[i][5]);
+			pathsR[i / 2] = new Path();
+			pathsR[i / 2].buildPath(profile[i + 1][0], profile[i + 1][1], profile[i + 1][2], profile[i + 1][3],profile[i + 1][4], profile[i + 1][5]);
+		}
+
+		int lastPath = pathsL.length - 1;
+		double lastPosL = pathsL[lastPath].positions.get(pathsL[lastPath].positions.size() - 1);
+		double lastPosR = pathsR[lastPath].positions.get(pathsR[lastPath].positions.size() - 1);
+		double lastVelL = pathsL[lastPath].velocities.get(pathsL[lastPath].positions.size() - 1);
+		double lastVelR = pathsR[lastPath].velocities.get(pathsR[lastPath].positions.size() - 1);
+
+		if (lastVelL == 0 && lastVelR == 0) {
+
+			// stick to last point to make sure we actually get there
+			for (int i = 0; i * Path.DT < REST_TIME; i++) {
+				pathsL[lastPath].positions.add(lastPosL);
+				pathsR[lastPath].positions.add(lastPosR);
+				pathsL[lastPath].velocities.add(0.0);
+				pathsR[lastPath].velocities.add(0.0);
+				pathsL[lastPath].accelerations.add(0.0);
+				pathsR[lastPath].accelerations.add(0.0);
+			}
 		}
 	}
-	
+
 	@Override
 	public void init() {
 		pathIdx = 0;
@@ -32,20 +53,19 @@ public class DriveProfile extends AutonStep {
 	@Override
 	public void run() {
 		in.enableMP = true;
-		
-		
+
 	}
 
 	@Override
 	public boolean isDone() {
-		if(drive.isMpDoneYet()) {
+		if (drive.isMpDoneYet()) {
 			pathIdx++;
-			if(pathIdx < pathsL.length) {
+			if (pathIdx < pathsL.length) {
 				drive.initMp(pathsL[pathIdx], pathsR[pathIdx]);
-			}else return true;
+			} else
+				return true;
 		}
 		return false;
 	}
-	
-	
+
 }
