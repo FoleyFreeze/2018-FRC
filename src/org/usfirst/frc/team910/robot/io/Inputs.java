@@ -34,6 +34,8 @@ public class Inputs extends Component {
 	public double driveStraightTurn;
 	public boolean dynamicBrake = false;
 	public boolean driveStraight = false;
+	public boolean actionButton = false;
+	public boolean manualGatherThrottle = false;
 
 	//----------------------------Operator Functions--------------------------------------
 	
@@ -76,6 +78,7 @@ public class Inputs extends Component {
 	boolean prevLowAngle;
 	boolean prevMiddleAngle;
 	boolean prevHighAngle;
+	boolean prevManualGather;
 
 	public void read() {
 		double leftYAxis = -leftStick.getY();
@@ -93,7 +96,13 @@ public class Inputs extends Component {
 		rightDrive = ramp(rightYAxis, rightDrive);
 		driveStraightTurn = leftStick.getX();
 		
+		boolean manualGatherButtons = leftStick.getRawButton(5) && rightStick.getRawButton(5);
+	
+		if(!prevManualGather && manualGatherButtons) {
+			manualGatherThrottle = !manualGatherThrottle;
+		}
 		
+		prevManualGather = manualGatherButtons;
 		
 		if(Math.abs(leftDrive) < DEADBAND) leftDrive = 0;
 		if(Math.abs(rightDrive) < DEADBAND) rightDrive = 0;
@@ -102,6 +111,8 @@ public class Inputs extends Component {
 		dynamicBrake = leftStick.getRawButton(3);
 		
 		driveStraight = rightStick.getTrigger();
+		
+		actionButton = leftStick.getTrigger();
 		//all elevator heights 
 		//goes in order of high to low
 		if(controlBoard.getRawButton(19)){
@@ -155,8 +166,13 @@ public class Inputs extends Component {
 		manualOverride = controlBoard.getRawButton(14);
 		liftFlip = !controlBoard.getRawButton(15);
 		
-		//also give driver control of shooting
-		shoot = controlBoard.getRawButton(5) || leftStick.getTrigger();
+		//also give driver control of shooting and gathering
+		shoot = controlBoard.getRawButton(5);
+		if(elevatorCommand == Elevator.liftState.F_FLOOR_POSITION) {
+			gather |= actionButton;
+		}else {
+			shoot |= actionButton;
+		}
 		
 		autoGather = controlBoard.getRawButton(9);
 		cameraLights = controlBoard.getRawButton(12);

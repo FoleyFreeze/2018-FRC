@@ -54,12 +54,22 @@ public class Gatherer extends Component {
 
 		if (in.manualOverride) {
 			if (in.gather) {
-				out.setGatherPower(in.manualGatherLeft, in.manualGatherRight);
+				if(in.manualGatherThrottle) {
+					out.setGatherPower(in.manualGatherLeft, in.manualGatherRight);
+				} else {
+					gather(0.6, 0.4);
+				}
+			} else if (in.shoot) {
+				if(in.manualGatherThrottle) {
+					out.setGatherPower(-in.manualGatherLeft, -in.manualGatherRight);
+				} else {
+					gather(-0.35, -0.35);
+				}
 			} else {
 				out.setGatherPower(0, 0);
 			}
-		}
-
+		} 
+		
 		else if (in.gather) {
 			// gather(0.5, 1);
 			// gatherS = gatherState.INIT;
@@ -190,9 +200,17 @@ public class Gatherer extends Component {
 	public void run_current() {
 		if (in.manualOverride) {
 			if (in.gather) {
-				out.setGatherPower(in.manualGatherLeft, in.manualGatherRight);
+				if(in.manualGatherThrottle) {
+					out.setGatherPower(in.manualGatherLeft, in.manualGatherRight);
+				} else {
+					gather(0.6, 0.4);
+				}
 			} else if (in.shoot) {
-				out.setGatherPower(-in.manualGatherLeft, -in.manualGatherRight);
+				if(in.manualGatherThrottle) {
+					out.setGatherPower(-in.manualGatherLeft, -in.manualGatherRight);
+				} else {
+					gather(-0.35, -0.35);
+				}
 			} else {
 				out.setGatherPower(0, 0);
 			}

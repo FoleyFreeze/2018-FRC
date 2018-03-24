@@ -6,6 +6,7 @@ import org.usfirst.frc.team910.robot.Component;
 import org.usfirst.frc.team910.robot.auton.steps.AutonSet;
 import org.usfirst.frc.team910.robot.auton.steps.AutonStep;
 import org.usfirst.frc.team910.robot.auton.steps.DriveForward;
+import org.usfirst.frc.team910.robot.auton.steps.DriveProfile;
 import org.usfirst.frc.team910.robot.auton.steps.DriveStraightPath;
 import org.usfirst.frc.team910.robot.auton.steps.DriveTurnStep;
 import org.usfirst.frc.team910.robot.auton.steps.ElevatorPosition;
@@ -17,6 +18,7 @@ import org.usfirst.frc.team910.robot.auton.steps.ShootStep;
 import org.usfirst.frc.team910.robot.auton.steps.StartStep;
 import org.usfirst.frc.team910.robot.auton.steps.WaitStep;
 import org.usfirst.frc.team910.robot.components.Elevator;
+import org.usfirst.frc.team910.robot.util.Profile;
 
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -36,6 +38,7 @@ public class AutonMain extends Component {
 	private SeriesSet onlySwitch;
 	private SeriesSet centerSwitch;
 	private SeriesSet straightScale;
+	private SeriesSet testProfile;
 	
 	//public int currentStep = 0;
 	
@@ -46,6 +49,7 @@ public class AutonMain extends Component {
 	public static final int SCALE = 4;
 	public static final int SWITCH = 5;
 	public static final int EXCHANGE = 6;
+	public static final int TEST =7;
 	SendableChooser<Integer> startLocation;
 	SendableChooser<Integer> priority;
 	
@@ -71,6 +75,7 @@ public class AutonMain extends Component {
 		//startLocation.addObject("Straight", STRAIGHT_ONLY);//was center 
 		startLocation.addObject("Center", CENTER);
 		startLocation.addObject("Right", RIGHT);
+		startLocation.addObject("TEST", TEST);
 		SmartDashboard.putData("AutoStartLocation", startLocation);
 		
 		priority = new SendableChooser<>();
@@ -196,6 +201,12 @@ public class AutonMain extends Component {
 			b.add(new EndStep());
 			b.end();
 		
+		testProfile = new SeriesSet();
+		b.add(testProfile);
+			b.add(new StartStep());
+			b.add(new DriveProfile(Profile.test));
+			b.add(new EndStep());
+		b.end();
 		
 	}
 	
@@ -234,6 +245,10 @@ public class AutonMain extends Component {
 			
 		case RIGHT:
 			currentAuton = onlySwitch;
+			break;
+			
+		case TEST:
+			currentAuton = testProfile;
 			break;
 		}
 		
