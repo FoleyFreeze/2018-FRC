@@ -1,6 +1,7 @@
 package org.usfirst.frc.team910.robot.components;
 
 import org.usfirst.frc.team910.robot.Component;
+import org.usfirst.frc.team910.robot.io.Angle;
 import org.usfirst.frc.team910.robot.io.ElectroBach;
 
 import edu.wpi.first.wpilibj.Timer;
@@ -10,14 +11,14 @@ public class Gatherer extends Component {
 	public enum gatherStateIR {
 		INIT, SEARCH, SPIN, SUCK, WAIT, CENTER, STOP
 	}
-	
+
 	public enum gatherStateC {
 		INIT, SPIN, EJECT, REGATHER, WAIT, CENTER, STOP
 	}
 
 	public double stepTimer_C = 0;
 	public gatherStateC gatherS_C = gatherStateC.INIT;
-	
+
 	public static final double JAMMED_CURRENT = 30;
 	public static final double SEARCH_DIST = 20;
 	public static final double DIST_TOLERANCE = 4;
@@ -28,9 +29,9 @@ public class Gatherer extends Component {
 	public Gatherer() {
 
 	}
-	
+
 	public void run() {
-		if(in.cameraLights) {
+		if (in.cameraLights) {
 			run_IR();
 		} else {
 			run_current();
@@ -53,9 +54,9 @@ public class Gatherer extends Component {
 
 		if (in.manualOverride) {
 			if (in.gather) {
-				gather(in.manualGatherLeft, in.manualGatherRight);
+				out.setGatherPower(in.manualGatherLeft, in.manualGatherRight);
 			} else {
-				gather(0, 0);
+				out.setGatherPower(0, 0);
 			}
 		}
 
@@ -80,37 +81,37 @@ public class Gatherer extends Component {
 					gatherS_IR = gatherStateIR.SPIN;
 				}
 				break;
-				
-			//spin cube to correct orientation	
+
+			// spin cube to correct orientation
 			case SPIN:
 				double maxDist = Math.max(Math.max(distR, distC), distL);
 				double minDist = Math.min(Math.min(distR, distC), distL);
 
-				if (maxDist - minDist < DIST_TOLERANCE) {
-					gather(.8,.8);
+				if (maxDist - minDist < DIST_TOLERANCE) { // if cube straight, just suck it in
+					gather(.8, .8);
 					gatherS_IR = gatherStateIR.SUCK;
 					stepTimer_IR = Timer.getFPGATimestamp() + .75;
-				} else if (distC < distR && distC < distL) {
+				} else if (distC < distR && distC < distL) { // if corner of cube is in center
 					gather(-.4, .8);
-				} else if (distC < distR && distC > distL) {
-					gather(.4, .8);
-				} else if (distC > distR && distC < distL) {
-					gather(.8, .4);
+				} else if (distC < distR && distC > distL) { // if cube more left than right sucked in
+					out.setGatherPower(.4, .8);
+				} else if (distC > distR && distC < distL) { // if cube more right than left sucked in
+					out.setGatherPower(.8, .4);
 				} else {
-					gather(-.4,.8);
+					gather(-.4, .8); // if nothing else, just gather
 				}
 				break;
-			
-			//gathers the cube	
+
+			// gathers the cube
 			case SUCK:
-				gather(.8,.8);
-				if(Timer.getFPGATimestamp() > stepTimer_IR) {
+				gather(.8, .8);
+				if (Timer.getFPGATimestamp() > stepTimer_IR) {
 					gatherS_IR = gatherStateIR.WAIT;
 					stepTimer_IR = Timer.getFPGATimestamp() + 1;
 				}
 				break;
-			
-			//when arm comes 70 degrees, gather 
+
+			// when arm comes 70 degrees, gather
 			case WAIT:
 				gather(0, 0);
 				if (Math.abs(sense.armPosL) < 70) {
@@ -120,8 +121,8 @@ public class Gatherer extends Component {
 					gatherS_IR = gatherStateIR.INIT;
 				}
 				break;
-			
-			//when arm comes 35 degrees from the center gather
+
+			// when arm comes 35 degrees from the center gather
 			case CENTER:
 				gather(0.8, 0.8);
 				if (Math.abs(sense.armPosL) < 35) {
@@ -131,7 +132,7 @@ public class Gatherer extends Component {
 				}
 				break;
 
-			//stops gatherer	
+			// stops gatherer
 			case STOP:
 				gatherS_IR = gatherStateIR.INIT;
 				// gather(0,0);
@@ -153,7 +154,7 @@ public class Gatherer extends Component {
 			case SEARCH:
 			case SPIN:
 			case SUCK:
-				//if we were not in WAIT state, set the timer as if we were
+				// if we were not in WAIT state, set the timer as if we were
 				stepTimer_IR = Timer.getFPGATimestamp() + 1;
 				gatherS_IR = gatherStateIR.WAIT;
 			case WAIT:
@@ -185,22 +186,21 @@ public class Gatherer extends Component {
 		}
 
 	}
-	
+
 	public void run_current() {
-		if(in.manualOverride) {
-			if(in.gather) {
-				gather(.6,.6);
-			}else if (in.shoot) {
-				gather(-0.4,-0.4);
-			}else {
-				gather(0,0);
+		if (in.manualOverride) {
+			if (in.gather) {
+				out.setGatherPower(in.manualGatherLeft, in.manualGatherRight);
+			} else if (in.shoot) {
+				out.setGatherPower(-in.manualGatherLeft, -in.manualGatherRight);
+			} else {
+				out.setGatherPower(0, 0);
 			}
 		}
-		
 
 		else if (in.gather) {
-			//gather(0.5, 1);
-			//gatherS = gatherState.INIT;
+			// gather(0.5, 1);
+			// gatherS = gatherState.INIT;
 
 			switch (gatherS_C) {
 			// initially, run through
@@ -208,7 +208,7 @@ public class Gatherer extends Component {
 				gather(0.4, 0.5);
 				stepTimer_C = Timer.getFPGATimestamp() + 1;
 				gatherS_C = gatherStateC.SPIN;
-				
+
 				break;
 			// take in the cube
 			case SPIN:
@@ -216,7 +216,7 @@ public class Gatherer extends Component {
 				if (sense.pdp.getCurrent(ElectroBach.LEFT_GATHER_CAN)
 						+ sense.pdp.getCurrent(ElectroBach.RIGHT_GATHER_CAN) > JAMMED_CURRENT
 						&& Timer.getFPGATimestamp() > stepTimer_C) {
-					
+
 					gatherS_C = gatherStateC.EJECT;
 					stepTimer_C = Timer.getFPGATimestamp() + 0.10;
 				}
@@ -232,87 +232,105 @@ public class Gatherer extends Component {
 			// retake-in cube, currently not used
 			case REGATHER:
 				gather(.7, .7);
-				if(Timer.getFPGATimestamp() > stepTimer_C) {
+				if (Timer.getFPGATimestamp() > stepTimer_C) {
 					gatherS_C = gatherStateC.WAIT;
 					stepTimer_C = Timer.getFPGATimestamp() + 1;
 				}
 				break;
-				
+
 			case WAIT:
-				gather(0,0);
-				if(Math.abs(sense.armPosL) < 70) {
+				gather(0, 0);
+				if (Math.abs(sense.armPosL) < 70) {
 					gatherS_C = gatherStateC.CENTER;
 					stepTimer_C = Timer.getFPGATimestamp() + 0.25;
-				} else if(Timer.getFPGATimestamp() > stepTimer_C) {
+				} else if (Timer.getFPGATimestamp() > stepTimer_C) {
 					gatherS_C = gatherStateC.INIT;
 				}
 				break;
-				
+
 			case CENTER:
-				gather(0.8,0.8);
-				if(Math.abs(sense.armPosL) < 35) {
+				gather(0.8, 0.8);
+				if (Math.abs(sense.armPosL) < 35) {
 					gatherS_C = gatherStateC.STOP;
 				} else if (Timer.getFPGATimestamp() > stepTimer_C) {
 					gatherS_C = gatherStateC.INIT;
 				}
 				break;
-				
+
 			case STOP:
 				gatherS_C = gatherStateC.INIT;
-				//gather(0,0);
+				// gather(0,0);
 				break;
 			}
-			
-			//shoot logic
+
+			// shoot logic
 		} else if (in.shoot && in.shift) {
 			gather(-0.6, -0.6);
 			gatherS_C = gatherStateC.INIT;
 		} else if (in.shoot) {
 			gather(-0.35, -0.35);
 			gatherS_C = gatherStateC.INIT;
-			
-			//if no button pressed
+
+			// if no button pressed
 		} else {
-			switch(gatherS_C) {
+			switch (gatherS_C) {
 			case INIT:
 			case SPIN:
 			case EJECT:
 			case REGATHER:
-				//if we were not in WAIT state, set the timer as if we were
+				// if we were not in WAIT state, set the timer as if we were
 				stepTimer_C = Timer.getFPGATimestamp() + 1;
 				gatherS_C = gatherStateC.WAIT;
 			case WAIT:
-				gather(0,0);
-				if(Math.abs(sense.armPosL) < 70) {
+				gather(0, 0);
+				if (Math.abs(sense.armPosL) < 70) {
 					gatherS_C = gatherStateC.CENTER;
 					stepTimer_C = Timer.getFPGATimestamp() + 0.25;
-				} else if(Timer.getFPGATimestamp() > stepTimer_C) {
+				} else if (Timer.getFPGATimestamp() > stepTimer_C) {
 					gatherS_C = gatherStateC.STOP;
 				}
 				break;
-				
+
 			case CENTER:
-				gather(0.8,0.8);
-				if(Math.abs(sense.armPosL) < 35) {
+				gather(0.8, 0.8);
+				if (Math.abs(sense.armPosL) < 35) {
 					gatherS_C = gatherStateC.STOP;
-				} else if(Timer.getFPGATimestamp() > stepTimer_C) {
+				} else if (Timer.getFPGATimestamp() > stepTimer_C) {
 					gatherS_C = gatherStateC.STOP;
 				}
 				break;
-				
+
 			default:
-				gather(0.1,0.1);
+				gather(0.1, 0.1);
 				gatherS_C = gatherStateC.STOP;
 			}
-			
-			//gather(0, 0);
-			//gatherS = gatherState.INIT;
+
+			// gather(0, 0);
+			// gatherS = gatherState.INIT;
 		}
 
 	}
 
 	private void gather(double leftPower, double rightPower) {
-		out.setGatherPower(leftPower, rightPower);
+		double robotAngle = sense.robotAngle.get();
+		boolean flipSides = false;
+
+		// if (!in.liftFlip) {
+		if (robotAngle > 90 && robotAngle < 180) {
+			flipSides = true;
+		} else if (robotAngle > 270 && robotAngle < 360) {
+			flipSides = true;
+		}
+
+		if (in.liftFlip) {
+			flipSides = !flipSides;
+		}
+
+		if (flipSides) {
+			out.setGatherPower(rightPower, leftPower);
+		} else {
+			out.setGatherPower(leftPower, rightPower);
+		}
 	}
 
 }
