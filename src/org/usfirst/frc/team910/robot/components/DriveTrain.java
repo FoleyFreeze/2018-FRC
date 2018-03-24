@@ -12,44 +12,41 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class DriveTrain extends Component {
 	public static final double DYN_BRAKE_KP = 0.0005; // This is power per inch of error
 	public static final double DRIVE_STRAIGHT_KP = 0.1; // Distance difference by inch
-	public static final double DRIVE_STRAIGHT_TURN = 30.0 / 50.0; //5 inches per second / 50
-	public static final double DRIVE_STRAIGHTNAVX_KP = 0.1;  //Distance difference by inch
-	
+	public static final double DRIVE_STRAIGHT_TURN = 30.0 / 50.0; // 5 inches per second / 50
+	public static final double DRIVE_STRAIGHTNAVX_KP = 0.1; // Distance difference by inch
+
 	public static final double DRIVEMP_KP = 0.3;
 	public static final double DRIVEMP_KD = 0.05;
 	public static final double DRIVEMP_KFV = 0.0;
 	public static final double DRIVEMP_REST_TIME = 0.5;
-	
-	public static final double CAM_DRIVE_KP = 0.5/45; //This is power per degree of error
-	public static final double CAM_DRIVE_KD = 0; //.5/45 * 50. This is power per degree per 20 milliseconds
-	
-	public static final double[] CAM_DRIVE_TABLE = {1,0.75,0.5,0};
-	public static final double[] CAM_DRIVE_AXIS = {5,10,25,50};
-	
+	public static final double DRIVEMP_KFA = 0.0;
+
+	public static final double CAM_DRIVE_KP = 0.5 / 45; // This is power per degree of error
+	public static final double CAM_DRIVE_KD = 0; // .5/45 * 50. This is power per degree per 20 milliseconds
+
+	public static final double[] CAM_DRIVE_TABLE = { 1, 0.75, 0.5, 0 };
+	public static final double[] CAM_DRIVE_AXIS = { 5, 10, 25, 50 };
 
 	public DriveTrain() {
-		
+
 	}
 
 	public void run() {
-		//If motion profiling don't do any other run functions
-		if(in.enableMP) {
+		// If motion profiling don't do any other run functions
+		if (in.enableMP) {
 			driveMp();
-			//out.driveMP.run(in.enableMP);
-		}
-		else if (in.dynamicBrake) {
+			// out.driveMP.run(in.enableMP);
+		} else if (in.dynamicBrake) {
 			boolean first = !prevBrake && in.dynamicBrake;
 			dynamicBrake(sense.leftDist, sense.rightDist, first);
-		} 
-		else if(in.driveStraight) {
+		} else if (in.driveStraight) {
 			boolean first = !prevDriveStraight && in.driveStraight;
 			driveStraightEnc(sense.leftDist, sense.rightDist, first, in.rightDrive);
-			//driveStraightNavx(sense.robotAngle,in.rightDrive, first);
-		}
-		else {
+			// driveStraightNavx(sense.robotAngle,in.rightDrive, first);
+		} else {
 			tankDrive(in.leftDrive, in.rightDrive);
 		}
-		
+
 		prevBrake = in.dynamicBrake;
 		prevDriveStraight = in.driveStraight;
 
@@ -58,14 +55,16 @@ public class DriveTrain extends Component {
 	private void tankDrive(double left, double right) {
 		out.setDrivePower(left, right);
 	}
-		
 
 	/**
 	 * Dynamic braking ensures that the robot stays in place even if pushed
 	 *
-	 * @param leftEncoder current distance measured of left drive
-	 * @param rightEncoder current distance measured of right drive
-	 * @param first if true initializing the set points of the first time
+	 * @param leftEncoder
+	 *            current distance measured of left drive
+	 * @param rightEncoder
+	 *            current distance measured of right drive
+	 * @param first
+	 *            if true initializing the set points of the first time
 	 * @return nothing
 	 */
 	private double setPointL;
@@ -73,12 +72,12 @@ public class DriveTrain extends Component {
 	private boolean prevBrake = false;
 
 	private void dynamicBrake(double leftEncoder, double rightEncoder, boolean first) {
-		//once trigger pulled sets position
+		// once trigger pulled sets position
 		if (first) {
 			setPointL = leftEncoder;
 			setPointR = rightEncoder;
 		}
-		//calculate error sets power motors based on error
+		// calculate error sets power motors based on error
 		double errorL = setPointL - leftEncoder;
 		double errorR = setPointR - rightEncoder;
 		double powerL = DYN_BRAKE_KP * errorL;
@@ -96,38 +95,43 @@ public class DriveTrain extends Component {
 		out.setDrivePower(powerL, powerR);
 
 	}
-/**
- * Press right trigger, initialize drive straight
- * 
- * @param leftEncoder is the number of rotations on the left
- * @param rightEncoder is the number of rotations on the right
- * @param first determines whether you just pressed the trigger
- * @param rightJoystick is the right joystick axis(y axis)
- */
+
+	/**
+	 * Press right trigger, initialize drive straight
+	 * 
+	 * @param leftEncoder
+	 *            is the number of rotations on the left
+	 * @param rightEncoder
+	 *            is the number of rotations on the right
+	 * @param first
+	 *            determines whether you just pressed the trigger
+	 * @param rightJoystick
+	 *            is the right joystick axis(y axis)
+	 */
 	private boolean prevDriveStraight = false;
 	private double initDiff;
 
 	private void driveStraightEnc(double leftEncoder, double rightEncoder, boolean first, double rightJoystick) {
-		
-		//Checks trigger pulled to find initial difference between encoders 
+
+		// Checks trigger pulled to find initial difference between encoders
 		if (first) {
-			 initDiff = leftEncoder - rightEncoder;
+			initDiff = leftEncoder - rightEncoder;
 		}
-		
-		initDiff += DRIVE_STRAIGHT_TURN*in.driveStraightTurn; //use right joystick to turn while driving straight
-		
-		//encoder tick difference between left and right encoder
+
+		initDiff += DRIVE_STRAIGHT_TURN * in.driveStraightTurn; // use right joystick to turn while driving straight
+
+		// encoder tick difference between left and right encoder
 		double encDiff = leftEncoder - rightEncoder;
-		//how bad our initial difference is from current difference
+		// how bad our initial difference is from current difference
 		double dispError = encDiff - initDiff;
-		
-		//sets power difference with P from PID
+
+		// sets power difference with P from PID
 		double powerDiff = DRIVE_STRAIGHT_KP * dispError;
-		
-		//power for each motor
+
+		// power for each motor
 		double powerL = rightJoystick - powerDiff;
 		double powerR = rightJoystick + powerDiff;
-		
+
 		if (powerL > 1)
 			powerL = 1;
 		else if (powerL < -1)
@@ -139,29 +143,33 @@ public class DriveTrain extends Component {
 
 		out.setDrivePower(powerL, powerR);
 	}
-	
+
 	/**
 	 * corrects for angle errors when driving straight
 	 * 
-	 * @param currentableAngle is the angle the robot is currently at
-	 * @param rightJoystick the reading of the right Joystick y-axis
-	 * @param First determines whether you just pressed the trigger
+	 * @param currentableAngle
+	 *            is the angle the robot is currently at
+	 * @param rightJoystick
+	 *            the reading of the right Joystick y-axis
+	 * @param First
+	 *            determines whether you just pressed the trigger
 	 */
-	private Angle initAngle = new Angle(0); 
+	private Angle initAngle = new Angle(0);
+
 	private void driveStraightNavx(Angle currentAngle, double rightJoystick, boolean first) {
-	
-		//check trigger pulled sets starting angle
-		if(first) {
-			initAngle.set(currentAngle);	
+
+		// check trigger pulled sets starting angle
+		if (first) {
+			initAngle.set(currentAngle);
 		}
-		//how far off we are from initial angle
+		// how far off we are from initial angle
 		double angleError = currentAngle.subtract(initAngle);
 		double powerDiff = DRIVE_STRAIGHTNAVX_KP * angleError;
-		
-		//power for each motor
+
+		// power for each motor
 		double powerL = rightJoystick - powerDiff;
 		double powerR = rightJoystick + powerDiff;
-		
+
 		if (powerL > 1)
 			powerL = 1;
 		else if (powerL < -1)
@@ -173,48 +181,55 @@ public class DriveTrain extends Component {
 
 		out.setDrivePower(powerL, powerR);
 	}
-	
+
 	private Path leftPath;
 	private Path rightPath;
-	
-	public void initMp (Path leftPath, Path rightPath) {
+
+	public void initMp(Path leftPath, Path rightPath) {
 		index = 0;
-		prevLError = 0;
-		prevRError = 0;
-		
+		// prevLError = 0;
+		// prevRError = 0;
+
 		this.leftPath = leftPath;
 		this.rightPath = rightPath;
-		
+
 	}
-	
+
 	private int index = 0;
 	private double prevLError = 0;
 	private double prevRError = 0;
 	private double lError = 0;
 	private double rError = 0;
-	
-	private void driveMp () {
-		
+
+	private void driveMp() {
+
 		double leftPosition = leftPath.positions.get(index);
 		double rightPosition = rightPath.positions.get(index);
-		
+
 		double leftVelocity = leftPath.velocities.get(index);
 		double rightVelocity = rightPath.velocities.get(index);
-		
+
+		double leftAccel = leftPath.accelerations.get(index);
+		double rightAccel = rightPath.accelerations.get(index);
+
 		index++;
-		
-		lError = (leftPosition - sense.leftDist );//+ lError) / 2;
+		if (index >= leftPath.positions.size())
+			index = leftPath.positions.size() - 1;
+
+		lError = (leftPosition - sense.leftDist);// + lError) / 2;
 		rError = (rightPosition - sense.rightDist);// + rError) / 2;
-		
+
 		double deltaLError = sense.leftDist - prevLError;
 		double deltaRError = sense.prevRightPos - prevRError;
-		
-		double powerL = (DRIVEMP_KP * lError) - (DRIVEMP_KD * deltaLError ) + (DRIVEMP_KFV * leftVelocity);
-		double powerR = (DRIVEMP_KP * rError) - (DRIVEMP_KD * deltaRError ) + (DRIVEMP_KFV * rightVelocity);
-		
+
+		double powerL = (DRIVEMP_KP * lError) - (DRIVEMP_KD * deltaLError) + (DRIVEMP_KFV * leftVelocity)
+				+ (DRIVEMP_KFA * leftAccel);
+		double powerR = (DRIVEMP_KP * rError) - (DRIVEMP_KD * deltaRError) + (DRIVEMP_KFV * rightVelocity)
+				+ (DRIVEMP_KFA * rightVelocity);
+
 		prevLError = sense.leftDist;
 		prevRError = sense.rightDist;
-		
+
 		if (powerL > 1)
 			powerL = 1;
 		else if (powerL < -1)
@@ -223,39 +238,40 @@ public class DriveTrain extends Component {
 			powerR = 1;
 		else if (powerR < -1)
 			powerR = -1;
-		
-		System.out.format("idx:\t%d\tlpwr:\t%.2f\tlerr:\t%.2f\tderr:\t%.2f\tlvel:\t%.2f\n", index, powerL,lError,deltaLError,leftVelocity);
+
+		System.out.format("idx:\t%d\tlpwr:\t%.2f\tlerr:\t%.2f\tderr:\t%.2f\tlvel:\t%.2f\n", index, powerL, lError,
+				deltaLError, leftVelocity);
 		SmartDashboard.putNumber("leftError", lError);
 		SmartDashboard.putNumber("rightError", rError);
-		
-		
+
 		out.setDrivePower(powerL, powerR);
-		
+
 	}
-	
+
 	public boolean isMpDoneYet() {
 		return index == leftPath.positions.size();
 	}
-	
+
 	private double prevCamError;
+
 	public void driveAngle(Angle targetAngle, double power) {
-		//error is the target angle minus the robot angle
+		// error is the target angle minus the robot angle
 		double error = targetAngle.subtract(sense.robotAngle);
-		
-		//deltaError is the current error minus the previous camError
+
+		// deltaError is the current error minus the previous camError
 		double deltaError = error - prevCamError;
-		
-		//PD for the given power
+
+		// PD for the given power
 		double powerDiff = CAM_DRIVE_KP * error + CAM_DRIVE_KD * deltaError;
-		
+
 		power = power * Elevator.interp(CAM_DRIVE_AXIS, CAM_DRIVE_TABLE, error);
-		
-		//setting powers
+
+		// setting powers
 		double powerL = power - powerDiff;
 		double powerR = power + powerDiff;
-		
+
 		prevCamError = error;
-		
+
 		if (powerL > 1)
 			powerL = 1;
 		else if (powerL < -1)
@@ -264,13 +280,9 @@ public class DriveTrain extends Component {
 			powerR = 1;
 		else if (powerR < -1)
 			powerR = -1;
-		
+
 		out.setDrivePower(powerL, powerR);
-		
-		
-		
+
 	}
-	
-	
-	
+
 }
