@@ -64,7 +64,7 @@ public class Sensors extends Component {
 		navx = new AHRS(SPI.Port.kMXP);
 		navx.zeroYaw();
 		robotAngle = new Angle(0);
-		pdp = new PowerDistributionPanel();
+		pdp = new PowerDistributionPanel(0);
 		frontCenter = new AnalogInput(ElectroBach.F_CNT_DIST);
 		frontRight = new AnalogInput(ElectroBach.F_RGT_DIST);
 		frontLeft = new AnalogInput(ElectroBach.F_LFT_DIST);

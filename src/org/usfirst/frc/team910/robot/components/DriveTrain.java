@@ -15,11 +15,11 @@ public class DriveTrain extends Component {
 	public static final double DRIVE_STRAIGHT_TURN = 30.0 / 50.0; // 5 inches per second / 50
 	public static final double DRIVE_STRAIGHTNAVX_KP = 0.1; // Distance difference by inch
 
-	public static final double DRIVEMP_KP = 0.3;
-	public static final double DRIVEMP_KD = 0.05;
-	public static final double DRIVEMP_KFV = 0.0;
-	public static final double DRIVEMP_REST_TIME = 0.5;
-	public static final double DRIVEMP_KFA = 0.0;
+	public static final double DRIVEMP_KP = 0.1;
+	public static final double DRIVEMP_KD = 0.0;
+	public static final double DRIVEMP_KFV = 0.9 / 210.0; //150 in/sec at max pwr
+	public static final double DRIVEMP_KFA = 1.0 / 600.0; //full power is ~1000 in/sec/sec
+	public static final double DRIVEMP_KFV_INT = 0.1;
 
 	public static final double CAM_DRIVE_KP = 0.5 / 45; // This is power per degree of error
 	public static final double CAM_DRIVE_KD = 0; // .5/45 * 50. This is power per degree per 20 milliseconds
@@ -221,11 +221,26 @@ public class DriveTrain extends Component {
 
 		double deltaLError = sense.leftDist - prevLError;
 		double deltaRError = sense.prevRightPos - prevRError;
+		
+		double ffPowerL = (DRIVEMP_KFV * leftVelocity) + (DRIVEMP_KFA * leftAccel);
+		double ffPowerR = (DRIVEMP_KFV * rightVelocity) + (DRIVEMP_KFA * rightAccel);
 
-		double powerL = (DRIVEMP_KP * lError) - (DRIVEMP_KD * deltaLError) + (DRIVEMP_KFV * leftVelocity)
-				+ (DRIVEMP_KFA * leftAccel);
-		double powerR = (DRIVEMP_KP * rError) - (DRIVEMP_KD * deltaRError) + (DRIVEMP_KFV * rightVelocity)
-				+ (DRIVEMP_KFA * rightVelocity);
+		if(leftVelocity > 0) ffPowerL += DRIVEMP_KFV_INT;
+		else if(leftVelocity < 0) ffPowerL -= DRIVEMP_KFV_INT;
+		if(rightVelocity > 0) ffPowerR += DRIVEMP_KFV_INT;
+		else if(rightVelocity < 0) ffPowerR -= DRIVEMP_KFV_INT;
+		
+		if (ffPowerL > 1)
+			ffPowerL = 1;
+		else if (ffPowerL < -1)
+			ffPowerL = -1;
+		if (ffPowerR > 1)
+			ffPowerR = 1;
+		else if (ffPowerR < -1)
+			ffPowerR = -1;
+		
+		double powerL = (DRIVEMP_KP * lError) - (DRIVEMP_KD * deltaLError) + ffPowerL;
+		double powerR = (DRIVEMP_KP * rError) - (DRIVEMP_KD * deltaRError) + ffPowerR;
 
 		prevLError = sense.leftDist;
 		prevRError = sense.rightDist;
@@ -239,8 +254,8 @@ public class DriveTrain extends Component {
 		else if (powerR < -1)
 			powerR = -1;
 
-		System.out.format("idx:\t%d\tlpwr:\t%.2f\tlerr:\t%.2f\tderr:\t%.2f\tlvel:\t%.2f\n", index, powerL, lError,
-				deltaLError, leftVelocity);
+		System.out.format("idx:\t%d\tlpwr:\t%.2f\tlerr:\t%.2f\tderr:\t%.2f\tlvel:\t%.2f\tlff:\t%.2f\n", index, powerL, lError,
+				deltaLError, leftVelocity, ffPowerL);
 		SmartDashboard.putNumber("leftError", lError);
 		SmartDashboard.putNumber("rightError", rError);
 

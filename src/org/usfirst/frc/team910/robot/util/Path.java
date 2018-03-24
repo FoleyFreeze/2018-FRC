@@ -113,7 +113,7 @@ public class Path extends Component {
 				position = transPos + (velocMax*(DT-transTime));
 				//what is the velocity at the end?
 				velocity = velocMax;
-				tempAccel = 0;
+				tempAccel = (velocity - prevVel) / DT;
 			} else if(endPosition - position < step3dist) { //checking for transition from step 1 to step 3
 				double prevVel = velocities.get(velocities.size() -1); 
 				//step3dist = (endVel * endVel - prevVel * prevVel) / (2 * step3Accel);
@@ -122,7 +122,7 @@ public class Path extends Component {
 				double transTime = (transVel - prevVel)/ step1Accel;
 				velocity = transVel + step3Accel * (DT - transTime);
 				position = endPosition - step3dist + transVel * (DT - transTime) + 0.5 * step3Accel * (DT - transTime * transTime);
-				tempAccel = step3Accel;
+				tempAccel = (velocity - prevVel) / DT;
 			}
 			
 			//System.out.format("X:%.3f V:%.3f\n", position,velocity);
@@ -130,7 +130,7 @@ public class Path extends Component {
 			velocities.add(velocity); //record velocity
 			accelerations.add(tempAccel); //record acceleration
 			
-			//System.out.format("P: %.3f  V: %.2f  A: %.0f\n", position, velocity, tempAccel);
+			System.out.format("P: %.3f  V: %.2f  A: %.0f\n", position, velocity, tempAccel);
 		}
 		
 		step3dist = (endVel * endVel - velocity * velocity) / (2 * step3Accel); 
@@ -147,6 +147,7 @@ public class Path extends Component {
 				//transition to done, dont change position, vel, or accel.
 			}
 			else if (endPosition - position < step3dist) { 
+				double prevVel = velocities.get(velocities.size()-1);
 				//position at which you start slowing down
 				double prevPos = positions.get(positions.size()-1);
 				//distance covered before slowing down;
@@ -158,7 +159,7 @@ public class Path extends Component {
 				double transPos = dist - step3dist + startPos;
 				position = transPos + velocMax*(DT-transTime) + 0.5 * step3Accel * (DT - transTime) * (DT - transTime);
 				velocity = velocMax + step3Accel * (DT-transTime);
-				tempAccel = step3Accel;
+				tempAccel = (velocity - prevVel) / DT;
 			}
 
 			//System.out.format("X:%.3f V:%.3f\n", position,velocity);
@@ -166,7 +167,7 @@ public class Path extends Component {
 			velocities.add(velocity); //record velocity
 			accelerations.add(tempAccel); //record acceleration
 
-			//System.out.format("P: %.3f  V: %.2f  A: %.0f\n", position, velocity, tempAccel);
+			System.out.format("P: %.3f  V: %.2f  A: %.0f\n", position, velocity, tempAccel);
 		}
 		
 
@@ -183,6 +184,7 @@ public class Path extends Component {
 				//tempAccel = 0;
 				if(velocity < 0) {
 					velocity = 0;
+					tempAccel = (velocity - velocities.get(velocities.size()-1)) / DT;
 				}
 			}
 			
@@ -191,7 +193,7 @@ public class Path extends Component {
 			velocities.add(velocity); //record velocity
 			accelerations.add(tempAccel); //record accelerations
 			
-			//System.out.format("P: %.3f  V: %.2f  A: %.0f\n", position, velocity, tempAccel);
+			System.out.format("P: %.3f  V: %.2f  A: %.0f\n", position, velocity, tempAccel);
 		} 
 
 	}

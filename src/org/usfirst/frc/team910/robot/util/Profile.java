@@ -11,7 +11,7 @@ public class Profile {
 												 {500, 80, 60, 92.985, 82.977, 0}//R
 												};
 	
-	public static final double [][] test = {{100, 40, 120, 0, 0, 0},//L
-											{100, 40, 120, 0, 0, 0}//R
+	public static final double [][] test = {{400, 150, 120, 0, 0, 0},//L
+											{400, 150, 120, 0, 0, 0}//R
 											};
 }
