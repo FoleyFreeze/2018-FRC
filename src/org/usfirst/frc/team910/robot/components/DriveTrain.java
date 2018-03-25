@@ -213,8 +213,10 @@ public class DriveTrain extends Component {
 		double rightAccel = rightPath.accelerations.get(index);
 
 		index++;
-		if (index >= leftPath.positions.size())
-			index = leftPath.positions.size() - 1;
+		
+		//cant use this unless we change isMpDoneYet()
+		//if (index >= leftPath.positions.size())
+		//	index = leftPath.positions.size() - 1;
 
 		lError = (leftPosition - sense.leftDist);// + lError) / 2;
 		rError = (rightPosition - sense.rightDist);// + rError) / 2;
@@ -264,7 +266,7 @@ public class DriveTrain extends Component {
 	}
 
 	public boolean isMpDoneYet() {
-		return index == leftPath.positions.size();
+		return index == leftPath.positions.size() || index == rightPath.positions.size();
 	}
 
 	private double prevCamError;

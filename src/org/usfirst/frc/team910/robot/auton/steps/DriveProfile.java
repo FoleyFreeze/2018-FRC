@@ -22,6 +22,11 @@ public class DriveProfile extends AutonStep {
 			pathsL[i / 2].buildPath(profile[i][0], profile[i][1], profile[i][2], profile[i][3], profile[i][4],profile[i][5]);
 			pathsR[i / 2] = new Path();
 			pathsR[i / 2].buildPath(profile[i + 1][0], profile[i + 1][1], profile[i + 1][2], profile[i + 1][3],profile[i + 1][4], profile[i + 1][5]);
+			
+			if(pathsL[i/2].positions.size() != pathsR[i/2].positions.size()) {
+				System.out.println("paths not equal: " + i/2);
+				
+			}
 		}
 
 		int lastPath = pathsL.length - 1;
@@ -31,7 +36,6 @@ public class DriveProfile extends AutonStep {
 		double lastVelR = pathsR[lastPath].velocities.get(pathsR[lastPath].positions.size() - 1);
 
 		if (lastVelL == 0 && lastVelR == 0) {
-
 			// stick to last point to make sure we actually get there
 			for (int i = 0; i * Path.DT < REST_TIME; i++) {
 				pathsL[lastPath].positions.add(lastPosL);
@@ -42,6 +46,7 @@ public class DriveProfile extends AutonStep {
 				pathsR[lastPath].accelerations.add(0.0);
 			}
 		}
+		
 	}
 
 	@Override

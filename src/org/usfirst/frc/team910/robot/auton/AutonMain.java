@@ -172,7 +172,7 @@ public class AutonMain extends Component {
 			b.add(new StartStep());
 			
 			//drive to the scale
-			b.add(new DriveStraightPath());
+			//b.add(new DriveStraightPath());
 				//if we are on the same side as our scale, attempt to score
 				b.add(new IfSet(new IfInterface() {
 					public boolean choice() {

@@ -130,7 +130,7 @@ public class Path extends Component {
 			velocities.add(velocity); //record velocity
 			accelerations.add(tempAccel); //record acceleration
 			
-			System.out.format("P: %.3f  V: %.2f  A: %.0f\n", position, velocity, tempAccel);
+			//System.out.format("P: %.3f  V: %.2f  A: %.0f\n", position, velocity, tempAccel);
 		}
 		
 		step3dist = (endVel * endVel - velocity * velocity) / (2 * step3Accel); 
@@ -167,7 +167,7 @@ public class Path extends Component {
 			velocities.add(velocity); //record velocity
 			accelerations.add(tempAccel); //record acceleration
 
-			System.out.format("P: %.3f  V: %.2f  A: %.0f\n", position, velocity, tempAccel);
+			//System.out.format("P: %.3f  V: %.2f  A: %.0f\n", position, velocity, tempAccel);
 		}
 		
 
@@ -193,7 +193,7 @@ public class Path extends Component {
 			velocities.add(velocity); //record velocity
 			accelerations.add(tempAccel); //record accelerations
 			
-			System.out.format("P: %.3f  V: %.2f  A: %.0f\n", position, velocity, tempAccel);
+			//System.out.format("P: %.3f  V: %.2f  A: %.0f\n", position, velocity, tempAccel);
 		} 
 
 	}
