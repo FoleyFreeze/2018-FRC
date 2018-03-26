@@ -1,6 +1,4 @@
-package org.usfirst.frc.team910.robot.util;
-
-
+//package org.usfirst.frc.team910.robot.util;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -8,9 +6,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import org.usfirst.frc.team910.robot.Component;
+//import org.usfirst.frc.team910.robot.Component;
 
-public class Path extends Component {
+public class Path /*extends Component*/ {
 
 	public ArrayList<Double> positions; //array of the recorded positions per loop
 	public ArrayList<Double> velocities;//array of the recorded velocities per loop
@@ -198,6 +196,7 @@ public class Path extends Component {
 
 	}
 	
+	/*
 	static boolean prevRecord = false;
 	static double prevPosL = 0;
 	static double prevPosR = 0;
@@ -274,5 +273,5 @@ public class Path extends Component {
 		}
 		
 	}
-
+    */
 }
