@@ -17,8 +17,9 @@ public class DriveTrain extends Component {
 
 	public static final double DRIVEMP_KP = 0.1;
 	public static final double DRIVEMP_KD = 0.0;
-	public static final double DRIVEMP_KFV = 0.9 / 210.0; //150 in/sec at max pwr
-	public static final double DRIVEMP_KFA = 1.0 / 600.0; //full power is ~1000 in/sec/sec
+	public static final double DRIVEMP_KP_ANGLE = 0.5 / 45; //50% per 45deg
+	public static final double DRIVEMP_KFV = 0.9 / 210.0; //210 in/sec at max pwr
+	public static final double DRIVEMP_KFA = 1.0 / 600.0; //full power is 600 in/sec/sec
 	public static final double DRIVEMP_KFV_INT = 0.1;
 
 	public static final double CAM_DRIVE_KP = 0.5 / 45; // This is power per degree of error
@@ -212,6 +213,8 @@ public class DriveTrain extends Component {
 		double leftAccel = leftPath.accelerations.get(index);
 		double rightAccel = rightPath.accelerations.get(index);
 
+		double targetAngle = leftPath.angles.get(index);
+		
 		index++;
 		
 		//cant use this unless we change isMpDoneYet()
@@ -220,6 +223,8 @@ public class DriveTrain extends Component {
 
 		lError = (leftPosition - sense.leftDist);// + lError) / 2;
 		rError = (rightPosition - sense.rightDist);// + rError) / 2;
+		
+		double angleError = sense.robotAngle.subtract(targetAngle);
 
 		double deltaLError = sense.leftDist - prevLError;
 		double deltaRError = sense.prevRightPos - prevRError;
@@ -241,8 +246,8 @@ public class DriveTrain extends Component {
 		else if (ffPowerR < -1)
 			ffPowerR = -1;
 		
-		double powerL = (DRIVEMP_KP * lError) - (DRIVEMP_KD * deltaLError) + ffPowerL;
-		double powerR = (DRIVEMP_KP * rError) - (DRIVEMP_KD * deltaRError) + ffPowerR;
+		double powerL = (DRIVEMP_KP * lError) - (DRIVEMP_KD * deltaLError) + (DRIVEMP_KP_ANGLE * angleError) + ffPowerL;
+		double powerR = (DRIVEMP_KP * rError) - (DRIVEMP_KD * deltaRError) - (DRIVEMP_KP_ANGLE * angleError) + ffPowerR;
 
 		prevLError = sense.leftDist;
 		prevRError = sense.rightDist;
@@ -256,8 +261,8 @@ public class DriveTrain extends Component {
 		else if (powerR < -1)
 			powerR = -1;
 
-		System.out.format("idx:\t%d\tlpwr:\t%.2f\tlerr:\t%.2f\tderr:\t%.2f\tlvel:\t%.2f\tlff:\t%.2f\n", index, powerL, lError,
-				deltaLError, leftVelocity, ffPowerL);
+		System.out.format("idx:\t%d\tlpwr:\t%.2f\tlerr:\t%.2f\tderr:\t%.2f\tlvel:\t%.2f\tlff:\t%.2f\tang\t%.2f\n", index, powerL, lError,
+				deltaLError, leftVelocity, ffPowerL, angleError);
 		SmartDashboard.putNumber("leftError", lError);
 		SmartDashboard.putNumber("rightError", rError);
 

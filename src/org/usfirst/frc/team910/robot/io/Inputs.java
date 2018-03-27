@@ -2,6 +2,7 @@ package org.usfirst.frc.team910.robot.io;
 
 import org.usfirst.frc.team910.robot.Component;
 import org.usfirst.frc.team910.robot.components.Elevator;
+import org.usfirst.frc.team910.robot.components.Elevator.liftState;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -136,6 +137,15 @@ public class Inputs extends Component {
 		scaleButton = controlBoard.getRawButton(4);
 		gather = controlBoard.getRawButton(2);
 		liftExchange = controlBoard.getRawButton(8);
+		shoot = controlBoard.getRawButton(5);
+		
+		//enable gather if action button is pressed and we are in rest or floor position
+		if(actionButton && (elevate.currentState == Elevator.liftState.F_FLOOR_POSITION || 
+				elevate.currentState == Elevator.liftState.REST_POSITION || elevate.currentState == Elevator.liftState.R_FLOOR_POSITION)) {
+			gather = true;
+		} else if (actionButton) {
+			shoot = true;
+		}
 		
 		//use last button pressed to set correct position
 		if(restButton) elevatorCommand = Elevator.liftState.F_FLOOR_POSITION;
@@ -166,13 +176,6 @@ public class Inputs extends Component {
 		manualOverride = controlBoard.getRawButton(14);
 		liftFlip = !controlBoard.getRawButton(15);
 		
-		//also give driver control of shooting and gathering
-		shoot = controlBoard.getRawButton(5);
-		if(elevatorCommand == Elevator.liftState.F_FLOOR_POSITION) {
-			gather |= actionButton;
-		}else {
-			shoot |= actionButton;
-		}
 		
 		autoGather = controlBoard.getRawButton(9);
 		cameraLights = controlBoard.getRawButton(12);

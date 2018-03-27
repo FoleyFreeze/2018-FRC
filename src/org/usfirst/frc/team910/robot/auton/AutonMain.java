@@ -113,6 +113,8 @@ public class AutonMain extends Component {
 			b.add(new EndStep());
 			b.end();
 		
+		//NOT MP
+		/*	
 		centerSwitch = new SeriesSet();
 		b.add(centerSwitch);
 			b.add(new StartStep());
@@ -166,7 +168,11 @@ public class AutonMain extends Component {
 			b.add(new EndStep());
 			b.end();
 			//b.add(new DriveForward());
+			*/
 			
+			
+		//NOT MP
+		/*
 		straightScale = new SeriesSet();
 		b.add(straightScale);
 			b.add(new StartStep());
@@ -200,11 +206,35 @@ public class AutonMain extends Component {
 			
 			b.add(new EndStep());
 			b.end();
+		*/
+			
+		straightScale = new SeriesSet();
+		b.add(straightScale);
+			b.add(new StartStep());
+			b.add(new DriveProfile(Profile.straightScaleL));
+			b.add(new IfSet(new IfInterface() {
+				public boolean choice() {
+					return options.selectedStart == LEFT && options.scaleIsLeft
+					    || options.selectedStart == RIGHT && !options.scaleIsLeft;
+				}
+			}));
+				//for the true case, run this series
+				b.add(new SeriesSet());
+				b.add(new ElevatorPosition(Elevator.liftState.F_SCALE_POSITION));
+				b.add(new ShootStep());
+				b.end();
+			//for the false case, wait for now
+			b.add(new WaitStep(0));
+			b.end();
+		
+		b.add(new EndStep());
+		b.end();
+		
 		
 		testProfile = new SeriesSet();
 		b.add(testProfile);
 			b.add(new StartStep());
-			b.add(new DriveProfile(Profile.test));
+			b.add(new DriveProfile(Profile.centerSwitchR));
 			b.add(new EndStep());
 		b.end();
 		

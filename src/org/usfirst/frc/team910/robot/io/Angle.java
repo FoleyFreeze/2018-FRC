@@ -33,6 +33,19 @@ public class Angle { // math to create angles throughout NavX-related and Auto f
 		return diff;
 
 	}
+	
+	public double subtract(double other) {
+		double diff = angle - other;
+		
+		while(diff > 180) {
+			diff -= 360;
+		}
+		while(diff < -180) {
+			diff += 360;
+		}
+		
+		return diff;
+	}
 
 	// return positive numbers for negative angles 
 	private double mod(double value) {

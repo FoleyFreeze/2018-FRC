@@ -1,4 +1,4 @@
-//package org.usfirst.frc.team910.robot.util;
+package org.usfirst.frc.team910.robot.util;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -14,7 +14,7 @@ public class Path /*extends Component*/ {
 	public ArrayList<Double> velocities;//array of the recorded velocities per loop
 	public ArrayList<Double> accelerations; // array of the recorded accelerations per loop
 	public ArrayList<Double> motorPower; //array of the recorded left motor power per loop
-
+	public ArrayList<Double> angles;
 
 	public static final double TOP_VELOC = 60.1; // inches per second, highest capable velocity of robot
 	public static final double ACCEL = 60; // inches per second squared
@@ -194,6 +194,31 @@ public class Path /*extends Component*/ {
 			//System.out.format("P: %.3f  V: %.2f  A: %.0f\n", position, velocity, tempAccel);
 		} 
 
+	}
+	
+	public static final double SCRUB_FACTOR = 2;
+	public static final double TURNING_WIDTH = 23.2375 * SCRUB_FACTOR;
+	
+	public void calcAngles(Path l, Path r, double startAngle){
+		angles = new ArrayList<>();
+		
+		double lastL = l.startPos;
+		double lastR = r.startPos;
+		double lastT = startAngle;
+		
+		for(int i=0; i<l.positions.size(); i++) {
+			double deltaL = l.positions.get(i) - lastL;
+			double deltaR = r.positions.get(i) - lastR;
+			
+			double deltaTheta = Math.atan2(deltaR - deltaL, TURNING_WIDTH / 2);
+            //double averageTheta = lastT + deltaTheta / 2;
+            
+            double cT = lastT + deltaTheta;
+            angles.add(cT);
+            
+            System.out.println(cT);
+		}
+		
 	}
 	
 	/*

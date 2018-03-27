@@ -1,8 +1,8 @@
-//package org.usfirst.frc.team910.robot.util;
+package org.usfirst.frc.team910.robot.util;
 import java.util.ArrayList;
 
 public class PathRunner {
-
+/*
     public static final double SCRUB_FACTOR = 2;
 	public static final double TURNING_WIDTH = 23.2375 * SCRUB_FACTOR;
 	public static final double ROBOT_WIDTH = 26;
@@ -292,5 +292,6 @@ public class PathRunner {
 	    }
         */
 	    
-	}
+//	}
+
 }

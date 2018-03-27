@@ -5,6 +5,7 @@ import org.usfirst.frc.team910.robot.io.Angle;
 import org.usfirst.frc.team910.robot.io.ElectroBach;
 
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Gatherer extends Component {
 
@@ -20,8 +21,9 @@ public class Gatherer extends Component {
 	public gatherStateC gatherS_C = gatherStateC.INIT;
 
 	public static final double JAMMED_CURRENT = 30;
-	public static final double SEARCH_DIST = 20;
-	public static final double DIST_TOLERANCE = 4;
+	public static final double SEARCH_DIST = 11.5;
+	public static final double DIST_TOLERANCE = 1;
+	public static final double DIST_FRAME = 6;
 
 	public double stepTimer_IR = 0;
 	public gatherStateIR gatherS_IR = gatherStateIR.INIT;
@@ -39,18 +41,10 @@ public class Gatherer extends Component {
 	}
 
 	public void run_IR() {
-		double distL;
-		double distR;
-		double distC;
-		if (in.liftFlip) {
-			distL = sense.distRL;
-			distR = sense.distRR;
-			distC = sense.distRC;
-		} else {
-			distL = sense.distFL;
-			distR = sense.distFR;
-			distC = sense.distFC;
-		}
+		
+		double distL = sense.distFL;
+		double distR = sense.distFR;
+		double distC = sense.distFC;		
 
 		if (in.manualOverride) {
 			if (in.gather) {
@@ -87,6 +81,7 @@ public class Gatherer extends Component {
 			// looks for cube with infrared sensors and moves towards it
 			case SEARCH:
 				gather(0.6, 0.6);
+				SmartDashboard.putString("GatherIRstate", "search");
 				if (distR < SEARCH_DIST && distL < SEARCH_DIST && distC < SEARCH_DIST) {
 					gatherS_IR = gatherStateIR.SPIN;
 				}
@@ -97,24 +92,28 @@ public class Gatherer extends Component {
 				double maxDist = Math.max(Math.max(distR, distC), distL);
 				double minDist = Math.min(Math.min(distR, distC), distL);
 
-				if (maxDist - minDist < DIST_TOLERANCE) { // if cube straight, just suck it in
-					gather(.8, .8);
+				if (maxDist - minDist < DIST_TOLERANCE && maxDist < DIST_FRAME) { // if cube straight, just suck it in
+					gather(.6, .6);
 					gatherS_IR = gatherStateIR.SUCK;
 					stepTimer_IR = Timer.getFPGATimestamp() + .75;
 				} else if (distC < distR && distC < distL) { // if corner of cube is in center
-					gather(-.4, .8);
+					gather(-.4, .6);
+					SmartDashboard.putString("GatherIRstate", "rotate");
 				} else if (distC < distR && distC > distL) { // if cube more left than right sucked in
-					out.setGatherPower(.4, .8);
+					out.setGatherPower(.4, .6);
+					SmartDashboard.putString("GatherIRstate", "more right");
 				} else if (distC > distR && distC < distL) { // if cube more right than left sucked in
-					out.setGatherPower(.8, .4);
+					out.setGatherPower(.6, .4);
+					SmartDashboard.putString("GatherIRstate", "more left");
 				} else {
-					gather(-.4, .8); // if nothing else, just gather
+					gather(-.4, .6); // if nothing else, just gather
 				}
 				break;
 
 			// gathers the cube
 			case SUCK:
-				gather(.8, .8);
+				gather(.6, .6);
+				SmartDashboard.putString("GatherIRstate", "suck");
 				if (Timer.getFPGATimestamp() > stepTimer_IR) {
 					gatherS_IR = gatherStateIR.WAIT;
 					stepTimer_IR = Timer.getFPGATimestamp() + 1;
@@ -154,7 +153,9 @@ public class Gatherer extends Component {
 			gather(-0.6, -0.6);
 			gatherS_IR = gatherStateIR.INIT;
 		} else if (in.shoot) {
-			gather(-0.35, -0.35);
+			if(elevate.currentState == Elevator.liftState.R_EXCHANGE_POSITION || elevate.currentState == Elevator.liftState.F_EXCHANGE_POSITION)
+				gather(-0.5, -0.5);
+			else gather(-0.35, -0.35);
 			gatherS_IR = gatherStateIR.INIT;
 
 			// if no button pressed
@@ -333,7 +334,7 @@ public class Gatherer extends Component {
 		double robotAngle = sense.robotAngle.get();
 		boolean flipSides = false;
 
-		// if (!in.liftFlip) {
+		//based on robot orientation, spin the cube away from the wall
 		if (robotAngle > 90 && robotAngle < 180) {
 			flipSides = true;
 		} else if (robotAngle > 270 && robotAngle < 360) {

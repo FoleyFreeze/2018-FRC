@@ -1,5 +1,7 @@
 package org.usfirst.frc.team910.robot.auton.steps;
 
+import java.util.ArrayList;
+
 import org.usfirst.frc.team910.robot.util.Path;
 
 public class DriveProfile extends AutonStep {
@@ -16,12 +18,17 @@ public class DriveProfile extends AutonStep {
 		pathsL = new Path[profile.length / 2];
 		pathsR = new Path[profile.length / 2];
 
+		double lastAngle = 90;//start all profiles facing forward
+		
 		// add values to paths(Left and Right)
 		for (int i = 0; i < profile.length; i += 2) {
 			pathsL[i / 2] = new Path();
 			pathsL[i / 2].buildPath(profile[i][0], profile[i][1], profile[i][2], profile[i][3], profile[i][4],profile[i][5]);
 			pathsR[i / 2] = new Path();
 			pathsR[i / 2].buildPath(profile[i + 1][0], profile[i + 1][1], profile[i + 1][2], profile[i + 1][3],profile[i + 1][4], profile[i + 1][5]);
+			
+			pathsL[i/2].calcAngles(pathsL[i/2], pathsR[i/2], lastAngle);
+			lastAngle = pathsL[i/2].angles.get(pathsL[i/2].angles.size()-1);
 			
 			if(pathsL[i/2].positions.size() != pathsR[i/2].positions.size()) {
 				System.out.println("paths not equal: " + i/2);
@@ -44,6 +51,7 @@ public class DriveProfile extends AutonStep {
 				pathsR[lastPath].velocities.add(0.0);
 				pathsL[lastPath].accelerations.add(0.0);
 				pathsR[lastPath].accelerations.add(0.0);
+				pathsL[lastPath].angles.add(lastAngle);
 			}
 		}
 		

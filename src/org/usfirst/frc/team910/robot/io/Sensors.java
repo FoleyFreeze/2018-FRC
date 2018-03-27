@@ -19,13 +19,9 @@ public class Sensors extends Component {
 	private AnalogInput frontCenter;
 	private AnalogInput frontRight;
 	private AnalogInput frontLeft;
-	private AnalogInput rearCenter;
-	private AnalogInput rearRight;
-	private AnalogInput rearLeft;
-	
-	
 
 	public Angle robotAngle;
+	public double angleOffset = 0;
 
 	public double leftDist = 0;
 	public double rightDist = 0;
@@ -50,10 +46,7 @@ public class Sensors extends Component {
 	//infrared distance sensors
 	public double distFC;
 	public double distFR;
-	public double distRC;
-	public double distRR;
 	public double distFL;
-	public double distRL;
 	
 	//public static final double[] DIST_POINTS = {1.57, 2.36, 3.15, 3.94,  4.72, 5.51, 6.3,  7.09, 7.87, 8.66,  9.45, 10.24, 11.02, 11.81};
 	//public static final double[] VOLT_POINTS = { 2.7,    2,  1.5,  1.3,   1.1,  0.9, 0.8,  0.75, 0.65,  0.6,  0.55,   0.5,  0.45,   0.4};
@@ -63,14 +56,18 @@ public class Sensors extends Component {
 	public Sensors() {
 		navx = new AHRS(SPI.Port.kMXP);
 		navx.zeroYaw();
+		angleOffset = -90;
 		robotAngle = new Angle(0);
 		pdp = new PowerDistributionPanel(0);
 		frontCenter = new AnalogInput(ElectroBach.F_CNT_DIST);
+		frontCenter.setOversampleBits(1);
+		frontCenter.setAverageBits(1);
 		frontRight = new AnalogInput(ElectroBach.F_RGT_DIST);
+		frontRight.setOversampleBits(1);
+		frontRight.setAverageBits(1);
 		frontLeft = new AnalogInput(ElectroBach.F_LFT_DIST);
-		rearCenter = new AnalogInput(ElectroBach.R_CNT_DIST);
-		rearRight = new AnalogInput(ElectroBach.R_RGT_DIST);
-		rearLeft = new AnalogInput(ElectroBach.R_LFT_DIST);
+		frontLeft.setOversampleBits(1);//6
+		frontLeft.setAverageBits(1);//3
 		
 	}
 	
@@ -85,13 +82,24 @@ public class Sensors extends Component {
 	public double dt;
 	public double oldTime;
 
+	
+	private int numNavxTries = 0;
+	
 	public void read() {
 		double time = Timer.getFPGATimestamp();
 		dt = time - oldTime;
 		oldTime = time;
 		
+		//if the navx is acting up, try to reconnect
+		if(!navx.isConnected() && numNavxTries < 10) {
+			navx = new AHRS(SPI.Port.kMXP);
+			numNavxTries++;
+		}
+		
 		if(in.resetEnc) {
 			out.resetEncoders();
+			//navx.zeroYaw();
+			angleOffset = -navx.getYaw() - 90;
 		}
 		
 		out.readEncoders();
@@ -139,21 +147,16 @@ public class Sensors extends Component {
 		}
 		SmartDashboard.putString("gameData", gameData);
 
-		robotAngle.set(-navx.getYaw());
+		robotAngle.set(-navx.getYaw() - angleOffset);
+		SmartDashboard.putNumber("Yaw", robotAngle.get());
 		
 		distFC = Elevator.interp(VOLT_POINTS, DIST_POINTS, frontCenter.getAverageVoltage());
 		distFR = Elevator.interp(VOLT_POINTS, DIST_POINTS, frontRight.getAverageVoltage());
 		distFL = Elevator.interp(VOLT_POINTS, DIST_POINTS, frontLeft.getAverageVoltage());
-		distRC = Elevator.interp(VOLT_POINTS, DIST_POINTS, rearCenter.getAverageVoltage());
-		distRR = Elevator.interp(VOLT_POINTS, DIST_POINTS, rearRight.getAverageVoltage());
-		distRL = Elevator.interp(VOLT_POINTS, DIST_POINTS, rearLeft.getAverageVoltage());
 		
-		SmartDashboard.putNumber("distFC", distFC);
-		SmartDashboard.putNumber("distFR", distFR);
-		SmartDashboard.putNumber("distFL", distFL);
-		SmartDashboard.putNumber("distRC", distRC);
-		SmartDashboard.putNumber("distRR", distRR);
-		SmartDashboard.putNumber("distRL", distRL);
+		SmartDashboard.putNumber("distFC", ((int) (distFC * 10))/10.0);
+		SmartDashboard.putNumber("distFR", ((int) (distFR * 10))/10.0);
+		SmartDashboard.putNumber("distFL", ((int) (distFL * 10))/10.0);
 	}
 
 	public void reset() {
