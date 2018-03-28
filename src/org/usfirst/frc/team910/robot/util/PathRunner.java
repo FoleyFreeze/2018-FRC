@@ -1,12 +1,13 @@
 package org.usfirst.frc.team910.robot.util;
+//package org.usfirst.frc.team910.robot.util;
 import java.util.ArrayList;
 
 public class PathRunner {
-/*
+
     public static final double SCRUB_FACTOR = 2;
 	public static final double TURNING_WIDTH = 23.2375 * SCRUB_FACTOR;
-	public static final double ROBOT_WIDTH = 26;
-	public static final double ROBOT_HEIGHT = 36;
+	public static final double ROBOT_WIDTH = 34.5; // 34.25 from CAD + .25 for error
+	public static final double ROBOT_HEIGHT = 39.5; // 39.25 from CAD + .35 for error
 	
 	static final double ACCEL = 300;
 	static final double MAX_VEL = 80;
@@ -20,6 +21,55 @@ public class PathRunner {
 	    //type distL distR velTrgt endVel
 	    {TURN,  120,  90,    120,   0}
 	    };
+	
+	public static final double [][] centerSwitchRight = 
+		{{STRAIGHT, 10, 120, 120},
+		{TURN, 70, 45, 120, 60},
+		{TURN, 45, 70, 60, 0}
+		};
+	
+	public static final double [][] centerSwitchLeft = 
+		{{STRAIGHT, 10, 120, 120},
+		{TURN, 45, 70, 120, 60},
+		{TURN, 70, 45, 60, 0}
+		};
+	
+	public static final double [][] straightScaleLeft = 
+		{{STRAIGHT, 226, 120, 60},
+		{TURN, 38, 20, 36, 0} 
+		};
+	
+	public static final double[][] straightScaleRight = 
+		{{STRAIGHT, 232, 120, 60},
+		{TURN, 20, 40, 36, 0} 
+		};
+	
+	public static final double [][] LeftToRightScale = 
+		{{STRAIGHT, 165, 120, 120},
+		{TURN, 95, 60, 120, 120},
+		{STRAIGHT, 120, 120, 100},
+		{TURN, 46, 90, 60, 0}
+		};
+	
+	public static final double [][] RightToLeftScale = 
+		{{STRAIGHT, 165, 120, 120},
+		{TURN, 60, 95, 120, 120},
+		{STRAIGHT, 120, 120, 100},
+		{TURN, 90, 46, 60, 0}
+		};
+	
+	public static final double [][] straightSwitchRight = 
+		{{STRAIGHT, 77, 120, 80},
+		{TURN, 30, 65, 60, 0} 
+		};
+	
+	public static final double [][] straightSwitchLeft = 
+		{{STRAIGHT, 147, 120, 80},
+		{TURN, 40, 20, 60, 0} 
+		};
+	//public static final double [][] RightToLeftScale = 
+	
+	
 	
 	public static void buildTurn(Path pL, Path pR, double distL, double distR, double targetVel, double endVel) {
 		if(distL > distR) {
@@ -113,18 +163,6 @@ public class PathRunner {
     static ArrayList<Double> cornersX = new ArrayList<>();
     static ArrayList<Double> cornersY = new ArrayList<>();
     
-    static ArrayList<Double> cornersLFX = new ArrayList<>();
-    static ArrayList<Double> cornersLFY = new ArrayList<>();
-    
-    static ArrayList<Double> cornersRFX = new ArrayList<>();
-    static ArrayList<Double> cornersRFY = new ArrayList<>();
-    
-    static ArrayList<Double> cornersLRX = new ArrayList<>();
-    static ArrayList<Double> cornersLRY = new ArrayList<>();
-    
-    static ArrayList<Double> cornersRRX = new ArrayList<>();
-    static ArrayList<Double> cornersRRY = new ArrayList<>();
-    
     static ArrayList<Double> FW = new ArrayList<>();
     static ArrayList<Double> LH = new ArrayList<>();
     static ArrayList<Double> RW = new ArrayList<>();
@@ -133,7 +171,10 @@ public class PathRunner {
 	private static void simulateDrive(){
 	    
         // start of robot
-        x.add(29.0 + ROBOT_WIDTH / 2);
+        x.add(150.0 + ROBOT_WIDTH / 2); // edge of exchange zone(150.0 + ROBOT_WIDTH / 2); 
+        							  // corner at portal left(29.0 + ROBOT_WIDTH / 2);
+        							  // corner at portal right(295 - ROBOT_WIDTH / 2);
+        
         y.add(ROBOT_HEIGHT / 2);
         theta.add(Math.PI / 2);
 
@@ -197,16 +238,6 @@ public class PathRunner {
                 double rrx = cX + w2*sinT - h2*cosT;
                 double rry = cY - h2*sinT - w2*cosT;
                 
-                //add lists
-                cornersLFX.add(lfx);
-                cornersLFY.add(lfy);
-                cornersRFX.add(rfx);
-                cornersRFY.add(rfy);
-                cornersLRX.add(lrx);
-                cornersLRY.add(lry);
-                cornersRRX.add(rrx);
-                cornersRRY.add(rry);
-                
                 cornersX.add(lfx);
                 cornersY.add(lfy);
                 cornersX.add(rfx);
@@ -216,8 +247,8 @@ public class PathRunner {
                 cornersX.add(lrx);
                 cornersY.add(lry);
                 //go back if you want to draw squares
-                //cornersX.add(lfx);
-                //cornersY.add(lfy);
+                cornersX.add(lfx);
+                cornersY.add(lfy);
                 
                 FW.add(dist(lfx,rfx,lfy,rfy));
                 LH.add(dist(lfx,lrx,lfy,lry));
@@ -235,7 +266,7 @@ public class PathRunner {
 	
 	public static void main(String[] args) {
 
-	    double[][] activeProf = testProfile;
+	    double[][] activeProf = straightSwitchRight;
 	    
 	    for(int i=0; i<activeProf.length; i++){
 	        parseArray(activeProf[i]);
@@ -277,13 +308,13 @@ public class PathRunner {
 	        System.out.format("%.1f\t%.1f\t%.1f\n", x.get(i), y.get(i), theta.get(i)*180/Math.PI);
         }
 	    
-	    //print out robot corner loctations
-	    /*
+	    //print out robot corner lotations
+	    //System.out.println("Corners");
 	    for(int i=0; i<cornersX.size(); i++) {
             //System.out.println(x.get(i) + "\t" + y.get(i) + "\t" + theta.get(i));
-            System.out.format("%.1f\t%.1f\n", cornersX.get(i), cornersY.get(i));
+            //System.out.format("%.1f\t%.1f\n", cornersX.get(i), cornersY.get(i));
         }
-        */
+        
 	    
 	    //print distances to check corners
 	    /*
@@ -292,6 +323,5 @@ public class PathRunner {
 	    }
         */
 	    
-//	}
-
+	}
 }

@@ -34,11 +34,11 @@ public class AutonMain extends Component {
 	final String PositionCenter = "Center";
 	final String PositionRight = "Right";
 	
-	private SeriesSet driveForward;
-	private SeriesSet onlySwitch;
-	private SeriesSet centerSwitch;
-	private SeriesSet straightScale;
-	private SeriesSet testProfile;
+	private SeriesSet driveForward; //runs anywhere
+	private SeriesSet onlySwitch; //must start infront of switch only shoot if its goalSwitch
+	private SeriesSet centerSwitch; //start center priority switch
+	private SeriesSet scale; //start left or right priority scale
+	private SeriesSet testProfile; //test
 	
 	//public int currentStep = 0;
 	
@@ -114,7 +114,7 @@ public class AutonMain extends Component {
 			b.end();
 		
 		//NOT MP
-		/*	
+		/*
 		centerSwitch = new SeriesSet();
 		b.add(centerSwitch);
 			b.add(new StartStep());
@@ -207,11 +207,10 @@ public class AutonMain extends Component {
 			b.add(new EndStep());
 			b.end();
 		*/
-			
-		straightScale = new SeriesSet();
-		b.add(straightScale);
+		/*	
+		scale = new SeriesSet();
+		b.add(scale);
 			b.add(new StartStep());
-			b.add(new DriveProfile(Profile.straightScaleL));
 			b.add(new IfSet(new IfInterface() {
 				public boolean choice() {
 					return options.selectedStart == LEFT && options.scaleIsLeft
@@ -220,6 +219,8 @@ public class AutonMain extends Component {
 			}));
 				//for the true case, run this series
 				b.add(new SeriesSet());
+				b.add(new DriveProfile(Profile.straightScaleL));
+				b.add(new WaitStep(5));
 				b.add(new ElevatorPosition(Elevator.liftState.F_SCALE_POSITION));
 				b.add(new ShootStep());
 				b.end();
@@ -229,12 +230,12 @@ public class AutonMain extends Component {
 		
 		b.add(new EndStep());
 		b.end();
-		
+		*/
 		
 		testProfile = new SeriesSet();
 		b.add(testProfile);
 			b.add(new StartStep());
-			b.add(new DriveProfile(Profile.centerSwitchR));
+			b.add(new DriveProfile(Profile.straightSwitchR));
 			b.add(new EndStep());
 		b.end();
 		
@@ -285,7 +286,7 @@ public class AutonMain extends Component {
 		//if scale is selected, do that one
 		switch(options.selectedPriority) {
 		case SCALE:
-			currentAuton = straightScale;
+			currentAuton = scale;
 			break;
 		}
 		

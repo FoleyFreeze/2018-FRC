@@ -24,6 +24,9 @@ public class Gatherer extends Component {
 	public static final double SEARCH_DIST = 11.5;
 	public static final double DIST_TOLERANCE = 1;
 	public static final double DIST_FRAME = 6;
+	
+	public static final double PWR_REV_GATHER = -0.3;
+	public static final double PWR_FWD_GATHER = 0.6;
 
 	public double stepTimer_IR = 0;
 	public gatherStateIR gatherS_IR = gatherStateIR.INIT;
@@ -93,20 +96,20 @@ public class Gatherer extends Component {
 				double minDist = Math.min(Math.min(distR, distC), distL);
 
 				if (maxDist - minDist < DIST_TOLERANCE && maxDist < DIST_FRAME) { // if cube straight, just suck it in
-					gather(.6, .6);
+					gather(PWR_FWD_GATHER, PWR_FWD_GATHER);
 					gatherS_IR = gatherStateIR.SUCK;
 					stepTimer_IR = Timer.getFPGATimestamp() + .75;
 				} else if (distC < distR && distC < distL) { // if corner of cube is in center
-					gather(-.4, .6);
+					gather(PWR_REV_GATHER, PWR_FWD_GATHER);
 					SmartDashboard.putString("GatherIRstate", "rotate");
 				} else if (distC < distR && distC > distL) { // if cube more left than right sucked in
-					out.setGatherPower(.4, .6);
+					out.setGatherPower(.4, PWR_FWD_GATHER);
 					SmartDashboard.putString("GatherIRstate", "more right");
 				} else if (distC > distR && distC < distL) { // if cube more right than left sucked in
-					out.setGatherPower(.6, .4);
+					out.setGatherPower(PWR_FWD_GATHER, .4);
 					SmartDashboard.putString("GatherIRstate", "more left");
 				} else {
-					gather(-.4, .6); // if nothing else, just gather
+					gather(PWR_REV_GATHER, PWR_FWD_GATHER); // if nothing else, just gather
 				}
 				break;
 
@@ -224,7 +227,7 @@ public class Gatherer extends Component {
 			switch (gatherS_C) {
 			// initially, run through
 			case INIT:
-				gather(0.4, 0.5);
+				gather(0.45, 0.55); //added 5%
 				stepTimer_C = Timer.getFPGATimestamp() + 1;
 				gatherS_C = gatherStateC.SPIN;
 
@@ -268,7 +271,14 @@ public class Gatherer extends Component {
 				break;
 
 			case CENTER:
-				gather(0.8, 0.8);
+				//only center if in floor or rest position
+				if(elevate.currentState == Elevator.liftState.F_FLOOR_POSITION || elevate.currentState == Elevator.liftState.R_FLOOR_POSITION
+							|| elevate.currentState == Elevator.liftState.REST_POSITION) {
+					gather(0.8, 0.8);
+				} else {
+					gather(0, 0);
+				}
+
 				if (Math.abs(sense.armPosL) < 35) {
 					gatherS_C = gatherStateC.STOP;
 				} else if (Timer.getFPGATimestamp() > stepTimer_C) {
@@ -311,7 +321,14 @@ public class Gatherer extends Component {
 				break;
 
 			case CENTER:
-				gather(0.8, 0.8);
+				//only center if in floor or rest position
+				if(elevate.currentState == Elevator.liftState.F_FLOOR_POSITION || elevate.currentState == Elevator.liftState.R_FLOOR_POSITION
+							|| elevate.currentState == Elevator.liftState.REST_POSITION) {
+					gather(0.8, 0.8);
+				} else {
+					gather(0, 0);
+				}
+				
 				if (Math.abs(sense.armPosL) < 35) {
 					gatherS_C = gatherStateC.STOP;
 				} else if (Timer.getFPGATimestamp() > stepTimer_C) {
@@ -332,13 +349,13 @@ public class Gatherer extends Component {
 
 	private void gather(double leftPower, double rightPower) {
 		double robotAngle = sense.robotAngle.get();
-		boolean flipSides = false;
+		boolean flipSides = true;
 
 		//based on robot orientation, spin the cube away from the wall
 		if (robotAngle > 90 && robotAngle < 180) {
-			flipSides = true;
+			flipSides = false;
 		} else if (robotAngle > 270 && robotAngle < 360) {
-			flipSides = true;
+			flipSides = false;
 		}
 
 		if (in.liftFlip) {

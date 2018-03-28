@@ -70,7 +70,7 @@ public class Elevator extends Component {
 	
 	public static final double LIFT_SCALE = 68.5;//was 70
 	public static final double LIFT_SWITCH = 18;
-	public static final double LIFT_SWITCH_GATHER = 8;
+	public static final double LIFT_SWITCH_GATHER = 6;
 	public static final double LIFT_EXCHANGE = 3;
 	public static final double LIFT_FLOOR = 0.5;
 	public static final double LIFT_REST = LIFT_FLOOR;
