@@ -6,7 +6,7 @@ public class Climber extends Component {
 
 	
 	public Climber(){
-		
+		Component.climb = this;
 	}
 	
 	public void run() {

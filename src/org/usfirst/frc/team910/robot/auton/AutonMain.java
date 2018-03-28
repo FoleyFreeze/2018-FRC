@@ -13,6 +13,7 @@ import org.usfirst.frc.team910.robot.auton.steps.ElevatorPosition;
 import org.usfirst.frc.team910.robot.auton.steps.EndStep;
 import org.usfirst.frc.team910.robot.auton.steps.IfInterface;
 import org.usfirst.frc.team910.robot.auton.steps.IfSet;
+import org.usfirst.frc.team910.robot.auton.steps.ParallelSet;
 import org.usfirst.frc.team910.robot.auton.steps.SeriesSet;
 import org.usfirst.frc.team910.robot.auton.steps.ShootStep;
 import org.usfirst.frc.team910.robot.auton.steps.StartStep;
@@ -37,7 +38,7 @@ public class AutonMain extends Component {
 	private SeriesSet driveForward; //runs anywhere
 	private SeriesSet onlySwitch; //must start infront of switch only shoot if its goalSwitch
 	private SeriesSet centerSwitch; //start center priority switch
-	private SeriesSet scale; //start left or right priority scale
+	private SeriesSet scale;//no matta wat //start left or right priority scale
 	private SeriesSet testProfile; //test
 	
 	//public int currentStep = 0;
@@ -207,38 +208,88 @@ public class AutonMain extends Component {
 			b.add(new EndStep());
 			b.end();
 		*/
-		/*	
+		
 		scale = new SeriesSet();
 		b.add(scale);
 			b.add(new StartStep());
 			b.add(new IfSet(new IfInterface() {
 				public boolean choice() {
-					return options.selectedStart == LEFT && options.scaleIsLeft
-					    || options.selectedStart == RIGHT && !options.scaleIsLeft;
+					return options.selectedStart == LEFT && options.scaleIsLeft;					 
 				}
 			}));
-				//for the true case, run this series
-				b.add(new SeriesSet());
-				b.add(new DriveProfile(Profile.straightScaleL));
-				b.add(new WaitStep(5));
-				b.add(new ElevatorPosition(Elevator.liftState.F_SCALE_POSITION));
+				//infront of left scale
+			b.add(new SeriesSet()); {
+				b.add(new ParallelSet());
+					b.add(new DriveProfile(Profile.straightScaleL));
+					b.add(new SeriesSet());	
+						b.add(new WaitStep(5));
+						b.add(new ElevatorPosition(Elevator.liftState.F_SCALE_POSITION));
+						b.end();
+					b.end();
 				b.add(new ShootStep());
 				b.end();
-			//for the false case, wait for now
-			b.add(new WaitStep(0));
-			b.end();
-		
+			}	
+			//infront of right scale
+			b.add(new IfSet(new IfInterface() {
+				public boolean choice() {
+					return options.selectedStart == RIGHT && !options.scaleIsLeft;
+				}
+			}));
+			b.add(new SeriesSet()); {
+				b.add(new ParallelSet());
+					b.add(new DriveProfile(Profile.straightScaleR));
+					b.add(new SeriesSet());	
+						b.add(new WaitStep(5));
+						b.add(new ElevatorPosition(Elevator.liftState.F_SCALE_POSITION));
+						b.end();
+					b.end();
+				b.add(new ShootStep());
+				b.end();
+			}
+			//start right have to cross to left
+			b.add(new IfSet(new IfInterface() {
+				public boolean choice() {
+					return options.selectedStart == RIGHT && options.scaleIsLeft;
+				}
+			}));
+			b.add(new SeriesSet()); {
+				b.add(new ParallelSet());
+					b.add(new DriveProfile(Profile.rightToLeftScale));
+					b.add(new SeriesSet());	
+						b.add(new WaitStep(5));
+						b.add(new ElevatorPosition(Elevator.liftState.F_SCALE_POSITION));
+						b.end();
+					b.end();
+				b.add(new ShootStep());
+				b.end();
+			}
+			//start left cross to right
+			b.add(new IfSet(new IfInterface() {
+				public boolean choice() {
+					return options.selectedStart == LEFT && !options.scaleIsLeft;
+				}
+			}));
+			b.add(new SeriesSet()); {
+				b.add(new ParallelSet());
+					b.add(new DriveProfile(Profile.leftToRightScale));
+					b.add(new SeriesSet());	
+						b.add(new WaitStep(5));
+						b.add(new ElevatorPosition(Elevator.liftState.F_SCALE_POSITION));
+						b.end();
+					b.end();
+				b.add(new ShootStep());
+				b.end();
+				
 		b.add(new EndStep());
-		b.end();
-		*/
-		
+		b.end(); }
+			
+			
 		testProfile = new SeriesSet();
 		b.add(testProfile);
 			b.add(new StartStep());
-			b.add(new DriveProfile(Profile.straightSwitchR));
+			b.add(new DriveProfile(Profile.testStraight));
 			b.add(new EndStep());
 		b.end();
-		
 	}
 	
 	
@@ -264,22 +315,27 @@ public class AutonMain extends Component {
 		switch(options.selectedStart) {
 		case STRAIGHT_ONLY:
 			currentAuton = driveForward;
+			SmartDashboard.putString("CurrAuton","driveForward");
 			break;
 			
 		case LEFT:
 			currentAuton = onlySwitch;
+			SmartDashboard.putString("CurrAuton","onlySwitch");
 			break;
 			
 		case CENTER:
 			currentAuton = centerSwitch;
+			SmartDashboard.putString("CurrAuton","centerSwitch");
 			break;
 			
 		case RIGHT:
 			currentAuton = onlySwitch;
+			SmartDashboard.putString("CurrAuton","onlySwitch");
 			break;
 			
 		case TEST:
 			currentAuton = testProfile;
+			SmartDashboard.putString("CurrAuton","testProfile");
 			break;
 		}
 		
@@ -287,6 +343,7 @@ public class AutonMain extends Component {
 		switch(options.selectedPriority) {
 		case SCALE:
 			currentAuton = scale;
+			SmartDashboard.putString("CurrAuton","scale");
 			break;
 		}
 		

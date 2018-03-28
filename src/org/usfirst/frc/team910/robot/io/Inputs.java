@@ -71,6 +71,8 @@ public class Inputs extends Component {
 	
 
 	public Inputs() {
+		Component.in = this;
+		
 		leftStick = new Joystick(0);
 		rightStick = new Joystick(1);
 		controlBoard = new Joystick(2);

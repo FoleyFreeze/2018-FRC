@@ -32,7 +32,7 @@ public class Gatherer extends Component {
 	public gatherStateIR gatherS_IR = gatherStateIR.INIT;
 
 	public Gatherer() {
-
+		Component.gather = this;
 	}
 
 	public void run() {

@@ -210,13 +210,13 @@ public class Path /*extends Component*/ {
 			double deltaL = l.positions.get(i) - lastL;
 			double deltaR = r.positions.get(i) - lastR;
 			
-			double deltaTheta = Math.atan2(deltaR - deltaL, TURNING_WIDTH / 2);
+			double deltaTheta = Math.atan2(deltaR - deltaL, TURNING_WIDTH / 2) * 180 / Math.PI;
             //double averageTheta = lastT + deltaTheta / 2;
             
             double cT = lastT + deltaTheta;
             angles.add(cT);
             
-            System.out.println(cT);
+            //System.out.println(cT);
 		}
 		
 	}

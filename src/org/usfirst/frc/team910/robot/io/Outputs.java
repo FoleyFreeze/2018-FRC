@@ -37,6 +37,8 @@ public class Outputs extends Component {
 
 
 	public Outputs() {
+		Component.out = this;
+		
 		leftDrive1 = new TalonSRX(ElectroBach.LEFT_DRIVE_CAN_1);
 		leftDrive2 = new TalonSRX(ElectroBach.LEFT_DRIVE_CAN_2);
 		leftDrive3 = new TalonSRX(ElectroBach.LEFT_DRIVE_CAN_3);
@@ -107,10 +109,13 @@ public class Outputs extends Component {
 		climber2 = new TalonSRX(ElectroBach.CLIMBER_CAN_2);
 		
 	}
-
-	public void readEncoders() {
+	
+	public void readDriveEncoders() {
 		sense.leftDist = leftDrive1.getSelectedSensorPosition(0) / ElectroBach.TICKS_PER_INCH;
 		sense.rightDist = rightDrive1.getSelectedSensorPosition(0) / ElectroBach.TICKS_PER_INCH;
+	}
+
+	public void readEncoders() {
 		sense.liftPos = elevator1.getSelectedSensorPosition(0)/ElectroBach.TICKS_PER_INCH_HEIGHT;
 		sense.armPosL = -armMotor1.getSelectedSensorPosition(0)/ElectroBach.TICKS_PER_DEGREE;
 		sense.armPosR = -armMotor2.getSelectedSensorPosition(0)/ElectroBach.TICKS_PER_DEGREE;

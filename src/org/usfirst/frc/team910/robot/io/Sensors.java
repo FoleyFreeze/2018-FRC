@@ -20,6 +20,8 @@ public class Sensors extends Component {
 	private AnalogInput frontRight;
 	private AnalogInput frontLeft;
 
+	public boolean robotDisabled = true;
+	
 	public Angle robotAngle;
 	public double angleOffset = 0;
 
@@ -54,6 +56,8 @@ public class Sensors extends Component {
 	public static final double[] DIST_POINTS = {11.81,11.02,10.24,9.45,8.66,7.87,7.09,6.3,5.51,4.72,3.94,3.15,2.36,1.57};
 	
 	public Sensors() {
+		Component.sense = this;
+		
 		navx = new AHRS(SPI.Port.kMXP);
 		navx.zeroYaw();
 		angleOffset = -90;
@@ -91,10 +95,10 @@ public class Sensors extends Component {
 		oldTime = time;
 		
 		//if the navx is acting up, try to reconnect
-		if(!navx.isConnected() && numNavxTries < 10) {
+		/*if(!navx.isConnected() && numNavxTries < 10) {
 			navx = new AHRS(SPI.Port.kMXP);
 			numNavxTries++;
-		}
+		}*/
 		
 		if(in.resetEnc) {
 			out.resetEncoders();

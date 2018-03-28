@@ -48,14 +48,14 @@ public class Robot extends TimedRobot {
 	public void robotInit() {
 		auton = new AutonMain();
 		output = new Outputs();
-		drive = new DriveTrain();
 		climb = new Climber();
 		elevate = new Elevator();
 		gather = new Gatherer();
 		view = new Vision();
 		input = new Inputs();
 		sensor = new Sensors();
-		Component.set(input, output, sensor, climb, drive, elevate, gather, view);
+		drive = new DriveTrain();
+		//Component.set(input, output, sensor, climb, drive, elevate, gather, view);
 		
 		sensor.reset();
 	}
@@ -66,6 +66,7 @@ public class Robot extends TimedRobot {
 	@Override
 	public void autonomousInit() {
 		auton.init();
+		sensor.robotDisabled = false;
 	}
 
 	/**
@@ -77,7 +78,7 @@ public class Robot extends TimedRobot {
 		view.run();
 		auton.run();
 		
-		drive.run();
+		//drive.run();
 		//climb.run();
 		elevate.run();
 		gather.run();
@@ -90,7 +91,7 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void teleopInit() {
-		
+		sensor.robotDisabled = false;
 	}
 
 	/**
@@ -103,7 +104,7 @@ public class Robot extends TimedRobot {
 		sensor.read();
 		view.run();
 		gather.run();
-		drive.run();
+		//drive.run();
 		climb.run();
 		elevate.run();
 		output.circuitBreaker();
@@ -113,6 +114,7 @@ public class Robot extends TimedRobot {
 	public void disabledInit() {
 		input.enableMP = false;
 		//output.driveMP.run(false);
+		sensor.robotDisabled = true;
 	}
 	
 	/**
@@ -126,6 +128,8 @@ public class Robot extends TimedRobot {
 		output.circuitBreaker();
 		elevate.updateDerivatives();
 		auton.selectAuton();
+		
+		outputMPdata();
 	}
 
 	/**
@@ -134,5 +138,20 @@ public class Robot extends TimedRobot {
 	@Override
 	public void testPeriodic() {
 		
+	}
+	
+	
+	public void outputMPdata() {
+		
+		//System.out.println(drive.recIdx);
+		if(drive.recIdx != 0) {
+			for(int i=0; i<drive.recIdx; i++) {
+				System.out.format("%d\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t%.4f\n",i, 
+						drive.powerLs[i],drive.powerRs[i],drive.errLs[i],drive.errRs[i],
+						drive.deltaLs[i],drive.deltaRs[i],drive.ffPwrL[i],
+						drive.ffPwrR[i],drive.angleErrs[i],drive.dts[i]);
+			}
+			drive.recIdx = 0;
+		}
 	}
 }

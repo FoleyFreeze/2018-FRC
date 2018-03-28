@@ -83,8 +83,9 @@ public class Elevator extends Component {
 	public static final double R_ARM_REST = 0;
 	
 	public Elevator() {
-
+		Component.elevate = this;
 	}
+
 	public enum liftState {
 		F_FLOOR_POSITION, R_FLOOR_POSITION, F_EXCHANGE_POSITION, R_EXCHANGE_POSITION, F_SWITCH_POSITION, R_SWITCH_POSITION, F_SCALE_POSITION, R_SCALE_POSITION, REST_POSITION;
 
@@ -227,6 +228,8 @@ public class Elevator extends Component {
 					}
 						
 				}
+				
+				break;
 			case F_FLOOR_POSITION:
 				if (currentState.equals(goalState)) {
 					setPosition(goalState);

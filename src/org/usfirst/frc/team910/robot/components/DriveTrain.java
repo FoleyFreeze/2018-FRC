@@ -5,21 +5,24 @@ import org.usfirst.frc.team910.robot.io.Angle;
 import org.usfirst.frc.team910.robot.io.Inputs;
 import org.usfirst.frc.team910.robot.io.Outputs;
 import org.usfirst.frc.team910.robot.io.Sensors;
+import org.usfirst.frc.team910.robot.io.MotionProfile.MotionProfileThread;
 import org.usfirst.frc.team910.robot.util.Path;
 
+import edu.wpi.first.wpilibj.Notifier;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public class DriveTrain extends Component {
+public class DriveTrain extends Component implements Runnable {
 	public static final double DYN_BRAKE_KP = 0.0005; // This is power per inch of error
 	public static final double DRIVE_STRAIGHT_KP = 0.1; // Distance difference by inch
 	public static final double DRIVE_STRAIGHT_TURN = 30.0 / 50.0; // 5 inches per second / 50
 	public static final double DRIVE_STRAIGHTNAVX_KP = 0.1; // Distance difference by inch
 
-	public static final double DRIVEMP_KP = 0.1;
+	public static final double DRIVEMP_KP = 0.0;
 	public static final double DRIVEMP_KD = 0.0;
-	public static final double DRIVEMP_KP_ANGLE = 0.5 / 45; //50% per 45deg
-	public static final double DRIVEMP_KFV = 0.9 / 210.0; //210 in/sec at max pwr
-	public static final double DRIVEMP_KFA = 1.0 / 600.0; //full power is 600 in/sec/sec
+	public static final double DRIVEMP_KP_ANGLE = 0.0 / 45; //50% per 45deg
+	public static final double DRIVEMP_KFV = 0.9 / 200.0; //210 in/sec at max pwr
+	public static final double DRIVEMP_KFA = 1.0 / 300.0; //full power is 600 in/sec/sec
 	public static final double DRIVEMP_KFV_INT = 0.1;
 
 	public static final double CAM_DRIVE_KP = 0.5 / 45; // This is power per degree of error
@@ -29,10 +32,27 @@ public class DriveTrain extends Component {
 	public static final double[] CAM_DRIVE_AXIS = { 5, 10, 25, 50 };
 
 	public DriveTrain() {
-
+		Component.drive = this;
+		
+		Notifier n = new Notifier(this);
+		n.startPeriodic(Path.DT);
 	}
 
+	public double dt = 0;
+	private double lastTime = 0;
+	
 	public void run() {
+		double time = Timer.getFPGATimestamp(); 
+		dt = time - lastTime;
+		lastTime = time;
+		SmartDashboard.putNumber("driveDT", dt);
+		
+		out.readDriveEncoders();
+		
+		if(sense.robotDisabled) {
+			return;
+		}
+		
 		// If motion profiling don't do any other run functions
 		if (in.enableMP) {
 			driveMp();
@@ -201,6 +221,20 @@ public class DriveTrain extends Component {
 	private double prevRError = 0;
 	private double lError = 0;
 	private double rError = 0;
+	
+	private int counter = 0;
+	
+	public int recIdx = 0;
+	public double powerLs[] = new double[400];
+	public double powerRs[] = new double[400];
+	public double errLs[] = new double[400];
+	public double errRs[] = new double[400];
+	public double deltaLs[] = new double[400];
+	public double deltaRs[] = new double[400];
+	public double ffPwrL[] = new double[400];
+	public double ffPwrR[] = new double[400];
+	public double angleErrs[] = new double[400];
+	public double dts[] = new double[400];
 
 	private void driveMp() {
 
@@ -216,6 +250,7 @@ public class DriveTrain extends Component {
 		double targetAngle = leftPath.angles.get(index);
 		
 		index++;
+		counter++;
 		
 		//cant use this unless we change isMpDoneYet()
 		//if (index >= leftPath.positions.size())
@@ -261,11 +296,27 @@ public class DriveTrain extends Component {
 		else if (powerR < -1)
 			powerR = -1;
 
-		System.out.format("idx:\t%d\tlpwr:\t%.2f\tlerr:\t%.2f\tderr:\t%.2f\tlvel:\t%.2f\tlff:\t%.2f\tang\t%.2f\n", index, powerL, lError,
-				deltaLError, leftVelocity, ffPowerL, angleError);
-		SmartDashboard.putNumber("leftError", lError);
-		SmartDashboard.putNumber("rightError", rError);
+		
+		
+		//apparently this is blocking io... dont use
+		//System.out.format("idx:\t%d\tlpwr:\t%.2f\tlerr:\t%.2f\tderr:\t%.2f\tlvel:\t%.2f\tlff:\t%.5f\tang\t%.2f\n", counter, powerR, rError,
+		//		deltaRError, rightVelocity, dt, angleError);
+		//SmartDashboard.putNumber("leftError", lError);
+		//SmartDashboard.putNumber("rightError", rError);
 
+		//instead, record these arrays and then print them in disabled
+		powerLs[recIdx] = powerL;
+		powerRs[recIdx] = powerR;
+		errLs[recIdx] = lError;
+		errRs[recIdx] = rError;
+		deltaLs[recIdx] = deltaLError;
+		deltaRs[recIdx] = deltaRError;
+		ffPwrL[recIdx] = ffPowerL;
+		ffPwrR[recIdx] = ffPowerR;
+		angleErrs[recIdx] = angleError;
+		dts[recIdx] = dt;
+		recIdx++;
+		
 		out.setDrivePower(powerL, powerR);
 
 	}
