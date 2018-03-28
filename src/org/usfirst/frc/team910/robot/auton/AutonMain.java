@@ -283,6 +283,35 @@ public class AutonMain extends Component {
 		b.add(new EndStep());
 		b.end(); }
 			
+		centerSwitch = new SeriesSet();
+		b.add(centerSwitch);
+			b.add(new StartStep());
+			b.add(new IfSet(new IfInterface() {
+				public boolean choice() {
+					return options.switchIsLeft;
+				}
+			}));
+			b.add(new SeriesSet());
+				b.add(new ParallelSet());
+		    		b.add(new DriveProfile(Profile.centerSwitchL));
+		    		b.add(new SeriesSet());	
+		    			b.add(new WaitStep(2.5));
+		    			b.add(new ElevatorPosition(Elevator.liftState.F_SWITCH_POSITION));
+		    		b.end();
+		    	b.end();
+		    b.add(new SeriesSet());
+		    	b.add(new ParallelSet());
+		    		b.add(new DriveProfile(Profile.centerSwitchR));
+		    		b.add(new SeriesSet());	
+		    			b.add(new WaitStep(2.5));
+		    			b.add(new ElevatorPosition(Elevator.liftState.F_SWITCH_POSITION));
+		    		b.end();
+		    	b.end();
+		    b.end();
+		b.add(new EndStep());
+		b.end();
+		    	
+			
 			
 		testProfile = new SeriesSet();
 		b.add(testProfile);

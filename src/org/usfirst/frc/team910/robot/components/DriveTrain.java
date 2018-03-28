@@ -18,11 +18,11 @@ public class DriveTrain extends Component implements Runnable {
 	public static final double DRIVE_STRAIGHT_TURN = 30.0 / 50.0; // 5 inches per second / 50
 	public static final double DRIVE_STRAIGHTNAVX_KP = 0.1; // Distance difference by inch
 
-	public static final double DRIVEMP_KP = 0.0;
+	public static final double DRIVEMP_KP = 0.04;
 	public static final double DRIVEMP_KD = 0.0;
 	public static final double DRIVEMP_KP_ANGLE = 0.0 / 45; //50% per 45deg
-	public static final double DRIVEMP_KFV = 0.9 / 200.0; //210 in/sec at max pwr
-	public static final double DRIVEMP_KFA = 1.0 / 300.0; //full power is 600 in/sec/sec
+	public static final double DRIVEMP_KFV = 0.9 / 210.0; //210 in/sec at max pwr
+	public static final double DRIVEMP_KFA = 1.0 / 450.0; //full power is 600 in/sec/sec
 	public static final double DRIVEMP_KFV_INT = 0.1;
 
 	public static final double CAM_DRIVE_KP = 0.5 / 45; // This is power per degree of error
