@@ -249,113 +249,198 @@ public class Elevator extends Component {
 				break;
 				
 			case F_FLOOR_POSITION:
-				if (currentState.equals(goalState)) {
+				
+				switch(goalState) {
+				case F_FLOOR_POSITION:
+				case F_SWITCH_POSITION:
+				case R_FLOOR_POSITION:
+				case REST_POSITION:
+				case F_EXCHANGE_POSITION:
+				case CLIMB_POSITION:
 					setPosition(goalState);
+					break;
 					
-				}else if (goalState == liftState.F_EXCHANGE_POSITION || goalState == liftState.F_SWITCH_POSITION || goalState == liftState.R_FLOOR_POSITION || goalState == liftState.REST_POSITION) {
-					setPosition(goalState);
-				}else {
-					if (goalState == liftState.R_EXCHANGE_POSITION || goalState == liftState.R_SWITCH_POSITION) {
-						setPosition(liftState.R_FLOOR_POSITION);
-					}
-					else if(goalState == liftState.F_SCALE_POSITION || goalState == liftState.R_SCALE_POSITION){
-						setPosition(liftState.F_SWITCH_POSITION);
-					}
+				case R_EXCHANGE_POSITION:
+				case R_SWITCH_POSITION:
+					setPosition(liftState.R_FLOOR_POSITION);
+					break;
+					
+				case F_SCALE_POSITION:
+				case R_SCALE_POSITION:
+					setPosition(liftState.F_SWITCH_POSITION);
+					break;
 				}
 			
 				break;
 				
 			case R_FLOOR_POSITION:
-				if (currentState.equals(goalState)) {
-					setPosition(goalState);
-				}else if (goalState == liftState.R_EXCHANGE_POSITION || goalState == liftState.R_SWITCH_POSITION || goalState == liftState.F_FLOOR_POSITION || goalState == liftState.REST_POSITION) {
-					setPosition(goalState);
-				}else {
-					setPosition(liftState.F_FLOOR_POSITION);
 				
+				switch(goalState){
+				case R_FLOOR_POSITION:
+				case R_EXCHANGE_POSITION:
+				case R_SWITCH_POSITION:
+				case F_FLOOR_POSITION:
+				case REST_POSITION:
+					setPosition(goalState);
+					break;
+				case R_SCALE_POSITION:
+				case F_SWITCH_POSITION:
+				case F_SCALE_POSITION:
+				case F_EXCHANGE_POSITION:
+				case CLIMB_POSITION:
+					setPosition(liftState.F_FLOOR_POSITION);
+					break;
 				}
 			
 				break;
 	
 			case F_EXCHANGE_POSITION:
-				if (currentState.equals(goalState)) {
+				
+				switch(goalState) {
+				case F_EXCHANGE_POSITION:
+				case F_FLOOR_POSITION:
+				case F_SWITCH_POSITION:
+				case REST_POSITION:
+				case CLIMB_POSITION:
 					setPosition(goalState);
-				}else if (goalState == liftState.F_FLOOR_POSITION || goalState == liftState.F_SWITCH_POSITION || goalState == liftState.REST_POSITION) {
-					setPosition(goalState);
-				}else {
-					if(goalState == liftState.F_SCALE_POSITION || goalState == liftState.R_SCALE_POSITION) {
-						setPosition(liftState.F_SWITCH_POSITION);
-					} else {
-						setPosition(liftState.REST_POSITION);
-					}
+					break;
+				case F_SCALE_POSITION:
+				case R_SCALE_POSITION:
+					setPosition(liftState.F_SWITCH_POSITION);
+					break;
+				case R_SWITCH_POSITION:
+				case R_FLOOR_POSITION:
+				case R_EXCHANGE_POSITION:
+					setPosition(liftState.REST_POSITION);
+					break;
 				}
 				
-				
-					
 				break;
 	
 			case R_EXCHANGE_POSITION:
-				if (currentState.equals(goalState)) {
+				
+				switch(goalState) {
+				case R_EXCHANGE_POSITION:
+				case R_FLOOR_POSITION:
+				case R_SWITCH_POSITION:
+				case REST_POSITION:
 					setPosition(goalState);
-				}else if (goalState == liftState.R_FLOOR_POSITION || goalState == liftState.R_SWITCH_POSITION || goalState == liftState.REST_POSITION) {
-					setPosition(goalState);
-				}else {
+					break;
+				case R_SCALE_POSITION:
+				case F_SWITCH_POSITION:
+				case CLIMB_POSITION:
+				case F_SCALE_POSITION:
+				case F_FLOOR_POSITION:
+				case F_EXCHANGE_POSITION:
 					setPosition(liftState.REST_POSITION);
+					break;
 				}
+				
 				break;
 				
 			case F_SWITCH_POSITION:
-				if (currentState.equals(goalState)) {
+				
+				switch(goalState) {
+				case F_SWITCH_POSITION:
+				case F_FLOOR_POSITION:
+				case F_SCALE_POSITION:
+				case F_EXCHANGE_POSITION:
+				case REST_POSITION:
+				case CLIMB_POSITION:
 					setPosition(goalState);
-				}else if (goalState == liftState.F_FLOOR_POSITION || goalState == liftState.F_SCALE_POSITION || goalState == liftState.F_EXCHANGE_POSITION|| goalState == liftState.REST_POSITION) {
-					setPosition(goalState);
-				}else { 
-					if(goalState == liftState.R_SCALE_POSITION) {
-						setPosition(liftState.F_SCALE_POSITION);
-					}else {
-						setPosition(liftState.REST_POSITION);
-					}
+					break;
+				case R_SCALE_POSITION:
+					setPosition(liftState.F_SCALE_POSITION);
+					break;
+				case R_SWITCH_POSITION:
+				case R_FLOOR_POSITION:
+				case R_EXCHANGE_POSITION:
+					setPosition(liftState.REST_POSITION);
+					break;
 				}
-					
+				
 				break;
 	
 			case R_SWITCH_POSITION:
-				if (currentState.equals(goalState)) {
+				
+				switch(goalState) {
+				case R_SWITCH_POSITION:
+				case R_FLOOR_POSITION:
+				case R_EXCHANGE_POSITION:
+				case REST_POSITION:
 					setPosition(goalState);
-				}else if (goalState == liftState.R_FLOOR_POSITION || goalState == liftState.R_EXCHANGE_POSITION|| goalState == liftState.REST_POSITION) {
-					setPosition(goalState);
-				}else {
+				case R_SCALE_POSITION:
+				case F_SWITCH_POSITION:
+				case F_SCALE_POSITION:
+				case F_FLOOR_POSITION:
+				case F_EXCHANGE_POSITION:
+				case CLIMB_POSITION:
 					setPosition(liftState.REST_POSITION);
+					break;
 				}
 				
-						
 				break;
 				
 			case CLIMB_POSITION:
-				//TODO: something
+				switch(goalState) {
+				case CLIMB_POSITION:
+				case F_SWITCH_POSITION:
+				case F_SCALE_POSITION:
+					setPosition(goalState);
+					break;
+				case R_SCALE_POSITION:
+					setPosition(liftState.F_SCALE_POSITION);
+					break;
+				case F_EXCHANGE_POSITION:
+				case F_FLOOR_POSITION:
+				case REST_POSITION:
+				case R_FLOOR_POSITION:
+				case R_SWITCH_POSITION:
+				case R_EXCHANGE_POSITION:
+					setPosition(liftState.F_SCALE_POSITION);
+					break;
+				}
 				break;
 	
 			case F_SCALE_POSITION:
-				if (currentState.equals(goalState)) {
+				
+				switch(goalState) {
+				case F_SCALE_POSITION:
+				case R_SCALE_POSITION:
+				case F_SWITCH_POSITION:
+				case CLIMB_POSITION:
 					setPosition(goalState);
-				}else if (goalState == liftState.R_SCALE_POSITION || goalState == liftState.F_SWITCH_POSITION) {
-					setPosition(goalState);
-				}else {
+					break;
+				case R_SWITCH_POSITION:
+				case R_FLOOR_POSITION:
+				case R_EXCHANGE_POSITION:
+				case REST_POSITION:
+				case F_FLOOR_POSITION:
+				case F_EXCHANGE_POSITION:
 					setPosition(liftState.F_SWITCH_POSITION);
+					break;
 				}
-						
-	
+			
 				break;
 	
 			case R_SCALE_POSITION:
-				if (currentState.equals(goalState)) {
+				
+				switch(goalState) {
+				case R_SCALE_POSITION:
+				case F_SCALE_POSITION:
 					setPosition(goalState);
-				}else if (goalState == liftState.F_SCALE_POSITION) {
-					setPosition(goalState);
-				}else {
+					break;
+				case CLIMB_POSITION:
+				case F_SWITCH_POSITION:
+				case F_EXCHANGE_POSITION:
+				case F_FLOOR_POSITION:
+				case REST_POSITION:
+				case R_FLOOR_POSITION:
+				case R_EXCHANGE_POSITION:
+				case R_SWITCH_POSITION:
 					setPosition(liftState.F_SCALE_POSITION);
+					break;
 				}
-				break;
 			}
 			
 			SmartDashboard.putString("Goal Position", goalState.toString());
