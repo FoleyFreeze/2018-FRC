@@ -154,9 +154,9 @@ public class Sensors extends Component {
 		robotAngle.set(-navx.getYaw() - angleOffset);
 		SmartDashboard.putNumber("Yaw", robotAngle.get());
 		
-		distFC = Elevator.interp(VOLT_POINTS, DIST_POINTS, frontCenter.getAverageVoltage());
-		distFR = Elevator.interp(VOLT_POINTS, DIST_POINTS, frontRight.getAverageVoltage());
-		distFL = Elevator.interp(VOLT_POINTS, DIST_POINTS, frontLeft.getAverageVoltage());
+		distFC = Elevator.interp(VOLT_POINTS, DIST_POINTS, frontCenter.getAverageVoltage())*2;
+		distFR = Elevator.interp(VOLT_POINTS, DIST_POINTS, frontRight.getAverageVoltage())*2;
+		distFL = Elevator.interp(VOLT_POINTS, DIST_POINTS, frontLeft.getAverageVoltage())*2;
 		
 		SmartDashboard.putNumber("distFC", ((int) (distFC * 10))/10.0);
 		SmartDashboard.putNumber("distFR", ((int) (distFR * 10))/10.0);

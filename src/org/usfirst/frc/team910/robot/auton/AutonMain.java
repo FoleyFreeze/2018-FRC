@@ -212,32 +212,24 @@ public class AutonMain extends Component {
 		scale = new SeriesSet();
 		b.add(scale);
 			b.add(new StartStep());
+			
+//------------------------------------STRAIGHT SCALE----------------------------------------------------------------
+			
 			b.add(new IfSet(new IfInterface() {
 				public boolean choice() {
-					return options.selectedStart == LEFT && options.scaleIsLeft;					 
+					return options.selectedStart == LEFT && options.scaleIsLeft
+						|| options.selectedStart == RIGHT && !options.scaleIsLeft;					 
 				}
 			}));
 				//infront of left scale
 			b.add(new SeriesSet()); {
 				b.add(new ParallelSet());
-					b.add(new DriveProfile(Profile.straightScaleL));
-					b.add(new SeriesSet());	
-						b.add(new WaitStep(5));
-						b.add(new ElevatorPosition(Elevator.liftState.F_SCALE_POSITION));
-						b.end();
-					b.end();
-				b.add(new ShootStep());
-				b.end();
-			}	
-			//infront of right scale
-			b.add(new IfSet(new IfInterface() {
-				public boolean choice() {
-					return options.selectedStart == RIGHT && !options.scaleIsLeft;
-				}
-			}));
-			b.add(new SeriesSet()); {
-				b.add(new ParallelSet());
-					b.add(new DriveProfile(Profile.straightScaleR));
+				b.add(new IfSet(new IfInterface() {
+					public boolean choice() {
+						return options.selectedStart == LEFT && options.scaleIsLeft;					 
+					}
+				}));
+					//b.add(new DriveProfile(Profile.straightScaleL));
 					b.add(new SeriesSet());	
 						b.add(new WaitStep(5));
 						b.add(new ElevatorPosition(Elevator.liftState.F_SCALE_POSITION));
@@ -246,6 +238,21 @@ public class AutonMain extends Component {
 				b.add(new ShootStep());
 				b.end();
 			}
+			//infront of right scale
+			b.add(new SeriesSet()); {
+				b.add(new ParallelSet());
+					//b.add(new DriveProfile(Profile.straightScaleR));
+					b.add(new SeriesSet());	
+						b.add(new WaitStep(5));
+						b.add(new ElevatorPosition(Elevator.liftState.F_SCALE_POSITION));
+						b.end();
+					b.end();
+				b.add(new ShootStep());
+				b.end();
+			}
+			
+//------------------CROSS SCALE---------------------------------------------------------------------
+			
 			//start right have to cross to left
 			b.add(new IfSet(new IfInterface() {
 				public boolean choice() {
@@ -254,7 +261,7 @@ public class AutonMain extends Component {
 			}));
 			b.add(new SeriesSet()); {
 				b.add(new ParallelSet());
-					b.add(new DriveProfile(Profile.rightToLeftScale));
+		//			b.add(new DriveProfile(Profile.rightToLeftScale));
 					b.add(new SeriesSet());	
 						b.add(new WaitStep(5));
 						b.add(new ElevatorPosition(Elevator.liftState.F_SCALE_POSITION));
@@ -271,7 +278,7 @@ public class AutonMain extends Component {
 			}));
 			b.add(new SeriesSet()); {
 				b.add(new ParallelSet());
-					b.add(new DriveProfile(Profile.leftToRightScale));
+		//			b.add(new DriveProfile(Profile.leftToRightScale));
 					b.add(new SeriesSet());	
 						b.add(new WaitStep(5));
 						b.add(new ElevatorPosition(Elevator.liftState.F_SCALE_POSITION));
@@ -293,7 +300,7 @@ public class AutonMain extends Component {
 			}));
 			b.add(new SeriesSet());
 				b.add(new ParallelSet());
-		    		b.add(new DriveProfile(Profile.centerSwitchL));
+		//    		b.add(new DriveProfile(Profile.centerSwitchL));
 		    		b.add(new SeriesSet());	
 		    			b.add(new WaitStep(2.5));
 		    			b.add(new ElevatorPosition(Elevator.liftState.F_SWITCH_POSITION));
@@ -301,7 +308,7 @@ public class AutonMain extends Component {
 		    	b.end();
 		    b.add(new SeriesSet());
 		    	b.add(new ParallelSet());
-		    		b.add(new DriveProfile(Profile.centerSwitchR));
+		//    		b.add(new DriveProfile(Profile.centerSwitchR));
 		    		b.add(new SeriesSet());	
 		    			b.add(new WaitStep(2.5));
 		    			b.add(new ElevatorPosition(Elevator.liftState.F_SWITCH_POSITION));
@@ -316,7 +323,7 @@ public class AutonMain extends Component {
 		testProfile = new SeriesSet();
 		b.add(testProfile);
 			b.add(new StartStep());
-			b.add(new DriveProfile(Profile.testStraight));
+			b.add(new DriveProfile(Profile.test));
 			b.add(new EndStep());
 		b.end();
 	}

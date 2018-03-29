@@ -216,7 +216,7 @@ public class Path /*extends Component*/ {
             double cT = lastT + deltaTheta;
             angles.add(cT);
             
-            //System.out.println(cT);
+            System.out.println(cT);
 		}
 		
 	}
