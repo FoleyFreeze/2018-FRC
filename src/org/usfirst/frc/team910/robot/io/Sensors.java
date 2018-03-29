@@ -52,8 +52,8 @@ public class Sensors extends Component {
 	
 	//public static final double[] DIST_POINTS = {1.57, 2.36, 3.15, 3.94,  4.72, 5.51, 6.3,  7.09, 7.87, 8.66,  9.45, 10.24, 11.02, 11.81};
 	//public static final double[] VOLT_POINTS = { 2.7,    2,  1.5,  1.3,   1.1,  0.9, 0.8,  0.75, 0.65,  0.6,  0.55,   0.5,  0.45,   0.4};
-	public static final double[] VOLT_POINTS = { 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.75, 0.8, 0.9, 1.1, 1.3, 1.5, 2, 2.7};
-	public static final double[] DIST_POINTS = {11.81,11.02,10.24,9.45,8.66,7.87,7.09,6.3,5.51,4.72,3.94,3.15,2.36,1.57};
+	public static final double[] VOLT_POINTS = { 0.4, 0.6, 0.7, 0.9, 1.1, 1.3, 1.6, 2.3, 2.7, 2.9, 3.2};
+	public static final double[] INV_DIST_POINTS = {1/31.5,1/19.7,1/15.7,1/11.8,1/9.84,1/7.87,1/5.91,1/3.94,1/3.15,1/2.76,1/2.36};
 	
 	public Sensors() {
 		Component.sense = this;
@@ -154,9 +154,9 @@ public class Sensors extends Component {
 		robotAngle.set(-navx.getYaw() - angleOffset);
 		SmartDashboard.putNumber("Yaw", robotAngle.get());
 		
-		distFC = Elevator.interp(VOLT_POINTS, DIST_POINTS, frontCenter.getAverageVoltage())*2;
-		distFR = Elevator.interp(VOLT_POINTS, DIST_POINTS, frontRight.getAverageVoltage())*2;
-		distFL = Elevator.interp(VOLT_POINTS, DIST_POINTS, frontLeft.getAverageVoltage())*2;
+		distFC = 1/Elevator.interp(VOLT_POINTS, INV_DIST_POINTS, frontCenter.getAverageVoltage());
+		distFR = 1/Elevator.interp(VOLT_POINTS, INV_DIST_POINTS, frontRight.getAverageVoltage());
+		distFL = 1/Elevator.interp(VOLT_POINTS, INV_DIST_POINTS, frontLeft.getAverageVoltage());
 		
 		SmartDashboard.putNumber("distFC", ((int) (distFC * 10))/10.0);
 		SmartDashboard.putNumber("distFR", ((int) (distFR * 10))/10.0);
