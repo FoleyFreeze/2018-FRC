@@ -23,6 +23,6 @@ public class Climber extends Component {
 	}
 	
 	public void climb(double power1, double power2) {
-		out.setClimberPower(power1, power2);
+		//out.setClimberPower(power1, power2);
 	}
 }

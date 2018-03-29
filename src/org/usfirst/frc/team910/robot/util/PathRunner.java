@@ -4,22 +4,23 @@ import java.util.ArrayList;
 
 public class PathRunner {
 
-    public static final double SCRUB_FACTOR = 2;
+    public static final double SCRUB_FACTOR = 2.4;
 	public static final double TURNING_WIDTH = 23.2375 * SCRUB_FACTOR;
 	public static final double ROBOT_WIDTH = 34.5; // 34.25 from CAD + .25 for error
-	public static final double ROBOT_HEIGHT = 39.5; // 39.25 from CAD + .35 for error
+	public static final double ROBOT_HEIGHT = 39.5; // 39.25 from CAD + .25 for error
 	
-	static final double ACCEL = 300;
-	static final double MAX_VEL = 80;
+	static final double ACCEL = 100;
+	static final double ACCEL_TURN = 100;
+	static final double MAX_VEL = 100;
 	
 	public static final double STRAIGHT = 1.0;
 	public static final double TURN = 2.0;
 	
 	public static final double[][] testProfile =
 	    // type    dist velTrgt endVel 
-	    {{STRAIGHT, 120,  120,  120},
+	    {{STRAIGHT, 60,  100,  100},
 	    //type distL distR velTrgt endVel
-	    {TURN,  120,  90,    120,   0}
+	    {TURN,  123,  80,    100,   0}
 	    };
 	
 	public static final double [][] centerSwitchRight = 
@@ -73,7 +74,7 @@ public class PathRunner {
 	
 	public static void buildTurn(Path pL, Path pR, double distL, double distR, double targetVel, double endVel) {
 		if(distL > distR) {
-			pL.buildPath(ACCEL, targetVel, distL, endPosL, endVelL, endVel);
+			pL.buildPath(ACCEL_TURN, targetVel, distL, endPosL, endVelL, endVel);
 			double targetTime = pL.positions.size() * Path.DT;
 			
 			double maxVel = targetVel;
@@ -83,7 +84,7 @@ public class PathRunner {
 			for(int i = 0; i<10; i++) {
 				double testVel = (maxVel + minVel) / 2;
 				
-				pR.buildPath(ACCEL, testVel, distR, endPosR, endVelR, endVel);
+				pR.buildPath(ACCEL_TURN, testVel, distR, endPosR, endVelR, endVel);
 				
 				double time = pR.positions.size() * Path.DT;
 				if(time == targetTime) break;
@@ -92,7 +93,7 @@ public class PathRunner {
 			}
 			
 		} else {
-			pR.buildPath(ACCEL, targetVel, distR, endPosR, endVelR, endVel);
+			pR.buildPath(ACCEL_TURN, targetVel, distR, endPosR, endVelR, endVel);
 			double targetTime = pR.positions.size() * Path.DT;
 			
 			double maxVel = targetVel;
@@ -101,7 +102,7 @@ public class PathRunner {
 			for(int i = 0; i<10; i++) {
 				double testVel = (maxVel + minVel) / 2;
 				
-				pL.buildPath(ACCEL, testVel, distL, endPosL, endVelL, endVel);
+				pL.buildPath(ACCEL_TURN, testVel, distL, endPosL, endVelL, endVel);
 				
 				double time = pL.positions.size() * Path.DT;
 				if(time == targetTime) break;
@@ -171,7 +172,7 @@ public class PathRunner {
 	private static void simulateDrive(){
 	    
         // start of robot
-        x.add(150.0 + ROBOT_WIDTH / 2); // edge of exchange zone(150.0 + ROBOT_WIDTH / 2); 
+        x.add(295 - ROBOT_WIDTH / 2);// edge of exchange zone(150.0 + ROBOT_WIDTH / 2); 
         							  // corner at portal left(29.0 + ROBOT_WIDTH / 2);
         							  // corner at portal right(295 - ROBOT_WIDTH / 2);
         
@@ -266,7 +267,7 @@ public class PathRunner {
 	
 	public static void main(String[] args) {
 
-	    double[][] activeProf = straightSwitchRight;
+	    double[][] activeProf = testProfile;
 	    
 	    for(int i=0; i<activeProf.length; i++){
 	        parseArray(activeProf[i]);
@@ -312,7 +313,7 @@ public class PathRunner {
 	    //System.out.println("Corners");
 	    for(int i=0; i<cornersX.size(); i++) {
             //System.out.println(x.get(i) + "\t" + y.get(i) + "\t" + theta.get(i));
-            //System.out.format("%.1f\t%.1f\n", cornersX.get(i), cornersY.get(i));
+            System.out.format("%.1f\t%.1f\n", cornersX.get(i), cornersY.get(i));
         }
         
 	    

@@ -1,8 +1,6 @@
 package org.usfirst.frc.team910.robot.io;
 
 import org.usfirst.frc.team910.robot.Component;
-import org.usfirst.frc.team910.robot.components.Elevator;
-
 import com.ctre.phoenix.ErrorCode;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
@@ -73,18 +71,24 @@ public class Outputs extends Component {
 		
 		elevator1 = new TalonSRX(ElectroBach.ELEVATOR_CAN_1);
 		elevator2 = new TalonSRX(ElectroBach.ELEVATOR_CAN_2);
+		elevator3 = new TalonSRX(ElectroBach.ELEVATOR_CAN_3);
+		elevator4 = new TalonSRX(ElectroBach.ELEVATOR_CAN_4);
 		
 		elevator2.set(ControlMode.Follower, ElectroBach.ELEVATOR_CAN_1);
+		elevator3.set(ControlMode.Follower, ElectroBach.ELEVATOR_CAN_1);
+		elevator4.set(ControlMode.Follower, ElectroBach.ELEVATOR_CAN_1);
 		
 		elevator1.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
 		elevator1.setSensorPhase(false);
 		elevator1.setInverted(false); 
-		elevator2.setInverted(true); 
+		elevator2.setInverted(true);
+		elevator3.setInverted(true);
+		elevator4.setInverted(true);
 		
 		elevator1.configOpenloopRamp(0.2, 0);
 		elevator2.configOpenloopRamp(0.2, 0);
-		elevator3 = new TalonSRX(ElectroBach.ELEVATOR_CAN_3);
-		elevator4 = new TalonSRX(ElectroBach.ELEVATOR_CAN_4);
+		elevator3.configOpenloopRamp(0.2, 0);
+		elevator4.configOpenloopRamp(0.2, 0);
 		
 		armMotor1 = new TalonSRX(ElectroBach.ARM_CAN_1);
 		armMotor2 = new TalonSRX(ElectroBach.ARM_CAN_2);
@@ -213,11 +217,12 @@ public class Outputs extends Component {
 	
 	public void setElevatorPower(double elevatorPower) {
 		//Do not drive if motor is burning out
-		if (overloaded[ElectroBach.ELEVATOR_CAN_1] || overloaded[ElectroBach.ELEVATOR_CAN_2] ) {
+		if (overloaded[ElectroBach.ELEVATOR_CAN_1] || overloaded[ElectroBach.ELEVATOR_CAN_2] 
+				|| overloaded[ElectroBach.ELEVATOR_CAN_3] || overloaded[ElectroBach.ELEVATOR_CAN_4]) {
 			elevator1.set(ControlMode.PercentOutput, 0);
-			elevator2.set(ControlMode.PercentOutput, 0);
-			elevator3.set(ControlMode.PercentOutput, 0);
-			elevator4.set(ControlMode.PercentOutput, 0);
+			//elevator2.set(ControlMode.PercentOutput, 0);
+			//elevator3.set(ControlMode.PercentOutput, 0);
+			//elevator4.set(ControlMode.PercentOutput, 0);
 			return;
 		}
 		
@@ -233,13 +238,13 @@ public class Outputs extends Component {
 		}
 		
 		elevator1.set(ControlMode.PercentOutput, elevatorPower); //TODO please good 
-		elevator2.set(ControlMode.PercentOutput, elevatorPower);
-		elevator3.set(ControlMode.PercentOutput, elevatorPower);
-		elevator4.set(ControlMode.PercentOutput, elevatorPower);
+		//elevator2.set(ControlMode.PercentOutput, elevatorPower);
+		//elevator3.set(ControlMode.PercentOutput, elevatorPower);
+		//elevator4.set(ControlMode.PercentOutput, elevatorPower);
 		SmartDashboard.putNumber("Lift 1 Pwr", elevatorPower);//TODO correct if needed
-		SmartDashboard.putNumber("Lift 2 Pwr", elevatorPower);//TODO correct if needed
-		SmartDashboard.putNumber("Lift 3 Pwr", elevatorPower);//TODO correct if needed
-		SmartDashboard.putNumber("Lift 4 Pwr", elevatorPower);//TODO correct if needed
+		//SmartDashboard.putNumber("Lift 2 Pwr", elevatorPower);//TODO correct if needed
+		//SmartDashboard.putNumber("Lift 3 Pwr", elevatorPower);//TODO correct if needed
+		//SmartDashboard.putNumber("Lift 4 Pwr", elevatorPower);//TODO correct if needed
 	}
 	
 	public void setElevatorPosition(double elevatorPosition) {
@@ -318,7 +323,7 @@ public class Outputs extends Component {
 	private double[] filteredCurrent = new double[16];
 	private boolean[] overloaded = new boolean[16];
 	public static final double[] CURRENT_LIMITS = {100, 100, 100, 100, 100, 30, 100, 100, 30, 100, 100, 100, 100, 100, 100, 100};
-	public static final double[] TIME_LIMIT = {0.5, 0.5, 0.5, 0.5, 0.5, 15, 0.5, 0.5, 15, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5};
+	public static final double[] TIME_LIMIT = {0.5, 0.5, 0.5, 0.5, 0.5, 5, 0.5, 0.5, 5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5};
 	private double[] overloadTime = new double[16];
 	public static final double FILT = 0.5;
 	public static final double RESET_TIME = 3;
@@ -350,6 +355,8 @@ public class Outputs extends Component {
 	public void enableBrake() {
 		elevator1.setNeutralMode(NeutralMode.Brake);
 		elevator2.setNeutralMode(NeutralMode.Brake);
+		elevator3.setNeutralMode(NeutralMode.Brake);
+		elevator4.setNeutralMode(NeutralMode.Brake);
 		armMotor1.setNeutralMode(NeutralMode.Brake);
 		armMotor2.setNeutralMode(NeutralMode.Brake);
 	}
@@ -357,6 +364,8 @@ public class Outputs extends Component {
 	public void disableBrake() {
 		elevator1.setNeutralMode(NeutralMode.Coast);
 		elevator2.setNeutralMode(NeutralMode.Coast);
+		elevator3.setNeutralMode(NeutralMode.Coast);
+		elevator4.setNeutralMode(NeutralMode.Coast);
 		armMotor1.setNeutralMode(NeutralMode.Coast);
 		armMotor2.setNeutralMode(NeutralMode.Coast);
 	}

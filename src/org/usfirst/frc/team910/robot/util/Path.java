@@ -196,7 +196,7 @@ public class Path /*extends Component*/ {
 
 	}
 	
-	public static final double SCRUB_FACTOR = 2;
+	public static final double SCRUB_FACTOR = 2.4;
 	public static final double TURNING_WIDTH = 23.2375 * SCRUB_FACTOR;
 	
 	public void calcAngles(Path l, Path r, double startAngle){
