@@ -6,9 +6,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Elevator extends Component {
 	public static final double ARM_KP = 0.05; //power per deg
-	public static final double LIFT_KP = 0.2; //power per inch
+	public static final double LIFT_KP = 0.1; // 0.2 4 mtr chg 3-29  //power per inch
 	public static final double ARM_KD = 0.05;//0.2
-	public static final double LIFT_KD = 0.5;//1.0
+	public static final double LIFT_KD = 0.7;//0.5 //1.0  4 mtr chg 3-29
 	
 	public static final double LIFT_DEADBAND = 0;
 	public static final double ARM_DEADBAND = 0;
@@ -18,7 +18,7 @@ public class Elevator extends Component {
 	public static final double ARM_DN_PWR = 0.7;
 	public static final double ARM_UP_PWR_SHIFT = 0.7;
 	public static final double ARM_DN_PWR_SHIFT = 0.5;
-	public static final double LIFT_UP_PWR = 0.6;//was .5 //was 0.75
+	public static final double LIFT_UP_PWR = 0.75;//was 0.6 ON PRAC  //was .5 //was 0.75
 	public static final double LIFT_DN_PWR = 0.45;//was .3 //was 0.5; too hard!
 	public static final double LIFT_UP_PWR_SHIFT = 0.5;
 	public static final double LIFT_DN_PWR_SHIFT = 0.25;

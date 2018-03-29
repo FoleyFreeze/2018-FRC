@@ -25,8 +25,8 @@ public class Gatherer extends Component {
 	public static final double DIST_TOLERANCE = 1;
 	public static final double DIST_FRAME = 6;
 	
-	public static final double PWR_REV_GATHER = -0.3;
-	public static final double PWR_FWD_GATHER = 0.6;
+	public static final double PWR_REV_GATHER = -0.2; //was -0.3
+	public static final double PWR_FWD_GATHER = 0.7; //was 0.6 //3-29
 
 	public double stepTimer_IR = 0;
 	public gatherStateIR gatherS_IR = gatherStateIR.INIT;
@@ -75,7 +75,7 @@ public class Gatherer extends Component {
 
 			// initially, run through
 			case INIT:
-				gather(0.6, 0.6);
+				gather(0.7, 0.7);
 				stepTimer_IR = Timer.getFPGATimestamp() + 1;
 				gatherS_IR = gatherStateIR.SEARCH;
 
@@ -153,12 +153,12 @@ public class Gatherer extends Component {
 
 			// shoot logic
 		} else if (in.shoot && in.shift) {
-			gather(-0.6, -0.6);
+			gather(-0.7, -0.7); //star wheel
 			gatherS_IR = gatherStateIR.INIT;
 		} else if (in.shoot) {
 			if(elevate.currentState == Elevator.liftState.R_EXCHANGE_POSITION || elevate.currentState == Elevator.liftState.F_EXCHANGE_POSITION)
-				gather(-0.5, -0.5);
-			else gather(-0.35, -0.35);
+				gather(-0.6, -0.6); //ten percent more with star wheels
+			else gather(-0.45, -0.45); //star wheels
 			gatherS_IR = gatherStateIR.INIT;
 
 			// if no button pressed

@@ -64,13 +64,13 @@ public class Sensors extends Component {
 		robotAngle = new Angle(0);
 		pdp = new PowerDistributionPanel(0);
 		frontCenter = new AnalogInput(ElectroBach.F_CNT_DIST);
-		frontCenter.setOversampleBits(1);
+		frontCenter.setOversampleBits(3);
 		frontCenter.setAverageBits(1);
 		frontRight = new AnalogInput(ElectroBach.F_RGT_DIST);
-		frontRight.setOversampleBits(1);
+		frontRight.setOversampleBits(3);
 		frontRight.setAverageBits(1);
 		frontLeft = new AnalogInput(ElectroBach.F_LFT_DIST);
-		frontLeft.setOversampleBits(1);//6
+		frontLeft.setOversampleBits(3);//6
 		frontLeft.setAverageBits(1);//3
 		
 	}
