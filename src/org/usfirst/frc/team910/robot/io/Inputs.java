@@ -65,6 +65,7 @@ public class Inputs extends Component {
 	public boolean resetBreaker = false;
 	public Elevator.liftState elevatorCommand = Elevator.liftState.REST_POSITION;
 	public boolean switchGather = false;
+	public boolean preClimb = false;
 	
 	
 	public int liftHeightMod = 0; //this can be 0, -1, 1 
@@ -140,6 +141,7 @@ public class Inputs extends Component {
 		gather = controlBoard.getRawButton(2);
 		liftExchange = controlBoard.getRawButton(8);
 		shoot = controlBoard.getRawButton(5);
+		preClimb = controlBoard.getRawButton(6);
 		
 		//enable gather if action button is pressed and we are in rest or floor position
 		if(actionButton && (elevate.currentState == Elevator.liftState.F_FLOOR_POSITION || 
@@ -157,6 +159,7 @@ public class Inputs extends Component {
 		}
 		else if(scaleButton) elevatorCommand = Elevator.liftState.F_SCALE_POSITION;
 		else if(liftExchange) elevatorCommand = Elevator.liftState.F_EXCHANGE_POSITION;
+		else if(preClimb) elevatorCommand = Elevator.liftState.CLIMB_POSITION;
 		
 		//require gather button to be held down to gather
 		if(gather && !switchGather) {

@@ -84,6 +84,7 @@ public class Elevator extends Component {
 	public static final double F_ARM_REST = 0;
 	public static final double R_ARM_REST = 0;
 	public static final double ARM_CLIMB = 45; 
+	public static final double ARM_CLIMB_DEPLOY = 20;
 	public static final double LIFT_CLIMB = 35; //TODO: find actual position
 	
 	public Elevator() {
@@ -510,7 +511,11 @@ public class Elevator extends Component {
 				break;
 				
 			case CLIMB_POSITION:
-				targetArm = ARM_CLIMB;
+				if(in.deployClimb) {
+					targetArm = ARM_CLIMB_DEPLOY;
+				} else {
+					targetArm = ARM_CLIMB;
+				}
 				targetLift = LIFT_CLIMB;
 				break;
 				
