@@ -14,7 +14,9 @@ public class ElectroBach {
 	
 	public static final int ELEVATOR_CAN_1 = 6;
 	public static final int ELEVATOR_CAN_2 = 9;
-
+	public static final int ELEVATOR_CAN_3 = 3;
+	public static final int ELEVATOR_CAN_4 = 12;
+	
 	public static final int LEFT_GATHER_CAN = 4;
 	public static final int RIGHT_GATHER_CAN = 5;
 	
@@ -22,8 +24,6 @@ public class ElectroBach {
 	public static final double TICKS_PER_DEGREE = 4800/90; //TODO calculate or measure real value 
 	public static final double TICKS_PER_INCH_HEIGHT = 88676/70; //TODO calculate or measure real value please
 	
-	public static final int CLIMBER_CAN_1 = 3;
-	public static final int CLIMBER_CAN_2 = 12;
 	
 	//infrared distance sensors
 	public static final int F_LFT_DIST = 1;

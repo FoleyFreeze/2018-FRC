@@ -71,6 +71,8 @@ public class Inputs extends Component {
 	
 
 	public Inputs() {
+		Component.in = this;
+		
 		leftStick = new Joystick(0);
 		rightStick = new Joystick(1);
 		controlBoard = new Joystick(2);
@@ -172,7 +174,7 @@ public class Inputs extends Component {
 		}
 		
 		
-		shift = controlBoard.getRawButton(1);
+		shift = controlBoard.getRawButton(1) || leftStick.getRawButton(4);
 		manualOverride = controlBoard.getRawButton(14);
 		liftFlip = !controlBoard.getRawButton(15);
 		

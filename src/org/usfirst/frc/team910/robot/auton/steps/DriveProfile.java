@@ -75,8 +75,11 @@ public class DriveProfile extends AutonStep {
 			pathIdx++;
 			if (pathIdx < pathsL.length) {
 				drive.initMp(pathsL[pathIdx], pathsR[pathIdx]);
-			} else
+			} else {
+				in.enableMP = false;
 				return true;
+			}
+				
 		}
 		return false;
 	}

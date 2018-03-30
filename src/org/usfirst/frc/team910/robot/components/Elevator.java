@@ -6,9 +6,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Elevator extends Component {
 	public static final double ARM_KP = 0.05; //power per deg
-	public static final double LIFT_KP = 0.2; //power per inch
+	public static final double LIFT_KP = 0.1; // 0.2 4 mtr chg 3-29  //power per inch
 	public static final double ARM_KD = 0.05;//0.2
-	public static final double LIFT_KD = 0.5;//1.0
+	public static final double LIFT_KD = 0.7;//0.5 //1.0  4 mtr chg 3-29
 	
 	public static final double LIFT_DEADBAND = 0;
 	public static final double ARM_DEADBAND = 0;
@@ -18,7 +18,7 @@ public class Elevator extends Component {
 	public static final double ARM_DN_PWR = 0.7;
 	public static final double ARM_UP_PWR_SHIFT = 0.7;
 	public static final double ARM_DN_PWR_SHIFT = 0.5;
-	public static final double LIFT_UP_PWR = 0.6;//was .5 //was 0.75
+	public static final double LIFT_UP_PWR = 0.75;//was 0.6 ON PRAC  //was .5 //was 0.75
 	public static final double LIFT_DN_PWR = 0.45;//was .3 //was 0.5; too hard!
 	public static final double LIFT_UP_PWR_SHIFT = 0.5;
 	public static final double LIFT_DN_PWR_SHIFT = 0.25;
@@ -72,7 +72,7 @@ public class Elevator extends Component {
 	
 	public static final double LIFT_SCALE = 68.5;//was 70
 	public static final double LIFT_SWITCH = 18;
-	public static final double LIFT_SWITCH_GATHER = 8;
+	public static final double LIFT_SWITCH_GATHER = 6;
 	public static final double LIFT_EXCHANGE = 3;
 	public static final double LIFT_FLOOR = 0.5;
 	public static final double LIFT_REST = LIFT_FLOOR;
@@ -87,8 +87,9 @@ public class Elevator extends Component {
 	public static final double LIFT_CLIMB = 35; //TODO: find actual position
 	
 	public Elevator() {
-
+		Component.elevate = this;
 	}
+
 	public enum liftState {
 		F_FLOOR_POSITION, R_FLOOR_POSITION, F_EXCHANGE_POSITION, R_EXCHANGE_POSITION, F_SWITCH_POSITION, R_SWITCH_POSITION, F_SCALE_POSITION, R_SCALE_POSITION, REST_POSITION, CLIMB_POSITION;
 
@@ -115,7 +116,7 @@ public class Elevator extends Component {
 			} else if (in.switchButton) {
 				out.setElevatorPower(-1);
 			} else if(in.climb) {
-				//when climb pressed, drive to 10in and hysterisis to 20in before resuming
+				//when climb pressed, drive to 10in and hysteresis to 20in before resuming
 				if(sense.liftPos > 20) {
 					out.setElevatorPower(-LIFT_CLIMB_PWR);
 					climbAllowed = true;

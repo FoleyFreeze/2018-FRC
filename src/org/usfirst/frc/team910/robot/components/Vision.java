@@ -10,7 +10,8 @@ public class Vision extends Component {
 	ArrayList<VisionData> blocks = new ArrayList<VisionData>();
 
 	public Vision() {
-
+		Component.view = this;
+		
 		VisionObjectDataPixyListener listener = new VisionObjectDataPixyListener();
 		listener.saveValuesFront(true);
 
