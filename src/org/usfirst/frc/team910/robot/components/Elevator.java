@@ -20,7 +20,7 @@ public class Elevator extends Component {
 	public static final double ARM_DN_PWR_SHIFT = 0.5;
 	public static final double LIFT_UP_PWR = 0.75;//was 0.6 ON PRAC  //was .5 //was 0.75
 	public static final double LIFT_DN_PWR = 0.45;//was .3 //was 0.5; too hard!
-	public static final double LIFT_UP_PWR_SHIFT = 0.5;
+	public static final double LIFT_UP_PWR_SHIFT = 0.4;
 	public static final double LIFT_DN_PWR_SHIFT = 0.25;
 	
 	//TODO figure this out properly
@@ -68,7 +68,7 @@ public class Elevator extends Component {
 	public static final double ARM_REST_MIN = -35;
 	public static final double R_SCALE_ARM_MIN = 180;
 	
-	public static final double LIFT_SCALE = 68.5;//was 70
+	public static final double LIFT_SCALE = 69.5;//was 70
 	public static final double LIFT_SWITCH = 18;
 	public static final double LIFT_SWITCH_GATHER = 6;
 	public static final double LIFT_EXCHANGE = 3;

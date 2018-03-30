@@ -14,7 +14,7 @@ public class ShootStep extends AutonStep {
 	@Override
 	public void init() {
 		startTime = Timer.getFPGATimestamp();
-		targetTime = 1;
+		targetTime = 2;
 		in.shoot = true;
 	}
 
