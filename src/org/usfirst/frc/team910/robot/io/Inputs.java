@@ -174,7 +174,7 @@ public class Inputs extends Component {
 		}
 		
 		
-		shift = controlBoard.getRawButton(1);
+		shift = controlBoard.getRawButton(1) || leftStick.getRawButton(4);
 		manualOverride = controlBoard.getRawButton(14);
 		liftFlip = !controlBoard.getRawButton(15);
 		

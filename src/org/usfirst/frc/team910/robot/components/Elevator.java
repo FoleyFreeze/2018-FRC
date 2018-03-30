@@ -109,7 +109,7 @@ public class Elevator extends Component {
 			else if (in.switchButton) {
 				out.setElevatorPower(-1);
 			} else if(in.climb) {
-				//when climb pressed, drive to 10in and hysterisis to 20in before resuming
+				//when climb pressed, drive to 10in and hysteresis to 20in before resuming
 				if(sense.liftPos > 20) {
 					out.setElevatorPower(-1);
 					climbAllowed = true;
