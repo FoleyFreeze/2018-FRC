@@ -84,8 +84,8 @@ public class Elevator extends Component {
 	public static final double F_ARM_REST = 0;
 	public static final double R_ARM_REST = 0;
 	public static final double ARM_CLIMB = 45; 
-	public static final double ARM_CLIMB_DEPLOY = 20;
-	public static final double LIFT_CLIMB = 35; //TODO: find actual position
+	public static final double ARM_CLIMB_DEPLOY = 15;
+	public static final double LIFT_CLIMB = 58; 
 	
 	public Elevator() {
 		Component.elevate = this;
