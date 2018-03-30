@@ -115,7 +115,7 @@ public class AutonMain extends Component {
 			b.end();
 		
 		//NOT MP
-		/*
+	
 		centerSwitch = new SeriesSet();
 		b.add(centerSwitch);
 			b.add(new StartStep());
@@ -136,8 +136,8 @@ public class AutonMain extends Component {
 						return options.switchIsLeft;
 					}
 				}));
-				b.add(new DriveForward(45, 1.05));//left //85 linc
-				b.add(new DriveForward(45, 1.25));//right //85 linc
+				b.add(new DriveForward(55, 1.05));//left //45 btroy //85 linc
+				b.add(new DriveForward(55, 1.25));//right //45 btroy //85 linc
 				b.end();
 				
 				b.add(new IfSet(new IfInterface() {
@@ -145,8 +145,8 @@ public class AutonMain extends Component {
 						return options.switchIsLeft;
 					}
 				}));
-				b.add(new DriveTurnStep(0, -0.3, 0.2)); //turn right
-				b.add(new DriveTurnStep(-0.3, 0, 0.2));//turn left
+				b.add(new DriveTurnStep(0, -0.3, 0.25)); //turn right
+				b.add(new DriveTurnStep(-0.3, 0, 0.25));//turn left
 				b.end();
 				
 			b.add(new DriveForward(5, 0.15));//was 10	
@@ -169,7 +169,7 @@ public class AutonMain extends Component {
 			b.add(new EndStep());
 			b.end();
 			//b.add(new DriveForward());
-			*/
+			
 			
 			
 		//NOT MP
@@ -208,7 +208,7 @@ public class AutonMain extends Component {
 			b.add(new EndStep());
 			b.end();
 		*/
-		
+		/*
 		scale = new SeriesSet();
 		b.add(scale);
 			b.add(new StartStep());
@@ -229,7 +229,7 @@ public class AutonMain extends Component {
 						return options.selectedStart == LEFT && options.scaleIsLeft;					 
 					}
 				}));
-					//b.add(new DriveProfile(Profile.straightScaleL));
+					b.add(new DriveProfile(Profile.straightScaleL));
 					b.add(new SeriesSet());	
 						b.add(new WaitStep(5));
 						b.add(new ElevatorPosition(Elevator.liftState.F_SCALE_POSITION));
@@ -241,7 +241,7 @@ public class AutonMain extends Component {
 			//infront of right scale
 			b.add(new SeriesSet()); {
 				b.add(new ParallelSet());
-					//b.add(new DriveProfile(Profile.straightScaleR));
+					b.add(new DriveProfile(Profile.straightScaleR));
 					b.add(new SeriesSet());	
 						b.add(new WaitStep(5));
 						b.add(new ElevatorPosition(Elevator.liftState.F_SCALE_POSITION));
@@ -317,7 +317,7 @@ public class AutonMain extends Component {
 		    b.end();
 		b.add(new EndStep());
 		b.end();
-		    	
+		   */
 			
 			
 		testProfile = new SeriesSet();
