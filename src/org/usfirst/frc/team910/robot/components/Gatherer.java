@@ -27,6 +27,8 @@ public class Gatherer extends Component {
 	
 	public static final double PWR_REV_GATHER = -0.2; //was -0.3
 	public static final double PWR_FWD_GATHER = 0.7; //was 0.6 //3-29
+	public static final double PWR_GATHER_FAST = 0.7;
+	public static final double PWR_GATHER_SLOW = 0.4;
 
 	public double stepTimer_IR = 0;
 	public gatherStateIR gatherS_IR = gatherStateIR.INIT;
@@ -54,7 +56,7 @@ public class Gatherer extends Component {
 				if(in.manualGatherThrottle) {
 					out.setGatherPower(in.manualGatherLeft, in.manualGatherRight);
 				} else {
-					gather(0.6, 0.4);
+					gather(PWR_GATHER_FAST, PWR_GATHER_SLOW);
 				}
 			} else if (in.shoot) {
 				if(in.manualGatherThrottle) {
@@ -75,7 +77,7 @@ public class Gatherer extends Component {
 
 			// initially, run through
 			case INIT:
-				gather(0.7, 0.7);
+				gather(PWR_GATHER_FAST, PWR_GATHER_FAST);
 				stepTimer_IR = Timer.getFPGATimestamp() + 1;
 				gatherS_IR = gatherStateIR.SEARCH;
 
@@ -83,7 +85,7 @@ public class Gatherer extends Component {
 
 			// looks for cube with infrared sensors and moves towards it
 			case SEARCH:
-				gather(0.6, 0.6);
+				gather(PWR_GATHER_FAST, PWR_GATHER_FAST);
 				SmartDashboard.putString("GatherIRstate", "search");
 				if (distR < SEARCH_DIST && distL < SEARCH_DIST && distC < SEARCH_DIST) {
 					gatherS_IR = gatherStateIR.SPIN;
@@ -103,10 +105,10 @@ public class Gatherer extends Component {
 					gather(PWR_REV_GATHER, PWR_FWD_GATHER);
 					SmartDashboard.putString("GatherIRstate", "rotate");
 				} else if (distC < distR && distC > distL) { // if cube more left than right sucked in
-					out.setGatherPower(.4, PWR_FWD_GATHER);
+					out.setGatherPower(PWR_GATHER_SLOW, PWR_FWD_GATHER);
 					SmartDashboard.putString("GatherIRstate", "more right");
 				} else if (distC > distR && distC < distL) { // if cube more right than left sucked in
-					out.setGatherPower(PWR_FWD_GATHER, .4);
+					out.setGatherPower(PWR_FWD_GATHER, PWR_GATHER_SLOW);
 					SmartDashboard.putString("GatherIRstate", "more left");
 				} else {
 					gather(PWR_REV_GATHER, PWR_FWD_GATHER); // if nothing else, just gather
@@ -115,7 +117,7 @@ public class Gatherer extends Component {
 
 			// gathers the cube
 			case SUCK:
-				gather(.6, .6);
+				gather(PWR_GATHER_FAST, PWR_GATHER_FAST);
 				SmartDashboard.putString("GatherIRstate", "suck");
 				if (Timer.getFPGATimestamp() > stepTimer_IR) {
 					gatherS_IR = gatherStateIR.WAIT;
@@ -182,7 +184,7 @@ public class Gatherer extends Component {
 				break;
 
 			case CENTER:
-				gather(0.8, 0.8);
+				gather(0.9, 0.9);
 				if (Math.abs(sense.armPosL) < 35) {
 					gatherS_IR = gatherStateIR.STOP;
 				} else if (Timer.getFPGATimestamp() > stepTimer_IR) {
