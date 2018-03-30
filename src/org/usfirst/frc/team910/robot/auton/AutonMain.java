@@ -40,6 +40,7 @@ public class AutonMain extends Component {
 	private SeriesSet centerSwitch; //start center priority switch
 	private SeriesSet scale;//no matta wat //start left or right priority scale
 	private SeriesSet testProfile; //test
+	private SeriesSet straightScale;
 	
 	//public int currentStep = 0;
 	
@@ -173,13 +174,13 @@ public class AutonMain extends Component {
 			
 			
 		//NOT MP
-		/*
+		
 		straightScale = new SeriesSet();
 		b.add(straightScale);
 			b.add(new StartStep());
 			
 			//drive to the scale
-			//b.add(new DriveStraightPath());
+			b.add(new DriveStraightPath());
 				//if we are on the same side as our scale, attempt to score
 				b.add(new IfSet(new IfInterface() {
 					public boolean choice() {
@@ -207,7 +208,7 @@ public class AutonMain extends Component {
 			
 			b.add(new EndStep());
 			b.end();
-		*/
+		
 		/*
 		scale = new SeriesSet();
 		b.add(scale);
@@ -378,7 +379,7 @@ public class AutonMain extends Component {
 		//if scale is selected, do that one
 		switch(options.selectedPriority) {
 		case SCALE:
-			currentAuton = scale;
+			currentAuton = straightScale;
 			SmartDashboard.putString("CurrAuton","scale");
 			break;
 		}

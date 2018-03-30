@@ -29,6 +29,7 @@ public class Gatherer extends Component {
 	public static final double PWR_FWD_GATHER = 0.8; //was 0.6 //3-29
 	public static final double PWR_GATHER_FAST = 0.7;
 	public static final double PWR_GATHER_SLOW = 0.4;
+	public static final double PWR_GATHER_PASSIVE = 0.15;
 	
 	public static final double TIME_UNTIL_RESPIN = 0.3;
 	public static final double TIME_IN_RESPIN = 0.10;
@@ -223,7 +224,7 @@ public class Gatherer extends Component {
 //				stepTimer_IR = Timer.getFPGATimestamp() + 1;
 //				gatherS_IR = gatherStateIR.INIT;
 			case WAIT:
-				gather(0.1, 0.1);
+				gather(PWR_GATHER_PASSIVE, PWR_GATHER_PASSIVE);
 				if (Math.abs(sense.armPosL) < 50) {
 					gatherS_IR = gatherStateIR.CENTER;
 					stepTimer_IR = Timer.getFPGATimestamp() + 0.25;
@@ -242,7 +243,7 @@ public class Gatherer extends Component {
 				break;
 
 			default:
-				gather(0.1, 0.1);
+				gather(PWR_GATHER_PASSIVE, PWR_GATHER_PASSIVE);
 				gatherS_IR = gatherStateIR.STOP;
 			}
 
@@ -388,7 +389,7 @@ public class Gatherer extends Component {
 				break;
 
 			default:
-				gather(0.1, 0.1);
+				gather(PWR_GATHER_PASSIVE, PWR_GATHER_PASSIVE);
 				gatherS_C = gatherStateC.STOP;
 			}
 

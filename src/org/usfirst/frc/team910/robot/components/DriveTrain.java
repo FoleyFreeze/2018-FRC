@@ -248,7 +248,11 @@ public class DriveTrain extends Component implements Runnable {
 		double leftAccel = leftPath.accelerations.get(index);
 		double rightAccel = rightPath.accelerations.get(index);
 
-		double targetAngle = leftPath.angles.get(index);
+		double targetAngle = 90;
+		if(leftPath.angles != null) {
+			targetAngle = leftPath.angles.get(index);
+		}
+		
 		
 		index++;
 		counter++;

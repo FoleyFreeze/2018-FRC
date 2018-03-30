@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -54,6 +55,13 @@ public class Sensors extends Component {
 	//public static final double[] VOLT_POINTS = { 2.7,    2,  1.5,  1.3,   1.1,  0.9, 0.8,  0.75, 0.65,  0.6,  0.55,   0.5,  0.45,   0.4};
 	public static final double[] VOLT_POINTS = { 0.4, 0.6, 0.7, 0.9, 1.1, 1.3, 1.6, 2.3, 2.7, 2.9, 3.2};
 	public static final double[] INV_DIST_POINTS = {1/31.5,1/19.7,1/15.7,1/11.8,1/9.84,1/7.87,1/5.91,1/3.94,1/3.15,1/2.76,1/2.36};
+	
+	private Solenoid redLED;
+	private Solenoid greenLED;
+	private Solenoid blueLED;
+	private Solenoid redLED2;
+	private Solenoid greenLED2;
+	private Solenoid blueLED2;
 	
 	public Sensors() {
 		Component.sense = this;

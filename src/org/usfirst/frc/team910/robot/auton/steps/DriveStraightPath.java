@@ -8,7 +8,7 @@ public class DriveStraightPath extends AutonStep {
 		
 	public DriveStraightPath() {
 		profile = new Path();					//driving 170 out of 230 total on prac field
-		profile.buildPath(100, 80, 170, 0, 0, 0); //drive 256in, that leaves 1ft of room before the scale
+		profile.buildPath(100, 80, 246, 0, 0, 0); //drive 256in, that leaves 1ft of room before the scale
 		
 		/*
 		for(Double d : profile.positions) {

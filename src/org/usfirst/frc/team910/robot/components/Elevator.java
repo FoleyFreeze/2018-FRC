@@ -6,9 +6,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Elevator extends Component {
 	public static final double ARM_KP = 0.05; //power per deg
-	public static final double LIFT_KP = 0.1; // 0.2 4 mtr chg 3-29  //power per inch
+	public static final double LIFT_KP = 0.07; // 0.2 4 mtr chg 3-29  //power per inch
 	public static final double ARM_KD = 0.05;//0.2
-	public static final double LIFT_KD = 0.7;//0.5 //1.0  4 mtr chg 3-29
+	public static final double LIFT_KD = 0.5;//0.5 //1.0  4 mtr chg 3-29
 	
 	public static final double LIFT_DEADBAND = 0;
 	public static final double ARM_DEADBAND = 0;
@@ -71,8 +71,8 @@ public class Elevator extends Component {
 	public static final double ARM_REST_MIN = -35;
 	public static final double R_SCALE_ARM_MIN = 180;
 	
-	public static final double LIFT_SCALE = 69.5;//was 70
-	public static final double LIFT_SWITCH = 18;
+	public static final double LIFT_SCALE = 69;//was 70
+	public static final double LIFT_SWITCH = 19;
 	public static final double LIFT_SWITCH_GATHER = 6;
 	public static final double LIFT_EXCHANGE = 3;
 	public static final double LIFT_FLOOR = 0.5;
@@ -512,7 +512,9 @@ public class Elevator extends Component {
 				break;
 				
 			case CLIMB_POSITION:
-				if(in.deployClimb) {
+				if(goalState != liftState.CLIMB_POSITION) {
+					targetArm = 60;//max allowed by nessie
+				} else if(in.deployClimb) {
 					targetArm = ARM_CLIMB_DEPLOY;
 				} else {
 					targetArm = ARM_CLIMB;
