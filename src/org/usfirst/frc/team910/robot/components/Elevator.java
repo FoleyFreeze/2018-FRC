@@ -107,12 +107,8 @@ public class Elevator extends Component {
 		if(in.manualOverride) {
 			firstAuto = true;
 			
-			if (in.deployClimb) {
-				out.setElevatorPower(1);//FIXME this is a hack
-			}
-			
 			if (in.scaleButton) {
-				out.setElevatorPower(1);//FIXME this is a hack
+				out.setElevatorPower(1);
 			} else if (in.switchButton) {
 				out.setElevatorPower(-1);
 			} else if(in.climb) {
@@ -162,7 +158,7 @@ public class Elevator extends Component {
 				case F_SWITCH_POSITION:
 					goalState = liftState.R_SWITCH_POSITION;
 					
-					break;																														//IGNOREME
+					break;
 				case F_SCALE_POSITION:
 					goalState = liftState.R_SCALE_POSITION;
 					
