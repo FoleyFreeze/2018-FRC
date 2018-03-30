@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class Gatherer extends Component {
 
 	public enum gatherStateIR {
-		INIT, SEARCH, SPIN, SUCK, WAIT, CENTER, STOP
+		INIT, SEARCH, SPIN, RESPIN, SUCK, WAIT, CENTER, STOP
 	}
 
 	public enum gatherStateC {
@@ -22,11 +22,16 @@ public class Gatherer extends Component {
 
 	public static final double JAMMED_CURRENT = 30;
 	public static final double SEARCH_DIST = 11.5;
-	public static final double DIST_TOLERANCE = 1;
+	public static final double DIST_TOLERANCE = 2;
 	public static final double DIST_FRAME = 6;
 	
-	public static final double PWR_REV_GATHER = -0.2; //was -0.3
-	public static final double PWR_FWD_GATHER = 0.7; //was 0.6 //3-29
+	public static final double PWR_REV_GATHER = -0.2; //was -0.2
+	public static final double PWR_FWD_GATHER = 0.8; //was 0.6 //3-29
+	public static final double PWR_GATHER_FAST = 0.7;
+	public static final double PWR_GATHER_SLOW = 0.4;
+	
+	public static final double TIME_UNTIL_RESPIN = 0.3;
+	public static final double TIME_IN_RESPIN = 0.10;
 
 	public double stepTimer_IR = 0;
 	public gatherStateIR gatherS_IR = gatherStateIR.INIT;
@@ -42,6 +47,8 @@ public class Gatherer extends Component {
 			run_current();
 		}
 	}
+	
+	public double timeToRespin = 0;
 
 	public void run_IR() {
 		
@@ -54,7 +61,7 @@ public class Gatherer extends Component {
 				if(in.manualGatherThrottle) {
 					out.setGatherPower(in.manualGatherLeft, in.manualGatherRight);
 				} else {
-					gather(0.6, 0.4);
+					gather(PWR_GATHER_FAST, PWR_GATHER_SLOW);
 				}
 			} else if (in.shoot) {
 				if(in.manualGatherThrottle) {
@@ -75,7 +82,7 @@ public class Gatherer extends Component {
 
 			// initially, run through
 			case INIT:
-				gather(0.7, 0.7);
+				gather(PWR_GATHER_FAST, PWR_GATHER_FAST);
 				stepTimer_IR = Timer.getFPGATimestamp() + 1;
 				gatherS_IR = gatherStateIR.SEARCH;
 
@@ -83,10 +90,11 @@ public class Gatherer extends Component {
 
 			// looks for cube with infrared sensors and moves towards it
 			case SEARCH:
-				gather(0.6, 0.6);
+				gather(PWR_GATHER_FAST, PWR_GATHER_FAST);
 				SmartDashboard.putString("GatherIRstate", "search");
 				if (distR < SEARCH_DIST && distL < SEARCH_DIST && distC < SEARCH_DIST) {
 					gatherS_IR = gatherStateIR.SPIN;
+					timeToRespin = Timer.getFPGATimestamp() + TIME_UNTIL_RESPIN;
 				}
 				break;
 
@@ -96,26 +104,68 @@ public class Gatherer extends Component {
 				double minDist = Math.min(Math.min(distR, distC), distL);
 
 				if (maxDist - minDist < DIST_TOLERANCE && maxDist < DIST_FRAME) { // if cube straight, just suck it in
-					gather(PWR_FWD_GATHER, PWR_FWD_GATHER);
+					gather(PWR_GATHER_FAST, PWR_GATHER_FAST);
 					gatherS_IR = gatherStateIR.SUCK;
 					stepTimer_IR = Timer.getFPGATimestamp() + .75;
+				} else if (minDist > SEARCH_DIST) {
+					//if there is no more cube, go back to search
+					gatherS_IR = gatherStateIR.SEARCH;
 				} else if (distC < distR && distC < distL) { // if corner of cube is in center
-					gather(PWR_REV_GATHER, PWR_FWD_GATHER);
+					gather(PWR_GATHER_SLOW, PWR_GATHER_FAST);
 					SmartDashboard.putString("GatherIRstate", "rotate");
+					if(Timer.getFPGATimestamp() > timeToRespin) {
+						//then we have probably jammed, go to respin state
+						gatherS_IR = gatherStateIR.RESPIN;
+						timeToRespin = Timer.getFPGATimestamp() + TIME_UNTIL_RESPIN;
+					}
 				} else if (distC < distR && distC > distL) { // if cube more left than right sucked in
-					out.setGatherPower(.4, PWR_FWD_GATHER);
+					out.setGatherPower(PWR_GATHER_SLOW, PWR_GATHER_FAST);
 					SmartDashboard.putString("GatherIRstate", "more right");
+					if(Timer.getFPGATimestamp() > timeToRespin) {
+						//then we have probably jammed, go to respin state
+						gatherS_IR = gatherStateIR.RESPIN;
+						timeToRespin = Timer.getFPGATimestamp() + TIME_UNTIL_RESPIN;
+					}
 				} else if (distC > distR && distC < distL) { // if cube more right than left sucked in
-					out.setGatherPower(PWR_FWD_GATHER, .4);
+					out.setGatherPower(PWR_GATHER_FAST, PWR_GATHER_SLOW);
 					SmartDashboard.putString("GatherIRstate", "more left");
+					if(Timer.getFPGATimestamp() > timeToRespin) {
+						//then we have probably jammed, go to respin state
+						gatherS_IR = gatherStateIR.RESPIN;
+						timeToRespin = Timer.getFPGATimestamp() + TIME_UNTIL_RESPIN;
+					}
 				} else {
-					gather(PWR_REV_GATHER, PWR_FWD_GATHER); // if nothing else, just gather
+					gather(PWR_GATHER_SLOW, PWR_GATHER_FAST); // if nothing else, just gather
 				}
+				break;
+				
+			//since we are no longer driving a motor in reverse in spin,
+			//do that here if we have not been able to gather for some time
+			case RESPIN:
+				double maxDist2 = Math.max(Math.max(distR, distC), distL);
+				double minDist2 = Math.min(Math.min(distR, distC), distL);
+				SmartDashboard.putString("GatherIRstate", "RESPIN");
+				
+				if (maxDist2 - minDist2 < DIST_TOLERANCE && maxDist2 < DIST_FRAME) { // if cube straight, just suck it in
+					gather(PWR_GATHER_FAST, PWR_GATHER_FAST);
+					gatherS_IR = gatherStateIR.SUCK;
+					stepTimer_IR = Timer.getFPGATimestamp() + .75;
+				} else if (minDist2 > SEARCH_DIST) {
+					//if we no longer have the cube at all
+					gatherS_IR = gatherStateIR.SEARCH;
+				} else {
+					gather(PWR_REV_GATHER, PWR_FWD_GATHER);
+					if(timeToRespin < Timer.getFPGATimestamp()) {
+						gatherS_IR = gatherStateIR.SPIN;
+						timeToRespin = Timer.getFPGATimestamp() + TIME_IN_RESPIN;
+					}
+				}
+
 				break;
 
 			// gathers the cube
 			case SUCK:
-				gather(.6, .6);
+				gather(PWR_GATHER_FAST, PWR_GATHER_FAST);
 				SmartDashboard.putString("GatherIRstate", "suck");
 				if (Timer.getFPGATimestamp() > stepTimer_IR) {
 					gatherS_IR = gatherStateIR.WAIT;
@@ -126,7 +176,7 @@ public class Gatherer extends Component {
 			// when arm comes 70 degrees, gather
 			case WAIT:
 				gather(0, 0);
-				if (Math.abs(sense.armPosL) < 70) {
+				if (Math.abs(sense.armPosL) < 50) {
 					gatherS_IR = gatherStateIR.CENTER;
 					stepTimer_IR = Timer.getFPGATimestamp() + 0.25;
 				} else if (Timer.getFPGATimestamp() > stepTimer_IR) {
@@ -167,22 +217,23 @@ public class Gatherer extends Component {
 			case INIT:
 			case SEARCH:
 			case SPIN:
-			case SUCK:
+			case RESPIN:
+			case SUCK:	
 				// if we were not in WAIT state, set the timer as if we were
-				stepTimer_IR = Timer.getFPGATimestamp() + 1;
-				gatherS_IR = gatherStateIR.WAIT;
+//				stepTimer_IR = Timer.getFPGATimestamp() + 1;
+//				gatherS_IR = gatherStateIR.INIT;
 			case WAIT:
 				gather(0.1, 0.1);
-				if (Math.abs(sense.armPosL) < 70) {
+				if (Math.abs(sense.armPosL) < 50) {
 					gatherS_IR = gatherStateIR.CENTER;
 					stepTimer_IR = Timer.getFPGATimestamp() + 0.25;
-				} else if (Timer.getFPGATimestamp() > stepTimer_IR) {
-					gatherS_IR = gatherStateIR.STOP;
+//				} else if (Timer.getFPGATimestamp() > stepTimer_IR) {
+//					gatherS_IR = gatherStateIR.STOP;
 				}
 				break;
 
 			case CENTER:
-				gather(0.8, 0.8);
+				gather(0.9, 0.9);
 				if (Math.abs(sense.armPosL) < 35) {
 					gatherS_IR = gatherStateIR.STOP;
 				} else if (Timer.getFPGATimestamp() > stepTimer_IR) {
