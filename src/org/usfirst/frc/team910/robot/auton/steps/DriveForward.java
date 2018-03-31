@@ -26,7 +26,7 @@ public class DriveForward extends AutonStep {
 	public void run() {
 		in.driveStraight = true; //don't drive crooked
 		in.dynamicBrake = false; //we are driving, not braking, just making sure
-		in.rightDrive = 0.5; //power for DriveForward 
+		in.rightDrive = 0.8; //power for DriveForward 
 	}
 	
 	@Override

@@ -139,6 +139,8 @@ public class AutonMain extends Component {
 		b.add(centerSwitch);
 			b.add(new StartStep());
 			b.add(new ElevatorPosition(Elevator.liftState.F_SWITCH_POSITION));
+			
+			
 			b.add(new DriveForward(10, 0.25));
 			
 				b.add(new IfSet(new IfInterface() {
@@ -146,8 +148,8 @@ public class AutonMain extends Component {
 						return options.switchIsLeft;
 					}
 				}));
-				b.add(new DriveTurnStep(-0.1, 0.45, 0.5)); //turn left
-				b.add(new DriveTurnStep(0.45, -0.1, 0.45)); //turn right
+				b.add(new DriveTurnStep(-0.2, 0.8, 0.4)); //turn left
+				b.add(new DriveTurnStep(0.8, -0.2, 0.4)); //turn right
 				b.end();
 				
 				b.add(new IfSet(new IfInterface() {
@@ -155,8 +157,8 @@ public class AutonMain extends Component {
 						return options.switchIsLeft;
 					}
 				}));
-				b.add(new DriveForward(45, 1.05));//left //65 //45 btroy //85 linc
-				b.add(new DriveForward(45, 1.25));//right //45 btroy //85 linc
+				b.add(new DriveForward(65, 1.8));//left //65 //45 btroy //85 linc
+				b.add(new DriveForward(50, 1.30));//right //45 btroy //85 linc
 				b.end();
 				
 				b.add(new IfSet(new IfInterface() {
@@ -164,28 +166,56 @@ public class AutonMain extends Component {
 						return options.switchIsLeft;
 					}
 				}));
-				b.add(new DriveTurnStep(0, -0.3, 0.2)); //turn left
-				b.add(new DriveTurnStep(-0.3, 0, 0.2)); //turn right
+				b.add(new DriveTurnStep(1, -0.3, 0.35)); //left start
+				b.add(new DriveTurnStep(-0.3, 1, 0.35)); //right start
 				b.end();
 				
 			//b.add(new DriveForward(20, 0.7));//was 10
-			b.add(new DriveTurnStep(0.5, 0.5, 0.25)); //1 sec
-			b.add(new WaitStep(.5));
-			b.add(new ShootStep());
+			b.add(new DriveTurnStep(0.6, 0.6, 0.3)); //1 sec
+			b.add(new ParallelSet());
+				b.add(new SeriesSet());
+					//b.add(new WaitStep(.5));
+					b.add(new ShootStep());
+					b.end();
+				b.add(new DriveTurnStep(0.2,0.2,2));
+				b.end();
 			
 			
-			//wait and then attempt to drive back to pick up front pyramid
-			b.add(new WaitStep(4));
+			//wait and then attempt to drive back
+			b.add(new WaitStep(1));
 			
 				b.add(new IfSet(new IfInterface() {
 					public boolean choice() { //is the switch on the left or right
 						return options.switchIsLeft;
 					}
 				}));
-				b.add(new DriveTurnStep(-0.45, 0.1, 0.5)); //turn left
-				b.add(new DriveTurnStep(0.1, -0.4, 0.45)); //turn right
+				b.add(new DriveTurnStep(-0.5, 0.1, 0.9)); //left start
+				b.add(new DriveTurnStep(0.1, -0.5, 0.9)); //right start
 				b.end();
 			
+			b.add(new ElevatorPosition(Elevator.liftState.REST_POSITION));
+			b.add(new DriveForward(40, 1));
+			
+				b.add(new IfSet(new IfInterface() {
+					public boolean choice() { //is the switch on the left or right
+						return options.switchIsLeft;
+					}
+				}));
+				b.add(new DriveTurnStep(0.4, -0.05, 1)); //left start
+				b.add(new DriveTurnStep(-0.05, 0.4, 1)); //right start
+				b.end();
+			
+			b.add(new DriveForward(60, 0.75));
+			
+				b.add(new IfSet(new IfInterface() {
+					public boolean choice() { //is the switch on the left or right
+						return options.switchIsLeft;
+					}
+				}));
+				b.add(new DriveTurnStep(-0.4, 0.05, 1)); //left start
+				b.add(new DriveTurnStep(0.05, -0.4, 1)); //right start
+				b.end();
+				
 			b.add(new EndStep());
 			b.end();
 			//b.add(new DriveForward());
