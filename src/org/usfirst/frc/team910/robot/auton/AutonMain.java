@@ -146,8 +146,8 @@ public class AutonMain extends Component {
 						return options.switchIsLeft;
 					}
 				}));
-				b.add(new DriveTurnStep(-0.25, 0.5, 0.65)); //turn left
-				b.add(new DriveTurnStep(0.5, -0.25, 0.60)); //turn right
+				b.add(new DriveTurnStep(-0.1, 0.45, 0.5)); //turn left
+				b.add(new DriveTurnStep(0.45, -0.1, 0.45)); //turn right
 				b.end();
 				
 				b.add(new IfSet(new IfInterface() {
@@ -155,7 +155,7 @@ public class AutonMain extends Component {
 						return options.switchIsLeft;
 					}
 				}));
-				b.add(new DriveForward(59, 1.25));//left //65 //45 btroy //85 linc
+				b.add(new DriveForward(45, 1.05));//left //65 //45 btroy //85 linc
 				b.add(new DriveForward(45, 1.25));//right //45 btroy //85 linc
 				b.end();
 				
@@ -164,12 +164,12 @@ public class AutonMain extends Component {
 						return options.switchIsLeft;
 					}
 				}));
-				b.add(new DriveTurnStep(0, -0.3, 0.30)); //turn left
-				b.add(new DriveTurnStep(-0.3, 0, 0.25)); //turn right
+				b.add(new DriveTurnStep(0, -0.3, 0.2)); //turn left
+				b.add(new DriveTurnStep(-0.3, 0, 0.2)); //turn right
 				b.end();
 				
 			//b.add(new DriveForward(20, 0.7));//was 10
-			b.add(new DriveTurnStep(0.5, 0.5, 1.25)); //1 sec
+			b.add(new DriveTurnStep(0.5, 0.5, 0.25)); //1 sec
 			b.add(new WaitStep(.5));
 			b.add(new ShootStep());
 			
@@ -197,6 +197,7 @@ public class AutonMain extends Component {
 		straightScale = new SeriesSet();
 		b.add(straightScale);
 			b.add(new StartStep());
+			b.add(new ElevatorPosition(Elevator.liftState.REST_POSITION));
 			
 			//drive to the scale
 			//b.add(new DriveStraightPath());
@@ -213,6 +214,10 @@ public class AutonMain extends Component {
 					b.add(new WaitStep(2));
 					b.add(new DriveTurnStep(0.5, 0.05, 0.6)); //kick
 					b.add(new ShootStep());
+					b.add(new WaitStep(3));
+					b.add(new DriveTurnStep(-.25, -.25, 3));
+					b.add(new WaitStep(3));
+					b.add(new ElevatorPosition(Elevator.liftState.REST_POSITION));
 					b.end();
 				//for the false case, back up to get out of the zone
 				//b.add(new DriveTurnStep(-0.5, -0.5, 0.5));
@@ -225,9 +230,13 @@ public class AutonMain extends Component {
 					b.add(new SeriesSet());
 						b.add(new DriveProfile(Profile.straightScaleR));
 						b.add(new ElevatorPosition(Elevator.liftState.F_SCALE_POSITION));
-						b.add(new WaitStep(2));
+						b.add(new WaitStep(1.5));
 						b.add(new DriveTurnStep(0.05, 0.5, 0.6));//kick
 						b.add(new ShootStep());
+						b.add(new WaitStep(3));
+						b.add(new DriveTurnStep(-.25, -.25, 3));
+						b.add(new WaitStep(3));
+						b.add(new ElevatorPosition(Elevator.liftState.REST_POSITION));
 						b.end();
 					//false drive straight
 					b.add(new DriveForward(80, 3));

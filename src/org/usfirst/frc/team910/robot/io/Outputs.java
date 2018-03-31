@@ -180,11 +180,11 @@ public class Outputs extends Component {
 		
 		//FIXME: Use follow mode, calling separately is causing weird sync issues
 		leftDrive1.set(ControlMode.PercentOutput, leftStorage);
-		leftDrive2.set(ControlMode.PercentOutput, leftStorage);
-		leftDrive3.set(ControlMode.PercentOutput, leftStorage);
+		//leftDrive2.set(ControlMode.PercentOutput, leftStorage);
+		//leftDrive3.set(ControlMode.PercentOutput, leftStorage);
 		rightDrive1.set(ControlMode.PercentOutput, rightStorage);
-		rightDrive2.set(ControlMode.PercentOutput, rightStorage);
-		rightDrive3.set(ControlMode.PercentOutput, rightStorage);
+		//rightDrive2.set(ControlMode.PercentOutput, rightStorage);
+		//rightDrive3.set(ControlMode.PercentOutput, rightStorage);
 		SmartDashboard.putNumber("L Drive Pwr", leftStorage);//TODO correct if needed
 		SmartDashboard.putNumber("R Drive Pwr", rightStorage);//TODO correct if needed
 	}
