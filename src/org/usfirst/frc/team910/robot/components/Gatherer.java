@@ -243,7 +243,12 @@ public class Gatherer extends Component {
 				break;
 
 			default:
-				gather(PWR_GATHER_PASSIVE, PWR_GATHER_PASSIVE);
+				if(Math.abs(elevate.armError) < 25 && Math.abs(elevate.liftError) < 5) {
+					gather(PWR_GATHER_PASSIVE, PWR_GATHER_PASSIVE);
+				} else {
+					gather(PWR_GATHER_PASSIVE*2, PWR_GATHER_PASSIVE*2);
+				}
+				
 				gatherS_IR = gatherStateIR.STOP;
 			}
 
@@ -389,7 +394,11 @@ public class Gatherer extends Component {
 				break;
 
 			default:
-				gather(PWR_GATHER_PASSIVE, PWR_GATHER_PASSIVE);
+				if(Math.abs(elevate.armError) < 25 && Math.abs(elevate.liftError) < 5) {
+					gather(PWR_GATHER_PASSIVE, PWR_GATHER_PASSIVE);
+				} else {
+					gather(PWR_GATHER_PASSIVE*2, PWR_GATHER_PASSIVE*2);
+				}
 				gatherS_C = gatherStateC.STOP;
 			}
 

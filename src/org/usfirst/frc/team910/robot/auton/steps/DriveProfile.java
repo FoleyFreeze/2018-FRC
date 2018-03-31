@@ -14,6 +14,10 @@ public class DriveProfile extends AutonStep {
 	public int pathIdx;
 
 	public DriveProfile(double[][] profile) {
+		this(profile, true);
+	}
+	
+	public DriveProfile(double[][] profile, boolean pidStop) {
 
 		pathsL = new Path[profile.length / 2];
 		pathsR = new Path[profile.length / 2];
@@ -42,7 +46,7 @@ public class DriveProfile extends AutonStep {
 		double lastVelL = pathsL[lastPath].velocities.get(pathsL[lastPath].positions.size() - 1);
 		double lastVelR = pathsR[lastPath].velocities.get(pathsR[lastPath].positions.size() - 1);
 
-		if (lastVelL == 0 && lastVelR == 0) {
+		if (lastVelL == 0 && lastVelR == 0 && !pidStop) {
 			// stick to last point to make sure we actually get there
 			for (int i = 0; i * Path.DT < REST_TIME; i++) {
 				pathsL[lastPath].positions.add(lastPosL);

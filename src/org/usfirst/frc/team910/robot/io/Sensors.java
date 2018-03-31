@@ -2,6 +2,7 @@ package org.usfirst.frc.team910.robot.io;
 
 import org.usfirst.frc.team910.robot.Component;
 import org.usfirst.frc.team910.robot.components.Elevator;
+import org.usfirst.frc.team910.robot.components.Gatherer;
 
 import com.kauailabs.navx.frc.AHRS;
 
@@ -81,6 +82,12 @@ public class Sensors extends Component {
 		frontLeft.setOversampleBits(3);//6
 		frontLeft.setAverageBits(1);//3
 		
+		redLED = new Solenoid(0);
+		greenLED = new Solenoid(1);
+		blueLED = new Solenoid(2);
+		redLED2 = new Solenoid(3);
+		greenLED2 = new Solenoid(4);
+		blueLED2 = new Solenoid(5);
 	}
 	
 	public double prevLeftPos;
@@ -169,6 +176,20 @@ public class Sensors extends Component {
 		SmartDashboard.putNumber("distFC", ((int) (distFC * 10))/10.0);
 		SmartDashboard.putNumber("distFR", ((int) (distFR * 10))/10.0);
 		SmartDashboard.putNumber("distFL", ((int) (distFL * 10))/10.0);
+	}
+	
+	public void runLights() {
+		if(distFC < Gatherer.DIST_FRAME && distFR < Gatherer.DIST_FRAME && distFL < Gatherer.DIST_FRAME) {
+			greenLED.set(true);
+			greenLED2.set(true);
+			blueLED.set(false);
+			blueLED2.set(false);
+		} else {
+			greenLED.set(false);
+			greenLED2.set(false);
+			blueLED.set(true);
+			blueLED2.set(true);
+		}
 	}
 
 	public void reset() {

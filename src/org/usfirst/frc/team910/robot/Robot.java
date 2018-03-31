@@ -84,6 +84,8 @@ public class Robot extends TimedRobot {
 		gather.run();
 		output.circuitBreaker();
 		auton.getGameData();
+		
+		sensor.runLights();
 	}
 	
 	/**
@@ -108,6 +110,8 @@ public class Robot extends TimedRobot {
 		climb.run();
 		elevate.run();
 		output.circuitBreaker();
+		
+		sensor.runLights();
 	}
 	
 	@Override

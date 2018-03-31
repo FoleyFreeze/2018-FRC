@@ -2,6 +2,8 @@ package org.usfirst.frc.team910.robot.components;
 
 import org.usfirst.frc.team910.robot.Component;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Elevator extends Component {
@@ -42,9 +44,9 @@ public class Elevator extends Component {
 	
 	//public static final double[] LIFT_AXIS_MAX_FRONT= {  0, 21, 32, 67, 69};
 	//public static final double[] ARM_TABLE_MAX_FRONT= {105,141,106,165,310};
-	public static final double[] LIFT_AXIS_MAX_FRONT= {  0, 21, 26, 42, 67, 69};
+	public static final double[] LIFT_AXIS_MAX_FRONT= {  0, 21, 26, 42, 67, 67.5, 69};
 	//public static final double[] ARM_TABLE_MAX_FRONT= {105,141,30,  45,165,310};
-	public static final double[] ARM_TABLE_MAX_FRONT= {105,141,60,  60,165,310}; //changed to stop shaking cube
+	public static final double[] ARM_TABLE_MAX_FRONT= {105,141,60,  60,165, 310, 310}; //changed to stop shaking cube
 	
 	public static final double[] LIFT_AXIS_MIN_REAR= {   0,   9,  10,  28, 28.1, 70};
 	public static final double[] ARM_TABLE_MIN_REAR= {-105,-124,-120,-150,   26, 46};
@@ -72,7 +74,7 @@ public class Elevator extends Component {
 	public static final double R_SCALE_ARM_MIN = 180;
 	
 	public static final double LIFT_SCALE = 69;//was 70
-	public static final double LIFT_SWITCH = 19;
+	public static final double LIFT_SWITCH = 20;//was 18
 	public static final double LIFT_SWITCH_GATHER = 6;
 	public static final double LIFT_EXCHANGE = 3;
 	public static final double LIFT_FLOOR = 0.5;
@@ -103,6 +105,8 @@ public class Elevator extends Component {
 	
 	private boolean climbAllowed = false;
 	
+	public double armError;
+	public double liftError;
 	
 	public void run() {
 		
@@ -128,6 +132,7 @@ public class Elevator extends Component {
 					climbAllowed = false;
 					out.setElevatorPower(0);
 				}
+				
 			} else {
 				out.setElevatorPower(0);
 			}
@@ -643,8 +648,8 @@ public class Elevator extends Component {
 		}
 		
 		//find error
-		double armError = targetArm - sense.armPosL;
-		double liftError = targetLift - sense.liftPos;
+		armError = targetArm - sense.armPosL;
+		liftError = targetLift - sense.liftPos;
 		
 		//find error from previous error
 		//use "process variable" in order to eliminate derivative kick

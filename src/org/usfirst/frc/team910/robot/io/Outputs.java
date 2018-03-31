@@ -21,10 +21,10 @@ public class Outputs extends Component {
 	TalonSRX armMotor1;
 	TalonSRX armMotor2;
 	
-	TalonSRX elevator1;
-	TalonSRX elevator2;
-	TalonSRX elevator3;
-	TalonSRX elevator4;
+	public TalonSRX elevator1;
+	public TalonSRX elevator2;
+	public TalonSRX elevator3;
+	public TalonSRX elevator4;
 	
 	TalonSRX gatherLeft;
 	TalonSRX gatherRight;
@@ -177,6 +177,8 @@ public class Outputs extends Component {
 		}else {
 			rightStorage=rightPower;
 		}
+		
+		//FIXME: Use follow mode, calling separately is causing weird sync issues
 		leftDrive1.set(ControlMode.PercentOutput, leftStorage);
 		leftDrive2.set(ControlMode.PercentOutput, leftStorage);
 		leftDrive3.set(ControlMode.PercentOutput, leftStorage);
@@ -362,10 +364,17 @@ public class Outputs extends Component {
 	}
 	
 	public void disableBrake() {
-		elevator1.setNeutralMode(NeutralMode.Coast);
-		elevator2.setNeutralMode(NeutralMode.Coast);
-		elevator3.setNeutralMode(NeutralMode.Coast);
-		elevator4.setNeutralMode(NeutralMode.Coast);
+		if(!in.manualOverride) {
+			elevator1.setNeutralMode(NeutralMode.Coast);
+			elevator2.setNeutralMode(NeutralMode.Coast);
+			elevator3.setNeutralMode(NeutralMode.Coast);
+			elevator4.setNeutralMode(NeutralMode.Coast);
+		}else {
+			elevator1.setNeutralMode(NeutralMode.Brake);
+			elevator2.setNeutralMode(NeutralMode.Brake);
+			elevator3.setNeutralMode(NeutralMode.Brake);
+			elevator4.setNeutralMode(NeutralMode.Brake);
+		}
 		armMotor1.setNeutralMode(NeutralMode.Coast);
 		armMotor2.setNeutralMode(NeutralMode.Coast);
 	}
