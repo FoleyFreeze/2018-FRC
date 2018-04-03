@@ -10,6 +10,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class Path {
+	
+	public static boolean print = false;
 
 	public ArrayList<Double> positions; //array of the recorded positions per loop
 	public ArrayList<Double> velocities;//array of the recorded velocities per loop
@@ -155,7 +157,7 @@ public class Path {
 			velocities.add(velocity); //record velocity
 			accelerations.add(tempAccel); //record acceleration
 			
-			//System.out.format("P: %.3f  V: %.2f  A: %.0f\n", position, velocity, tempAccel);
+			if(print) System.out.format("P: %.3f  V: %.2f  A: %.0f\n", position, velocity, tempAccel);
 		}
 		
 		step3dist = (endVel * endVel - velocity * velocity) / (2 * step3Accel); 
@@ -192,7 +194,7 @@ public class Path {
 			velocities.add(velocity); //record velocity
 			accelerations.add(tempAccel); //record acceleration
 
-			//System.out.format("P: %.3f  V: %.2f  A: %.0f\n", position, velocity, tempAccel);
+			if(print) System.out.format("P: %.3f  V: %.2f  A: %.0f\n", position, velocity, tempAccel);
 		}
 		
 
@@ -218,7 +220,7 @@ public class Path {
 			velocities.add(velocity); //record velocity
 			accelerations.add(tempAccel); //record accelerations
 			
-			//System.out.format("P: %.3f  V: %.2f  A: %.0f\n", position, velocity, tempAccel);
+			if(print) System.out.format("P: %.3f  V: %.2f  A: %.0f\n", position, velocity, tempAccel);
 		} 
 
 	}
@@ -242,7 +244,7 @@ public class Path {
 			double cT = lastT + deltaTheta;
 			angles.add(cT);
 
-			System.out.println(cT);
+			if(print) System.out.println(cT);
 		}
 	  
 	}

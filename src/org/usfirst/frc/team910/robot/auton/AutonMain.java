@@ -19,6 +19,7 @@ import org.usfirst.frc.team910.robot.auton.steps.ShootStep;
 import org.usfirst.frc.team910.robot.auton.steps.StartStep;
 import org.usfirst.frc.team910.robot.auton.steps.WaitStep;
 import org.usfirst.frc.team910.robot.components.Elevator;
+import org.usfirst.frc.team910.robot.util.Path;
 import org.usfirst.frc.team910.robot.util.Profile;
 
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -369,13 +370,14 @@ public class AutonMain extends Component {
 		b.end();
 		   
 			
-			
+		Path.print = true;
 		testProfile = new SeriesSet();
 		b.add(testProfile);
 			b.add(new StartStep());
 			b.add(new DriveProfile(Profile.test));
 			b.add(new EndStep());
 		b.end();
+		Path.print = false;
 	}
 	
 	
