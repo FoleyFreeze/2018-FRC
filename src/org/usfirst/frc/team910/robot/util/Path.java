@@ -243,6 +243,10 @@ public class Path {
 
 			double cT = lastT + deltaTheta;
 			angles.add(cT);
+			
+			lastL = l.positions.get(i);
+			lastR = r.positions.get(i);
+			lastT = cT;
 
 			if(print) System.out.println(cT);
 		}
