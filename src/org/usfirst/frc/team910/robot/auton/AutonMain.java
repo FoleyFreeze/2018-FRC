@@ -249,9 +249,6 @@ public class AutonMain extends Component {
 					b.add(new WaitStep(3));
 					b.add(new ElevatorPosition(Elevator.liftState.REST_POSITION));
 					b.end();
-				//for the false case, back up to get out of the zone
-				//b.add(new DriveTurnStep(-0.5, -0.5, 0.5));
-				//b.add(new DriveForward(150, 5));
 				b.add(new IfSet(new IfInterface() {
 					public boolean choice() {
 						return options.selectedStart == RIGHT && !options.scaleIsLeft;
@@ -276,87 +273,72 @@ public class AutonMain extends Component {
 			b.add(new EndStep());
 			b.end();
 		
-		/*
+		
 		scale = new SeriesSet();
 		b.add(scale);
 			b.add(new StartStep());
 			
 //------------------------------------STRAIGHT SCALE----------------------------------------------------------------
-			
+			//if straight or cross scale
 			b.add(new IfSet(new IfInterface() {
 				public boolean choice() {
 					return options.selectedStart == LEFT && options.scaleIsLeft
 						|| options.selectedStart == RIGHT && !options.scaleIsLeft;					 
 				}
 			}));
-				//infront of left scale
-			b.add(new SeriesSet()); {
-				b.add(new ParallelSet());
+				//if left or right straight scale
 				b.add(new IfSet(new IfInterface() {
 					public boolean choice() {
 						return options.selectedStart == LEFT && options.scaleIsLeft;					 
 					}
 				}));
-					b.add(new DriveProfile(Profile.straightScaleL));
-					b.add(new SeriesSet());	
-						b.add(new WaitStep(5));
+					//start left goal left
+					b.add(new SeriesSet());
+						b.add(new DriveProfile(Profile.straightScaleL));
 						b.add(new ElevatorPosition(Elevator.liftState.F_SCALE_POSITION));
+						b.add(new WaitStep(2));
+						b.add(new ShootStep());
 						b.end();
-					b.end();
-				b.add(new ShootStep());
-				b.end();
-			}
-			//infront of right scale
-			b.add(new SeriesSet()); {
-				b.add(new ParallelSet());
-					b.add(new DriveProfile(Profile.straightScaleR));
-					b.add(new SeriesSet());	
-						b.add(new WaitStep(5));
+					//start right goal right
+					b.add(new SeriesSet()); 
+						b.add(new DriveProfile(Profile.straightScaleR));
 						b.add(new ElevatorPosition(Elevator.liftState.F_SCALE_POSITION));
+						b.add(new WaitStep(2));
+						b.add(new ShootStep());
 						b.end();
-					b.end();
-				b.add(new ShootStep());
-				b.end();
-			}
-			
+					b.end(); //end of the true straight case series set
+				
 //------------------CROSS SCALE---------------------------------------------------------------------
 			
-			//start right have to cross to left
-			b.add(new IfSet(new IfInterface() {
-				public boolean choice() {
-					return options.selectedStart == RIGHT && options.scaleIsLeft;
-				}
-			}));
-			b.add(new SeriesSet()); {
-				b.add(new ParallelSet());
-		//			b.add(new DriveProfile(Profile.rightToLeftScale));
-					b.add(new SeriesSet());	
-						b.add(new WaitStep(5));
-						b.add(new ElevatorPosition(Elevator.liftState.F_SCALE_POSITION));
-						b.end();
-					b.end();
-				b.add(new ShootStep());
-				b.end();
-			}
-			//start left cross to right
-			b.add(new IfSet(new IfInterface() {
-				public boolean choice() {
-					return options.selectedStart == LEFT && !options.scaleIsLeft;
-				}
-			}));
-			b.add(new SeriesSet()); {
-				b.add(new ParallelSet());
-		//			b.add(new DriveProfile(Profile.leftToRightScale));
-					b.add(new SeriesSet());	
-						b.add(new WaitStep(5));
-						b.add(new ElevatorPosition(Elevator.liftState.F_SCALE_POSITION));
-						b.end();
-					b.end();
-				b.add(new ShootStep());
-				b.end();
-				
-		b.add(new EndStep());
-		b.end(); }
+				//false case of straight scale if (indicates cross scale)
+				b.add(new IfSet(new IfInterface() {
+					public boolean choice() {
+						return options.selectedStart == LEFT && !options.scaleIsLeft
+							|| options.selectedStart == RIGHT && options.scaleIsLeft;					 
+					}
+				}));
+					//start right have to cross to left
+					b.add(new IfSet(new IfInterface() {
+						public boolean choice() {
+							return options.selectedStart == RIGHT && options.scaleIsLeft;
+						}
+					}));
+						b.add(new SeriesSet()); 
+							b.add(new DriveProfile(Profile.rightToLeftScale));
+							b.add(new ElevatorPosition(Elevator.liftState.F_SCALE_POSITION));
+							b.add(new WaitStep(2));
+							b.add(new ShootStep());
+							b.end();
+						b.add(new SeriesSet()); 
+							b.add(new DriveProfile(Profile.leftToRightScale));
+							b.add(new ElevatorPosition(Elevator.liftState.F_SCALE_POSITION));
+							b.add(new WaitStep(2));
+							b.add(new ShootStep());
+							b.end();
+						b.end();//ends the left or right cross if
+				b.end();//ends the straight or cross if
+			b.add(new EndStep());
+			b.end(); 
 			
 		centerSwitch = new SeriesSet();
 		b.add(centerSwitch);
@@ -385,13 +367,13 @@ public class AutonMain extends Component {
 		    b.end();
 		b.add(new EndStep());
 		b.end();
-		   */
+		   
 			
 			
 		testProfile = new SeriesSet();
 		b.add(testProfile);
 			b.add(new StartStep());
-			b.add(new DriveProfile(Profile.straightScaleL));
+			b.add(new DriveProfile(Profile.test));
 			b.add(new EndStep());
 		b.end();
 	}

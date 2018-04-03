@@ -1,27 +1,28 @@
 package org.usfirst.frc.team910.robot.util;
 
+
+
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 
-//import org.usfirst.frc.team910.robot.Component;
-
-public class Path /*extends Component*/ {
+public class Path {
 
 	public ArrayList<Double> positions; //array of the recorded positions per loop
 	public ArrayList<Double> velocities;//array of the recorded velocities per loop
 	public ArrayList<Double> accelerations; // array of the recorded accelerations per loop
 	public ArrayList<Double> motorPower; //array of the recorded left motor power per loop
-	public ArrayList<Double> angles;
+
 
 	public static final double TOP_VELOC = 60.1; // inches per second, highest capable velocity of robot
 	public static final double ACCEL = 60; // inches per second squared
 	public static final double DT = 0.02; // 10 milliseconds
 	
 	//tolerance constants
-	public static final double POS_TOL = 0.1;
+	public static final double POS_TOL = 0.01;
 	public static final double VEL_TOL = 0.01;
 
 	public Path() { //constructor to create the arrays
@@ -113,14 +114,39 @@ public class Path /*extends Component*/ {
 				velocity = velocMax;
 				tempAccel = (velocity - prevVel) / DT;
 			} else if(endPosition - position < step3dist) { //checking for transition from step 1 to step 3
+				double prevVel = velocities.get(velocities.size() -1);
+				double prevPos = positions.get(positions.size()- 1);
+				double vMax = velocity;
+				double vMin =  prevVel;
+				//binary search for transition velocity
+				double testVel = 0;
+				double transTime = 0;
+				double transPos = 0;
+				for(int i=0; i<10; i++) {
+					testVel = (vMax + vMin) / 2;
+					transTime = (testVel - prevVel) / step1Accel;
+					step3dist = (endVel * endVel - testVel * testVel) / (2 * step3Accel);
+					transPos = prevPos + prevVel * transTime + 0.5 * step1Accel * (transTime * transTime);
+					double distError = transPos + step3dist - endPosition;
+					
+					if(distError >= 0 && distError <= POS_TOL) break;
+					else if(distError > 0) vMax = testVel;
+					else vMin = testVel;
+				}
+				velocity = testVel + step3Accel * (DT - transTime);
+				position = transPos + testVel * (DT - transTime) + 0.5 * step3Accel * (DT - transTime) * (DT - transTime);
+				tempAccel = (velocity - prevVel) / DT;
+				
+				/* HUGE MATH PROBLEM THAT BREAKS THINGS IN THIS TRANSITION LOGIC DONT USE THIS
 				double prevVel = velocities.get(velocities.size() -1); 
-				//step3dist = (endVel * endVel - prevVel * prevVel) / (2 * step3Accel);
+				step3dist = (endVel * endVel - prevVel * prevVel) / (2 * step3Accel);
 				double positionOvershoot = position - (endPosition - step3dist);
 				double transVel = Math.sqrt(2 * step1Accel * positionOvershoot + prevVel * prevVel);
 				double transTime = (transVel - prevVel)/ step1Accel;
 				velocity = transVel + step3Accel * (DT - transTime);
 				position = endPosition - step3dist + transVel * (DT - transTime) + 0.5 * step3Accel * (DT - transTime * transTime);
 				tempAccel = (velocity - prevVel) / DT;
+				*/
 			}
 			
 			//System.out.format("X:%.3f V:%.3f\n", position,velocity);
@@ -194,31 +220,6 @@ public class Path /*extends Component*/ {
 			//System.out.format("P: %.3f  V: %.2f  A: %.0f\n", position, velocity, tempAccel);
 		} 
 
-	}
-	
-	public static final double SCRUB_FACTOR = 2.4;
-	public static final double TURNING_WIDTH = 23.2375 * SCRUB_FACTOR;
-	
-	public void calcAngles(Path l, Path r, double startAngle){
-		angles = new ArrayList<>();
-		
-		double lastL = l.startPos;
-		double lastR = r.startPos;
-		double lastT = startAngle;
-		
-		for(int i=0; i<l.positions.size(); i++) {
-			double deltaL = l.positions.get(i) - lastL;
-			double deltaR = r.positions.get(i) - lastR;
-			
-			double deltaTheta = Math.atan2(deltaR - deltaL, TURNING_WIDTH / 2) * 180 / Math.PI;
-            //double averageTheta = lastT + deltaTheta / 2;
-            
-            double cT = lastT + deltaTheta;
-            angles.add(cT);
-            
-            System.out.println(cT);
-		}
-		
 	}
 	
 	/*
@@ -298,5 +299,6 @@ public class Path /*extends Component*/ {
 		}
 		
 	}
-    */
+	*/
+
 }
