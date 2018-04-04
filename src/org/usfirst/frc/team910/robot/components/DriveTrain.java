@@ -18,8 +18,8 @@ public class DriveTrain extends Component implements Runnable {
 	public static final double DRIVE_STRAIGHT_TURN = 30.0 / 50.0; // 5 inches per second / 50
 	public static final double DRIVE_STRAIGHTNAVX_KP = 0.1; // Distance difference by inch
 
-	public static final double DRIVEMP_KP = 0.1;
-	public static final double DRIVEMP_KD = 0.0;
+	public static final double DRIVEMP_KP = 0.15;
+	public static final double DRIVEMP_KD = 0.1;
 	public static final double DRIVEMP_KP_ANGLE = 0.0 / 45; //50% per 45deg
 	public static final double DRIVEMP_KFV = 0.9 / 200.0; //200 in/sec at max pwr
 	public static final double DRIVEMP_KFA = 1.0 / 380.0; //full power is 420 in/sec/sec
@@ -264,10 +264,17 @@ public class DriveTrain extends Component implements Runnable {
 		lError = (leftPosition - sense.leftDist);// + lError) / 2;
 		rError = (rightPosition - sense.rightDist);// + rError) / 2;
 		
-		double angleError = sense.robotAngle.subtract(targetAngle);
+		double angleError = sense.robotAngle.get() - targetAngle;
+		if(angleError > 180) {
+			angleError -= 360;
+		} else if (angleError < -180) {
+			angleError += 360;
+		}
+		
+		//double angleError = sense.robotAngle.subtract(targetAngle);
 
 		double deltaLError = sense.leftDist - prevLError;
-		double deltaRError = sense.prevRightPos - prevRError;
+		double deltaRError = sense.rightDist - prevRError;
 		
 		double ffPowerL = (DRIVEMP_KFV * leftVelocity) + (DRIVEMP_KFA * leftAccel);
 		double ffPowerR = (DRIVEMP_KFV * rightVelocity) + (DRIVEMP_KFA * rightAccel);

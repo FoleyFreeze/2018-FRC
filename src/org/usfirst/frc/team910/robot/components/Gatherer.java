@@ -25,6 +25,10 @@ public class Gatherer extends Component {
 	public static final double DIST_TOLERANCE = 2;
 	public static final double DIST_FRAME = 6;
 	
+	public static final double PWR_SHOOT = -0.5;//was -0.35 pre mid rollers
+	public static final double PWR_SHIFT_SHOOT = -0.9; //was -0.7 pre mid rollers
+	public static final double PWR_EXCHANGE_SHOOT = -0.9;
+	
 	public static final double PWR_REV_GATHER = -0.2; //was -0.2
 	public static final double PWR_FWD_GATHER = 0.8; //was 0.6 //3-29
 	public static final double PWR_GATHER_FAST = 0.7;
@@ -68,7 +72,8 @@ public class Gatherer extends Component {
 				if(in.manualGatherThrottle) {
 					out.setGatherPower(-in.manualGatherLeft, -in.manualGatherRight);
 				} else {
-					gather(-0.35, -0.35);
+					if(in.shift) gather(PWR_SHOOT, PWR_SHOOT);
+					else gather(PWR_SHIFT_SHOOT, PWR_SHIFT_SHOOT);
 				}
 			} else {
 				out.setGatherPower(0, 0);
@@ -204,12 +209,12 @@ public class Gatherer extends Component {
 
 			// shoot logic
 		} else if (in.shoot && in.shift) {
-			gather(-0.7, -0.7); //star wheel
+			gather(PWR_SHIFT_SHOOT, PWR_SHIFT_SHOOT); //star wheel
 			gatherS_IR = gatherStateIR.INIT;
 		} else if (in.shoot) {
 			if(elevate.currentState == Elevator.liftState.R_EXCHANGE_POSITION || elevate.currentState == Elevator.liftState.F_EXCHANGE_POSITION)
-				gather(-0.6, -0.6); //ten percent more with star wheels
-			else gather(-0.45, -0.45); //star wheels
+				gather(PWR_EXCHANGE_SHOOT, PWR_EXCHANGE_SHOOT); //ten percent more with star wheels
+			else gather(PWR_SHOOT, PWR_SHOOT); //star wheels
 			gatherS_IR = gatherStateIR.INIT;
 
 			// if no button pressed
@@ -270,7 +275,8 @@ public class Gatherer extends Component {
 				if(in.manualGatherThrottle) {
 					out.setGatherPower(-in.manualGatherLeft, -in.manualGatherRight);
 				} else {
-					gather(-0.35, -0.35);
+					if(in.shift) gather(PWR_SHIFT_SHOOT, PWR_SHIFT_SHOOT);
+					else gather(PWR_SHOOT,PWR_SHOOT);
 				}
 			} else {
 				out.setGatherPower(0, 0);
@@ -351,10 +357,10 @@ public class Gatherer extends Component {
 
 			// shoot logic
 		} else if (in.shoot && in.shift) {
-			gather(-0.6, -0.6);
+			gather(PWR_SHIFT_SHOOT, PWR_SHIFT_SHOOT);
 			gatherS_C = gatherStateC.INIT;
 		} else if (in.shoot) {
-			gather(-0.35, -0.35);
+			gather(PWR_SHOOT, PWR_SHOOT);
 			gatherS_C = gatherStateC.INIT;
 
 			// if no button pressed

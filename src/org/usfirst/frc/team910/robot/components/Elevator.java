@@ -11,14 +11,17 @@ public class Elevator extends Component {
 	public static final double LIFT_KP = 0.07; // 0.2 4 mtr chg 3-29  //power per inch
 	public static final double ARM_KD = 0.05;//0.2
 	public static final double LIFT_KD = 0.5;//0.5 //1.0  4 mtr chg 3-29
+	public static final double LIFT_KI = 0.005;//power per in per 20ms
+	public static final double LIFT_I_MAX = 0.2;
+	public static final double LIFT_I_DEADBAND = 0.25;
 	
 	public static final double LIFT_DEADBAND = 0;
 	public static final double ARM_DEADBAND = 0;
 	
-	public static final double ARM_UP_PWR = 0.7;//was 0.9
-	public static final double ARM_UP_GTHR_PWR = 0.5;
-	public static final double ARM_DN_PWR = 0.7;
-	public static final double ARM_UP_PWR_SHIFT = 0.7;
+	public static final double ARM_UP_PWR = 0.8;//was 0.9
+	public static final double ARM_UP_GTHR_PWR = 0.8;
+	public static final double ARM_DN_PWR = 0.8;
+	public static final double ARM_UP_PWR_SHIFT = 0.8;
 	public static final double ARM_DN_PWR_SHIFT = 0.5;
 	public static final double LIFT_UP_PWR = 0.75;//was 0.6 ON PRAC  //was .5 //was 0.75
 	public static final double LIFT_DN_PWR = 0.45;//was .3 //was 0.5; too hard!
@@ -83,7 +86,7 @@ public class Elevator extends Component {
 	public static final double ARM_SWITCH = 90;
 	public static final double ARM_EXCHANGE = 95;
 	public static final double ARM_FLOOR = 104; //104 from prototype testing
-	public static final double ARM_FLOOR_SHIFT = 90;
+	public static final double ARM_FLOOR_SHIFT = 93;
 	public static final double F_ARM_REST = 0;
 	public static final double R_ARM_REST = 0;
 	public static final double ARM_CLIMB = 45; 
@@ -107,6 +110,8 @@ public class Elevator extends Component {
 	
 	public double armError;
 	public double liftError;
+	
+	public double liftI = 0;
 	
 	public void run() {
 		
@@ -658,9 +663,27 @@ public class Elevator extends Component {
 		
 		double armFeedFwd = interp(FEED_FORWARD_AXIS, FEED_FORWARD_TABLE, targetArm);
 		
+		//integrate integral term when we are outside the deadband
+		if(Math.abs(liftError) > LIFT_I_DEADBAND) {
+			liftI += LIFT_KI * liftError;
+		} else {
+			liftI = 0;
+		}
+		
+		
+		//limit I term
+		if(liftI > LIFT_I_MAX) liftI = LIFT_I_MAX;
+		else if(liftI < -LIFT_I_MAX) liftI = -LIFT_I_MAX;
+		
+		//reset I term when the error changes sign
+		if(liftError > 0 && liftI < 0) {
+			liftI = 0;
+		} else if (liftError < 0 && liftI > 0) {
+			liftI = 0;
+		}
 		
 		double armPower = armError * ARM_KP + deltaArmError * ARM_KD + armFeedFwd;
-		double liftPower = liftError * LIFT_KP + deltaLiftError * LIFT_KD;
+		double liftPower = liftError * LIFT_KP + deltaLiftError * LIFT_KD + liftI;
 		
 		
 		if(Math.abs(armError) < ARM_DEADBAND) {

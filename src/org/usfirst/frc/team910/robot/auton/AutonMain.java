@@ -104,12 +104,12 @@ public class AutonMain extends Component {
 			b.add(new ElevatorPosition(Elevator.liftState.F_SWITCH_POSITION));
 			b.add(new DriveForward(120, 1.5));
 			
-				b.add(new IfSet(new IfInterface() {
-					public boolean choice() { //if the switch we are in front of is the one we should score on
-						return options.selectedStart == LEFT && options.switchIsLeft ||
-						      options.selectedStart == RIGHT && !options.switchIsLeft;
-					}
-				}));
+			b.add(new IfSet(new IfInterface() {
+				public boolean choice() { //if the switch we are in front of is the one we should score on
+					return options.selectedStart == LEFT && options.switchIsLeft ||
+					      options.selectedStart == RIGHT && !options.switchIsLeft;
+				}
+			}));
 				b.add(new ShootStep());
 				b.add(new WaitStep(0));
 				b.end();
@@ -122,17 +122,26 @@ public class AutonMain extends Component {
 		b.add(mpCenterSwitch);
 			b.add(new StartStep());
 			b.add(new ElevatorPosition(Elevator.liftState.F_SWITCH_POSITION));
-				b.add(new IfSet(new IfInterface() {
-					public boolean choice() { //is the switch on the left or right
-						return options.switchIsLeft;
-					}
-				}));
-				b.add(new DriveProfile(Profile.centerSwitchL,false));
-				b.add(new DriveProfile(Profile.centerSwitchR,false));
+			b.add(new IfSet(new IfInterface() {
+				public boolean choice() { //is the switch on the left or right
+					return options.switchIsLeft;
+				}
+			}));
+				b.add(new ParallelSet());
+					b.add(new DriveProfile(Profile.centerSwitchL,false));
+					b.add(new SeriesSet());
+						b.add(new WaitStep(2.2));
+						b.add(new ShootStep());
+						b.end();
+					b.end();
+				b.add(new ParallelSet());
+					b.add(new DriveProfile(Profile.centerSwitchR,false));
+					b.add(new SeriesSet());
+						b.add(new WaitStep(2.2));
+						b.add(new ShootStep());
+						b.end();
+					b.end();
 				b.end();
-			b.add(new ShootStep());
-			b.add(new EndStep());
-			b.end();
 			
 		//NOT MP
 	
@@ -144,29 +153,29 @@ public class AutonMain extends Component {
 			
 			b.add(new DriveForward(10, 0.25));
 			
-				b.add(new IfSet(new IfInterface() {
-					public boolean choice() { //is the switch on the left or right
-						return options.switchIsLeft;
-					}
-				}));
+			b.add(new IfSet(new IfInterface() {
+				public boolean choice() { //is the switch on the left or right
+					return options.switchIsLeft;
+				}
+			}));
 				b.add(new DriveTurnStep(-0.2, 0.8, 0.4)); //turn left
 				b.add(new DriveTurnStep(0.8, -0.2, 0.4)); //turn right
 				b.end();
 				
-				b.add(new IfSet(new IfInterface() {
-					public boolean choice() { //is the switch on the left or right
-						return options.switchIsLeft;
-					}
-				}));
+			b.add(new IfSet(new IfInterface() {
+				public boolean choice() { //is the switch on the left or right
+					return options.switchIsLeft;
+				}
+			}));
 				b.add(new DriveForward(65, 1.8));//left //65 //45 btroy //85 linc
 				b.add(new DriveForward(50, 1.30));//right //45 btroy //85 linc
 				b.end();
 				
-				b.add(new IfSet(new IfInterface() {
-					public boolean choice() { //is the switch on the left or right
-						return options.switchIsLeft;
-					}
-				}));
+			b.add(new IfSet(new IfInterface() {
+				public boolean choice() { //is the switch on the left or right
+					return options.switchIsLeft;
+				}
+			}));
 				b.add(new DriveTurnStep(1, -0.3, 0.35)); //left start
 				b.add(new DriveTurnStep(-0.3, 1, 0.35)); //right start
 				b.end();
@@ -185,11 +194,11 @@ public class AutonMain extends Component {
 			//wait and then attempt to drive back
 			b.add(new WaitStep(1));
 			
-				b.add(new IfSet(new IfInterface() {
-					public boolean choice() { //is the switch on the left or right
-						return options.switchIsLeft;
-					}
-				}));
+			b.add(new IfSet(new IfInterface() {
+				public boolean choice() { //is the switch on the left or right
+					return options.switchIsLeft;
+				}
+			}));
 				b.add(new DriveTurnStep(-0.5, 0.1, 0.9)); //left start
 				b.add(new DriveTurnStep(0.1, -0.5, 0.9)); //right start
 				b.end();
@@ -197,22 +206,22 @@ public class AutonMain extends Component {
 			b.add(new ElevatorPosition(Elevator.liftState.REST_POSITION));
 			b.add(new DriveForward(40, 1));
 			
-				b.add(new IfSet(new IfInterface() {
-					public boolean choice() { //is the switch on the left or right
-						return options.switchIsLeft;
-					}
-				}));
+			b.add(new IfSet(new IfInterface() {
+				public boolean choice() { //is the switch on the left or right
+					return options.switchIsLeft;
+				}
+			}));
 				b.add(new DriveTurnStep(0.4, -0.05, 1)); //left start
 				b.add(new DriveTurnStep(-0.05, 0.4, 1)); //right start
 				b.end();
 			
 			b.add(new DriveForward(60, 0.75));
 			
-				b.add(new IfSet(new IfInterface() {
-					public boolean choice() { //is the switch on the left or right
-						return options.switchIsLeft;
-					}
-				}));
+			b.add(new IfSet(new IfInterface() {
+				public boolean choice() { //is the switch on the left or right
+					return options.switchIsLeft;
+				}
+			}));
 				b.add(new DriveTurnStep(-0.4, 0.05, 1)); //left start
 				b.add(new DriveTurnStep(0.05, -0.4, 1)); //right start
 				b.end();
@@ -340,43 +349,14 @@ public class AutonMain extends Component {
 				b.end();//ends the straight or cross if
 			b.add(new EndStep());
 			b.end(); 
-			
-		centerSwitch = new SeriesSet();
-		b.add(centerSwitch);
-			b.add(new StartStep());
-			b.add(new IfSet(new IfInterface() {
-				public boolean choice() {
-					return options.switchIsLeft;
-				}
-			}));
-			b.add(new SeriesSet());
-				b.add(new ParallelSet());
-		//    		b.add(new DriveProfile(Profile.centerSwitchL));
-		    		b.add(new SeriesSet());	
-		    			b.add(new WaitStep(2.5));
-		    			b.add(new ElevatorPosition(Elevator.liftState.F_SWITCH_POSITION));
-		    		b.end();
-		    	b.end();
-		    b.add(new SeriesSet());
-		    	b.add(new ParallelSet());
-		//    		b.add(new DriveProfile(Profile.centerSwitchR));
-		    		b.add(new SeriesSet());	
-		    			b.add(new WaitStep(2.5));
-		    			b.add(new ElevatorPosition(Elevator.liftState.F_SWITCH_POSITION));
-		    		b.end();
-		    	b.end();
-		    b.end();
-		b.add(new EndStep());
-		b.end();
-		   
-			
+		
 		Path.print = true;
 		testProfile = new SeriesSet();
 		b.add(testProfile);
 			b.add(new StartStep());
-			b.add(new DriveProfile(Profile.test));
+			b.add(new DriveProfile(Profile.centerSwitchR));
 			b.add(new EndStep());
-		b.end();
+			b.end();
 		Path.print = false;
 	}
 	
@@ -412,8 +392,8 @@ public class AutonMain extends Component {
 			break;
 			
 		case CENTER:
-			currentAuton = centerSwitch;
-			//currentAuton = mpCenterSwitch;
+			//currentAuton = centerSwitch;
+			currentAuton = mpCenterSwitch;
 			SmartDashboard.putString("CurrAuton","centerSwitch");
 			break;
 			
