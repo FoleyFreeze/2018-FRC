@@ -64,7 +64,8 @@ public class Elevator extends Component {
 	public static final double[] FEED_FORWARD_TABLE= {0,0,0,0};
 	
 	public static final double LIFT_MAX = 69; //was 70.5
-	public static final double LIFT_SCALE_MIN = 60;
+	public static final double LIFT_SCALE_MIN = 64;
+	public static final double LIFT_SCALE_LOW_MIN = 55;
 	public static final double LIFT_CLIMB_MIN = 30; //must be less than LIFT_CLIMB
 	public static final double LIFT_SWITCH_MIN = 4;  //MUST be less than LIFT_SWITCH !!!
 	public static final double LIFT_EXCHANGE_MIN = 2;
@@ -77,16 +78,18 @@ public class Elevator extends Component {
 	public static final double R_SCALE_ARM_MIN = 180;
 	
 	public static final double LIFT_SCALE = 69;//was 70
+	public static final double LIFT_SCALE_LOW = 60;
 	public static final double LIFT_SWITCH = 20;//was 18
 	public static final double LIFT_SWITCH_GATHER = 6;
 	public static final double LIFT_EXCHANGE = 3;
 	public static final double LIFT_FLOOR = 0.5;
 	public static final double LIFT_REST = LIFT_FLOOR;
 	public static final double ARM_SCALE = 90;
+	public static final double ARM_SCALE_LOW = 110;
 	public static final double ARM_SWITCH = 90;
 	public static final double ARM_EXCHANGE = 95;
 	public static final double ARM_FLOOR = 104; //104 from prototype testing
-	public static final double ARM_FLOOR_SHIFT = 93;
+	public static final double ARM_FLOOR_SHIFT = 90;
 	public static final double F_ARM_REST = 0;
 	public static final double R_ARM_REST = 0;
 	public static final double ARM_CLIMB = 45; 
@@ -98,8 +101,7 @@ public class Elevator extends Component {
 	}
 
 	public enum liftState {
-		F_FLOOR_POSITION, R_FLOOR_POSITION, F_EXCHANGE_POSITION, R_EXCHANGE_POSITION, F_SWITCH_POSITION, R_SWITCH_POSITION, F_SCALE_POSITION, R_SCALE_POSITION, REST_POSITION, CLIMB_POSITION;
-
+		F_FLOOR_POSITION, R_FLOOR_POSITION, F_EXCHANGE_POSITION, R_EXCHANGE_POSITION, F_SWITCH_POSITION, R_SWITCH_POSITION, F_SCALE_LOW_POSITION, R_SCALE_LOW_POSITION, F_SCALE_POSITION, R_SCALE_POSITION, REST_POSITION, CLIMB_POSITION;
 	}
 
 	private liftState goalState;
@@ -200,8 +202,11 @@ public class Elevator extends Component {
 			else if(liftEncoder< LIFT_CLIMB_MIN) {
 				currentState = liftState.F_SWITCH_POSITION;
 			} 
-			else if(liftEncoder < LIFT_SCALE_MIN) {
+			else if(liftEncoder < LIFT_SCALE_LOW_MIN) {
 				currentState = liftState.CLIMB_POSITION;
+			}
+			else if(liftEncoder < LIFT_SCALE_MIN) {
+				currentState = liftState.F_SCALE_LOW_POSITION;
 			}
 			else{
 				currentState = liftState.F_SCALE_POSITION;
@@ -233,6 +238,8 @@ public class Elevator extends Component {
 			else if(armEncoder >= R_SCALE_ARM_MIN) {
 				if(currentState == liftState.F_SCALE_POSITION) {
 					currentState = liftState.R_SCALE_POSITION;
+				} else if (currentState == liftState.F_SCALE_LOW_POSITION) {
+					currentState = liftState.R_SCALE_LOW_POSITION;
 				}
 			}
 			
@@ -253,6 +260,8 @@ public class Elevator extends Component {
 				
 				case F_SCALE_POSITION:
 				case R_SCALE_POSITION:
+				case F_SCALE_LOW_POSITION:
+				case R_SCALE_LOW_POSITION:
 				case CLIMB_POSITION:
 					setPosition(liftState.F_SWITCH_POSITION);
 					break;	
@@ -278,6 +287,8 @@ public class Elevator extends Component {
 					
 				case F_SCALE_POSITION:
 				case R_SCALE_POSITION:
+				case F_SCALE_LOW_POSITION:
+				case R_SCALE_LOW_POSITION:
 					setPosition(liftState.F_SWITCH_POSITION);
 					break;
 				}
@@ -297,6 +308,8 @@ public class Elevator extends Component {
 				case R_SCALE_POSITION:
 				case F_SWITCH_POSITION:
 				case F_SCALE_POSITION:
+				case F_SCALE_LOW_POSITION:
+				case R_SCALE_LOW_POSITION:
 				case F_EXCHANGE_POSITION:
 				case CLIMB_POSITION:
 					setPosition(liftState.F_FLOOR_POSITION);
@@ -317,6 +330,8 @@ public class Elevator extends Component {
 					
 				case F_SCALE_POSITION:
 				case R_SCALE_POSITION:
+				case F_SCALE_LOW_POSITION:
+				case R_SCALE_LOW_POSITION:
 					setPosition(liftState.F_SWITCH_POSITION);
 					break;
 					
@@ -343,6 +358,8 @@ public class Elevator extends Component {
 				case F_SWITCH_POSITION:
 				case CLIMB_POSITION:
 				case F_SCALE_POSITION:
+				case F_SCALE_LOW_POSITION:
+				case R_SCALE_LOW_POSITION:
 				case F_FLOOR_POSITION:
 				case F_EXCHANGE_POSITION:
 					setPosition(liftState.REST_POSITION);
@@ -356,6 +373,7 @@ public class Elevator extends Component {
 				case F_SWITCH_POSITION:
 				case F_FLOOR_POSITION:
 				case F_SCALE_POSITION:
+				case F_SCALE_LOW_POSITION:
 				case F_EXCHANGE_POSITION:
 				case REST_POSITION:
 				case CLIMB_POSITION:
@@ -363,6 +381,7 @@ public class Elevator extends Component {
 					break;
 					
 				case R_SCALE_POSITION:
+				case R_SCALE_LOW_POSITION:
 					setPosition(liftState.F_SCALE_POSITION);
 					break;
 					
@@ -387,6 +406,8 @@ public class Elevator extends Component {
 				case R_SCALE_POSITION:
 				case F_SWITCH_POSITION:
 				case F_SCALE_POSITION:
+				case F_SCALE_LOW_POSITION:
+				case R_SCALE_LOW_POSITION:
 				case F_FLOOR_POSITION:
 				case F_EXCHANGE_POSITION:
 				case CLIMB_POSITION:
@@ -401,10 +422,12 @@ public class Elevator extends Component {
 				case CLIMB_POSITION:
 				case F_SWITCH_POSITION:
 				case F_SCALE_POSITION:
+				case F_SCALE_LOW_POSITION:
 					setPosition(goalState);
 					break;
 					
 				case R_SCALE_POSITION:
+				case R_SCALE_LOW_POSITION:
 					setPosition(liftState.F_SCALE_POSITION);
 					break;
 					
@@ -423,6 +446,7 @@ public class Elevator extends Component {
 				
 				switch(goalState) {
 				case F_SCALE_POSITION:
+				case F_SCALE_LOW_POSITION:
 				case R_SCALE_POSITION:
 				case F_SWITCH_POSITION:
 				case CLIMB_POSITION:
@@ -437,6 +461,10 @@ public class Elevator extends Component {
 				case F_EXCHANGE_POSITION:
 					setPosition(liftState.F_SWITCH_POSITION);
 					break;
+					
+				case R_SCALE_LOW_POSITION:
+					setPosition(liftState.R_SCALE_POSITION);
+					break;
 				}
 				break;
 	
@@ -445,6 +473,7 @@ public class Elevator extends Component {
 				switch(goalState) {
 				case R_SCALE_POSITION:
 				case F_SCALE_POSITION:
+				case R_SCALE_LOW_POSITION:
 					setPosition(goalState);
 					break;
 					
@@ -456,7 +485,55 @@ public class Elevator extends Component {
 				case R_FLOOR_POSITION:
 				case R_EXCHANGE_POSITION:
 				case R_SWITCH_POSITION:
+				case F_SCALE_LOW_POSITION:
 					setPosition(liftState.F_SCALE_POSITION);
+					break;
+				}
+				break;
+				
+			case F_SCALE_LOW_POSITION:
+				switch(goalState) {
+				case F_SWITCH_POSITION:
+				case CLIMB_POSITION:
+				case F_SCALE_LOW_POSITION:
+				case F_SCALE_POSITION:
+					setPosition(goalState);
+					break;
+					
+				case R_SCALE_LOW_POSITION:
+				case R_SCALE_POSITION:
+					setPosition(liftState.F_SCALE_POSITION);
+					break;
+					
+				case F_EXCHANGE_POSITION:
+				case F_FLOOR_POSITION:
+				case REST_POSITION:
+				case R_FLOOR_POSITION:
+				case R_EXCHANGE_POSITION:
+				case R_SWITCH_POSITION:
+					setPosition(liftState.F_SWITCH_POSITION);
+					break;
+				}
+				break;
+				
+			case R_SCALE_LOW_POSITION:
+				switch(goalState) {
+				case R_SCALE_POSITION:
+				case R_SCALE_LOW_POSITION:
+					setPosition(goalState);
+					break;
+					
+				case CLIMB_POSITION:
+				case F_SWITCH_POSITION:
+				case F_EXCHANGE_POSITION:
+				case F_FLOOR_POSITION:
+				case REST_POSITION:
+				case R_FLOOR_POSITION:
+				case R_EXCHANGE_POSITION:
+				case R_SWITCH_POSITION:
+				case F_SCALE_POSITION:
+				case F_SCALE_LOW_POSITION:
+					setPosition(liftState.R_SCALE_POSITION);
 					break;
 				}
 				break;
@@ -604,6 +681,16 @@ public class Elevator extends Component {
 					targetLift = LIFT_SCALE;
 					break;
 				}
+				break;
+				
+			case F_SCALE_LOW_POSITION:
+				targetArm = ARM_SCALE_LOW;
+				targetLift = LIFT_SCALE_LOW;
+				break;
+				
+			case R_SCALE_LOW_POSITION:
+				targetArm = ARM_SCALE_LOW + 180;
+				targetLift = LIFT_SCALE_LOW;
 				break;
 		}	
 		

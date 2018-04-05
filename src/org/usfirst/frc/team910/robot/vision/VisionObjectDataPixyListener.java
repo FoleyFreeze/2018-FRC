@@ -2,9 +2,12 @@ package org.usfirst.frc.team910.robot.vision;
 
 import java.util.LinkedList;
 
+import org.usfirst.frc.team910.robot.components.Vision;
+
 import edu.wpi.first.networktables.EntryListenerFlags;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.networktables.NetworkTableInstance;
 
 public class VisionObjectDataPixyListener  {
@@ -114,6 +117,7 @@ public class VisionObjectDataPixyListener  {
 				if (numBlocks > 0) {
 
 					frameNum = Integer.parseInt(msg_parsed[1]);
+					VisionData bestBlock = null;
 
 					// Convert message data into VisionData object data
 					for (int i = 0; i < numBlocks; i++) {
@@ -129,9 +133,21 @@ public class VisionObjectDataPixyListener  {
 						newData.frame = frameNum;
 						blockIndex += BLOCK_SIZE;
 						
+						if(bestBlock == null) bestBlock = newData;
+						else if(newData.w + newData.h > bestBlock.w + bestBlock.h) {
+							bestBlock = newData;
+						}
 					}
 					// Add new vision data to the list
-					currentList.add(newData);
+					if(bestBlock.w > Vision.WIDTH_LIMIT && bestBlock.h > Vision.HEIGHT_LIMIT) {
+						SmartDashboard.putNumber("Pixy time", bestBlock.timestamp);
+						SmartDashboard.putNumber("Pixy x", bestBlock.x);
+						SmartDashboard.putNumber("Pixy y", bestBlock.y);
+						SmartDashboard.putNumber("Pixy w", bestBlock.w);
+						SmartDashboard.putNumber("Pixy h", bestBlock.h);
+						currentList.add(bestBlock);
+					}
+					
 				}
 			
 		}, EntryListenerFlags.kNew | EntryListenerFlags.kUpdate);
@@ -146,7 +162,7 @@ public class VisionObjectDataPixyListener  {
     private int pixyBackId;
 	private static final int BLOCK_SIZE = 6;
     private boolean debug;
-	private static final String PIXY_TABLE = "pixy";
+	private static final String PIXY_TABLE = "Pixy";
 	private static final String PIXY_DATA = "pixyobjdata";
 	private NetworkTableInstance inst;
 	private NetworkTable table;

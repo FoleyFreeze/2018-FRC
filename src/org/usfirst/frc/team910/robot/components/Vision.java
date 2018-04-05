@@ -17,6 +17,9 @@ public class Vision extends Component {
 	public static final double X_RES = 320;
 	public static final double X_FOV = 85;
 	public static final double X_DEG_PER_PIXEL = X_FOV / X_RES;
+	
+	public static final double WIDTH_LIMIT = 25;
+	public static final double HEIGHT_LIMIT = 25;
 
 	LimitedStack<VisionData> blocks = new LimitedStack<VisionData>(MAX_SIZE);
 
@@ -31,7 +34,7 @@ public class Vision extends Component {
 
 		listener.listForPixyFront(blocks);
 
-		listener.setDebug(true);
+		listener.setDebug(false);
 		listener.start(); // vision data going into <blocks> now
 
 	}
