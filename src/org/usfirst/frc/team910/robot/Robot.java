@@ -17,6 +17,7 @@ import org.usfirst.frc.team910.robot.io.Inputs;
 import org.usfirst.frc.team910.robot.io.Outputs;
 import org.usfirst.frc.team910.robot.io.Sensors;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.TimedRobot;
 
@@ -146,6 +147,10 @@ public class Robot extends TimedRobot {
 	
 	
 	public void outputMPdata() {
+		
+		//if on the field, don't pollute the stream
+		DriverStation ds = DriverStation.getInstance();
+		if(ds.isFMSAttached()) return;
 		
 		//System.out.println(drive.recIdx);
 		if(drive.recIdx != 0) {

@@ -41,6 +41,8 @@ public class DriveTrain extends Component implements Runnable {
 	public double dt = 0;
 	private double lastTime = 0;
 	
+	private Angle targetAngle = new Angle(0);
+	
 	public void run() {
 		double time = Timer.getFPGATimestamp(); 
 		dt = time - lastTime;
@@ -58,6 +60,8 @@ public class DriveTrain extends Component implements Runnable {
 			//only mp if we still have points
 			if(!isMpDoneYet()) driveMp();
 			// out.driveMP.run(in.enableMP);
+		} else if (in.autoGather && view.getLatestAngle(targetAngle)) {
+			driveAngle(targetAngle, 0.25);	
 		} else if (in.dynamicBrake) {
 			boolean first = !prevBrake && in.dynamicBrake;
 			dynamicBrake(sense.leftDist, sense.rightDist, first);
@@ -71,6 +75,7 @@ public class DriveTrain extends Component implements Runnable {
 
 		prevBrake = in.dynamicBrake;
 		prevDriveStraight = in.driveStraight;
+		prevCamError = sense.robotAngle.get();
 
 	}
 
@@ -343,8 +348,8 @@ public class DriveTrain extends Component implements Runnable {
 		// error is the target angle minus the robot angle
 		double error = targetAngle.subtract(sense.robotAngle);
 
-		// deltaError is the current error minus the previous camError
-		double deltaError = error - prevCamError;
+		//switch to measuring the change in process variable instead of change in error to avoid jumps
+		double deltaError = sense.robotAngle.subtract(prevCamError);
 
 		// PD for the given power
 		double powerDiff = CAM_DRIVE_KP * error + CAM_DRIVE_KD * deltaError;
@@ -354,8 +359,6 @@ public class DriveTrain extends Component implements Runnable {
 		// setting powers
 		double powerL = power - powerDiff;
 		double powerR = power + powerDiff;
-
-		prevCamError = error;
 
 		if (powerL > 1)
 			powerL = 1;

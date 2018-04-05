@@ -5,12 +5,12 @@ package org.usfirst.frc.team910.robot.vision;
 // each message can have more than one <block id, signature, x, y, width, height>
 
 public class VisionData {
-	double timestamp;
-	int frame;
-	int blockID;
-    int sig;
-    int x;
-    int y;
-    int w;
-    int h;
+	public double timestamp;
+	public int frame;
+	public int blockID;
+	public int sig;
+	public int x;
+	public int y;
+	public int w;
+	public int h;
 }

@@ -1,6 +1,6 @@
 package org.usfirst.frc.team910.robot.vision;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 
 import edu.wpi.first.networktables.EntryListenerFlags;
 import edu.wpi.first.networktables.NetworkTable;
@@ -57,13 +57,13 @@ public class VisionObjectDataPixyListener  {
     }
  // associate Pixy with a list and start listening for messages from the
  	// associated network table entry for this Pixy
- 	public void listForPixyFront(ArrayList list) {
+ 	public void listForPixyFront(LinkedList list) {
 
 		this.listFront = list;
 
  	}
 
- 	public void listForPixyBack(ArrayList list) {
+ 	public void listForPixyBack(LinkedList list) {
 
 		this.listBack = list;
 
@@ -77,7 +77,7 @@ public class VisionObjectDataPixyListener  {
 
 			int currentPixy;
 			
-			ArrayList<VisionData> currentList;
+			LinkedList<VisionData> currentList;
 	        
 			// Data from Network Table goes here from entry PIXY_DATA
 			// It's the most recent object data update
@@ -140,8 +140,8 @@ public class VisionObjectDataPixyListener  {
 	
 	private boolean saveFront;
 	private boolean saveBack;
-	private ArrayList<VisionData> listFront;
-	private ArrayList<VisionData> listBack;
+	private LinkedList<VisionData> listFront;
+	private LinkedList<VisionData> listBack;
     private int pixyFrontId;
     private int pixyBackId;
 	private static final int BLOCK_SIZE = 6;
