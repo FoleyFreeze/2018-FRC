@@ -27,7 +27,8 @@ public class DriveTrain extends Component implements Runnable {
 
 	public static final double CAM_DRIVE_KP = 0.5 / 45; // This is power per degree of error
 	public static final double CAM_DRIVE_KD = 0; // .5/45 * 50. This is power per degree per 20 milliseconds
-
+	public static final double CAM_DRIVE_PWR = 0.4;
+	
 	public static final double[] CAM_DRIVE_TABLE = { 1, 0.75, 0.5, 0 };
 	public static final double[] CAM_DRIVE_AXIS = { 5, 10, 25, 50 };
 
@@ -61,7 +62,7 @@ public class DriveTrain extends Component implements Runnable {
 			if(!isMpDoneYet()) driveMp();
 			// out.driveMP.run(in.enableMP);
 		} else if (in.autoGather && view.getLatestAngle(targetAngle)) {
-			driveAngle(targetAngle, 0.25);	
+			driveAngle(targetAngle, CAM_DRIVE_PWR);	
 		} else if (in.dynamicBrake) {
 			boolean first = !prevBrake && in.dynamicBrake;
 			dynamicBrake(sense.leftDist, sense.rightDist, first);

@@ -136,12 +136,14 @@ public class Inputs extends Component {
 		//highAngle = !prevHighAngle && controlBoard.getRawButton(4);
 		
 		//restButton = controlBoard.getRawButton(2);
+		autoGather = controlBoard.getRawButton(9);
 		switchButton = controlBoard.getRawButton(3);
 		scaleButton = controlBoard.getRawButton(4);
-		gather = controlBoard.getRawButton(2);
+		gather = controlBoard.getRawButton(2) || autoGather;
 		liftExchange = controlBoard.getRawButton(8);
 		shoot = controlBoard.getRawButton(5);
 		preClimb = controlBoard.getRawButton(6);
+		liftFlip = !controlBoard.getRawButton(15);
 		
 		//enable gather if action button is pressed and we are in rest or floor position
 		if(actionButton && (elevate.currentState == Elevator.liftState.F_FLOOR_POSITION || 
@@ -179,7 +181,7 @@ public class Inputs extends Component {
 		}
 		
 		if(elevatorCommand == Elevator.liftState.F_SCALE_POSITION || elevatorCommand == Elevator.liftState.F_SCALE_LOW_POSITION) {
-			if(scaleAngle == 1) {
+			if(scaleAngle == 1 && !liftFlip) {
 				elevatorCommand = Elevator.liftState.F_SCALE_LOW_POSITION;
 			} else {
 				elevatorCommand = Elevator.liftState.F_SCALE_POSITION;
@@ -188,10 +190,7 @@ public class Inputs extends Component {
 		
 		shift = controlBoard.getRawButton(1) || leftStick.getRawButton(4);
 		manualOverride = controlBoard.getRawButton(14);
-		liftFlip = !controlBoard.getRawButton(15);
 		
-		
-		autoGather = controlBoard.getRawButton(9);
 		cameraLights = controlBoard.getRawButton(12);
 		deployClimb = controlBoard.getRawButton(7);
 		climb = controlBoard.getRawButton(10);

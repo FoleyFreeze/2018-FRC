@@ -37,10 +37,10 @@ public class Angle { // math to create angles throughout NavX-related and Auto f
 	public double subtract(double other) {
 		double diff = angle - other;
 		
-		while(diff > 180) {
+		if(diff > 180) {
 			diff -= 360;
 		}
-		while(diff < -180) {
+		else if(diff < -180) {
 			diff += 360;
 		}
 		

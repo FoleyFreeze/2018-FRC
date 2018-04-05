@@ -689,7 +689,7 @@ public class Elevator extends Component {
 				break;
 				
 			case R_SCALE_LOW_POSITION:
-				targetArm = ARM_SCALE_LOW + 180;
+				targetArm = (180 - ARM_SCALE_LOW) + 180;
 				targetLift = LIFT_SCALE_LOW;
 				break;
 		}	
