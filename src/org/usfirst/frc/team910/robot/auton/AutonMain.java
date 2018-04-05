@@ -392,8 +392,8 @@ public class AutonMain extends Component {
 			break;
 			
 		case CENTER:
-			//currentAuton = centerSwitch;
-			currentAuton = mpCenterSwitch;
+			currentAuton = centerSwitch;
+			//currentAuton = mpCenterSwitch;
 			SmartDashboard.putString("CurrAuton","centerSwitch");
 			break;
 			
