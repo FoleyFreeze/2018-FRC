@@ -97,6 +97,16 @@ public class Elevator extends Component {
 	public static final double ARM_CLIMB_DEPLOY = 15;
 	public static final double LIFT_CLIMB = 58; 
 	
+	//CLIMB POSITIONS
+	public static final double ARM_PRECLIMB_1 = 170;
+	public static final double LIFT_PRECLIMB_1 = 30;
+	public static final double ARM_PRECLIMB_2 = 170;
+	public static final double LIFT_PRECLIMB_2 = 15;
+	public static final double ARM_PRECLIMB_3 = 45;
+	public static final double LIFT_PRECLIMB_3 = 15;
+	public static final double ARM_LIFTHOOK = 45;
+	public static final double LIFT_LIFTHOOK = 64;
+	
 	public Elevator() {
 		Component.elevate = this;
 	}
@@ -118,6 +128,12 @@ public class Elevator extends Component {
 	
 	public void run() {
 		
+		//once you go climb you never go back
+		if(in.preClimbLatch) {
+			climbElevator();
+			return;
+		}
+		
 		if(in.manualOverride) {
 			firstAuto = true;
 			
@@ -125,25 +141,6 @@ public class Elevator extends Component {
 				out.setElevatorPower(1);
 			} else if (in.switchButton) {
 				out.setElevatorPower(-1);
-			} else if(in.climb) {
-				double climbPwr;
-				if(in.shift) climbPwr = -LIFT_CLIMB_PWR_SHIFT;
-				else climbPwr = -LIFT_CLIMB_PWR;
-				
-				//when climb pressed, drive to 10in and hysteresis to 20in before resuming
-				if(sense.liftPos > 20) {
-					out.setElevatorPower(climbPwr);
-					climbAllowed = true;
-				} else if(sense.liftPos > 15) {
-					if(climbAllowed) {
-						out.setElevatorPower(climbPwr);
-					} else {
-						out.setElevatorPower(0);
-					}
-				} else {
-					climbAllowed = false;
-					out.setElevatorPower(0);
-				}
 				
 			} else {
 				out.setElevatorPower(0);
@@ -744,16 +741,27 @@ public class Elevator extends Component {
 			firstAuto = false;
 		}
 		
+		SmartDashboard.putString("TargetPos", position.toString());
+		SmartDashboard.putNumber("Maximum Arm", armMax);
+		SmartDashboard.putNumber("Minimum Arm", armMin);
+		SmartDashboard.putNumber("Maximum Lift", liftMax);
+		SmartDashboard.putNumber("Minimum Lift", liftMin);
+		
+		pidElevator(targetArm, targetLift);
+	}
+	
+	private void pidElevator(double arm, double lift) {
+		
 		//find error
-		armError = targetArm - sense.armPosL;
-		liftError = targetLift - sense.liftPos;
+		armError = arm - sense.armPosL;
+		liftError = lift - sense.liftPos;
 		
 		//find error from previous error
 		//use "process variable" in order to eliminate derivative kick
 		double deltaArmError = -sense.armPosL + prevArmError;
 		double deltaLiftError = -sense.liftPos + prevLiftError;
 		
-		double armFeedFwd = interp(FEED_FORWARD_AXIS, FEED_FORWARD_TABLE, targetArm);
+		double armFeedFwd = interp(FEED_FORWARD_AXIS, FEED_FORWARD_TABLE, arm);
 		
 		//integrate integral term when we are outside the deadband
 		if(Math.abs(liftError) > LIFT_I_DEADBAND) {
@@ -814,13 +822,14 @@ public class Elevator extends Component {
 				armPwrLim = ARM_DN_PWR;
 			} else {
 				//logic to limit power when lifting the arm after gathering
+				/*
 				if((currentState == liftState.F_FLOOR_POSITION || currentState == liftState.R_FLOOR_POSITION)
 						&& position == liftState.REST_POSITION) {
 					armPwrLim = ARM_UP_GTHR_PWR;
 				} else {
 					armPwrLim = ARM_UP_PWR;
 				}
-				
+				*/
 			}
 			
 			if(liftError > 0) {
@@ -847,18 +856,102 @@ public class Elevator extends Component {
 		//prevArmError = sense.armPosL;
 		//prevLiftError = sense.liftPos;
 		
-		SmartDashboard.putString("TargetPos", position.toString());
-		SmartDashboard.putNumber("Lift Goal", targetLift);
-		SmartDashboard.putNumber("Arm Goal", targetArm);
-		SmartDashboard.putNumber("Maximum Arm", armMax);
-		SmartDashboard.putNumber("Minimum Arm", armMin);
-		SmartDashboard.putNumber("Maximum Lift", liftMax);
-		SmartDashboard.putNumber("Minimum Lift", liftMin);
+		
 		SmartDashboard.putNumber("Lift Power", liftPower);
 		SmartDashboard.putNumber("Arm Power", armPower);
-		
+		SmartDashboard.putNumber("Lift Goal", lift);
+		SmartDashboard.putNumber("Arm Goal", arm);
 		SmartDashboard.putNumber("ArmD", deltaArmError);
 		SmartDashboard.putNumber("LiftD", deltaLiftError);
+	}
+	
+	public enum ClimbState {
+		START, PRE_CLIMB_1, PRE_CLIMB_2, PRE_CLIMB_3, LIFT_HOOK, CLIMB
+	}
+	public ClimbState cState = ClimbState.START;
+	
+	private void climbElevator() {
+		
+		switch(cState) {
+		case START:
+			if(in.preClimb) cState = ClimbState.PRE_CLIMB_1;
+			else if(in.deployClimb) cState = ClimbState.LIFT_HOOK;
+			break;
+			
+		case PRE_CLIMB_1:
+			//only move when button is held down
+			if(in.preClimb) pidElevator(ARM_PRECLIMB_1, LIFT_PRECLIMB_1);
+			else out.setElevatorPower(0);
+			
+			if(Math.abs(armError) < 5 && Math.abs(liftError) < 1.5)
+					cState = ClimbState.PRE_CLIMB_2;
+			
+			if(in.deployClimb) cState = ClimbState.LIFT_HOOK;
+			break;
+			
+		case PRE_CLIMB_2:
+			
+			if(in.preClimb) pidElevator(ARM_PRECLIMB_2, LIFT_PRECLIMB_2);
+			else out.setElevatorPower(0);
+			
+			if(Math.abs(armError) < 5 && Math.abs(liftError) < 1.5)
+					cState = ClimbState.PRE_CLIMB_3;
+			
+			if(in.deployClimb) cState = ClimbState.LIFT_HOOK;
+			break;
+			
+		case PRE_CLIMB_3:
+			
+			if(in.preClimb) pidElevator(ARM_PRECLIMB_3, LIFT_PRECLIMB_3);
+			else out.setElevatorPower(0);
+			
+			if(Math.abs(armError) < 5 && Math.abs(liftError) < 1.5)
+					cState = ClimbState.LIFT_HOOK;
+			
+			if(in.deployClimb) cState = ClimbState.LIFT_HOOK;
+			break;
+			
+		case LIFT_HOOK:
+			
+			if(in.deployClimb) pidElevator(ARM_LIFTHOOK, LIFT_LIFTHOOK);
+			else out.setElevatorPower(0);
+			
+			if(Math.abs(armError) < 5 && Math.abs(liftError) < 1.5)
+					cState = ClimbState.CLIMB;
+			
+			if(in.climb) cState = ClimbState.CLIMB;
+			break;
+			
+		case CLIMB:
+			
+			if(in.climb) {
+				double climbPwr;
+				if(in.shift) climbPwr = -LIFT_CLIMB_PWR_SHIFT;
+				else climbPwr = -LIFT_CLIMB_PWR;
+				
+				//when climb pressed, drive to 10in and hysteresis to 20in before resuming
+				if(sense.liftPos > 15) {
+					out.setElevatorPower(climbPwr);
+					climbAllowed = true;
+				} else if(sense.liftPos > 10) {
+					if(climbAllowed) {
+						out.setElevatorPower(climbPwr);
+					} else {
+						out.setElevatorPower(0);
+					}
+				} else {
+					climbAllowed = false;
+					out.setElevatorPower(0);
+				}
+			} else {
+				out.setElevatorPower(0);
+			}
+			
+			if(in.deployClimb) cState = ClimbState.LIFT_HOOK;
+			
+			break;
+		}	
+		
 	}
 
 	public void elevate(double power) {

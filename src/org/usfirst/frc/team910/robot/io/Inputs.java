@@ -66,6 +66,7 @@ public class Inputs extends Component {
 	public Elevator.liftState elevatorCommand = Elevator.liftState.REST_POSITION;
 	public boolean switchGather = false;
 	public boolean preClimb = false;
+	public boolean preClimbLatch = false;
 	
 	
 	public int liftHeightMod = 0; //this can be 0, -1, 1 
@@ -100,6 +101,7 @@ public class Inputs extends Component {
 		rightDrive = ramp(rightYAxis, rightDrive);
 		driveStraightTurn = leftStick.getX();
 		
+		manualOverride = controlBoard.getRawButton(14);
 		boolean manualGatherButtons = leftStick.getRawButton(5) && rightStick.getRawButton(5);
 	
 		if(!prevManualGather && manualGatherButtons) {
@@ -139,15 +141,14 @@ public class Inputs extends Component {
 		switchButton = controlBoard.getRawButton(3);
 		scaleButton = controlBoard.getRawButton(4);
 		//having a cube prevents the gather button from being pressed
-		autoGather = controlBoard.getRawButton(9) && !sense.hasCube;
+		autoGather = controlBoard.getRawButton(9) && (!sense.hasCube || manualOverride);
 		gather = (controlBoard.getRawButton(2) || autoGather) && !sense.hasCube; 
 		liftExchange = controlBoard.getRawButton(8);
 		shoot = controlBoard.getRawButton(5);
-		preClimb = controlBoard.getRawButton(6);
 		liftFlip = !controlBoard.getRawButton(15);
 		
 		//do action button
-		if(actionButton && gather) {
+		if(actionButton && gather && !manualOverride) {
 			//leave autoGather false if we have a cube
 			autoGather = !sense.hasCube;
 		} else if (actionButton && (elevatorCommand == Elevator.liftState.F_SWITCH_POSITION 
@@ -193,11 +194,9 @@ public class Inputs extends Component {
 		}
 		
 		shift = controlBoard.getRawButton(1) || leftStick.getRawButton(4);
-		manualOverride = controlBoard.getRawButton(14);
+		
 		
 		cameraLights = controlBoard.getRawButton(12);
-		deployClimb = controlBoard.getRawButton(7);
-		climb = controlBoard.getRawButton(10);
 		modeSwitch = controlBoard.getRawButton(13);
 		autoCube1 = controlBoard.getRawButton(18);
 		autoCube2 = controlBoard.getRawButton(17);
@@ -212,6 +211,14 @@ public class Inputs extends Component {
 		}else {
 			powerLimiter=0.25;
 		}
+		
+		preClimb = controlBoard.getRawButton(6);
+		deployClimb = controlBoard.getRawButton(7);
+		climb = controlBoard.getRawButton(10);
+		
+		//if this is ever pressed, dont go back
+		if((preClimb || deployClimb) && !manualOverride && elevate.currentState == Elevator.liftState.REST_POSITION) preClimbLatch = true;
+		
 	}
 	
 	
