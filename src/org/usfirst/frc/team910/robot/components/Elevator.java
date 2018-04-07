@@ -80,14 +80,14 @@ public class Elevator extends Component {
 	
 	public static final double LIFT_SCALE = 69;//was 70
 	public static final double LIFT_SCALE_LOW = 62;
-	public static final double LIFT_SWITCH = 20;//was 18
+	public static final double LIFT_SWITCH = 24;//was 20
 	public static final double LIFT_SWITCH_GATHER = 6;
 	public static final double LIFT_EXCHANGE = 3;
 	public static final double LIFT_FLOOR = 0.5;
 	public static final double LIFT_REST = LIFT_FLOOR;
 	public static final double ARM_SCALE = 90;
 	public static final double ARM_SCALE_LOW = 110;
-	public static final double ARM_SWITCH = 90;
+	public static final double ARM_SWITCH = 95;//was 90
 	public static final double ARM_EXCHANGE = 95;
 	public static final double ARM_FLOOR = 104; //104 from prototype testing
 	public static final double ARM_FLOOR_SHIFT = 90;

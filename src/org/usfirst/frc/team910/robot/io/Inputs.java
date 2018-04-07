@@ -136,20 +136,24 @@ public class Inputs extends Component {
 		//highAngle = !prevHighAngle && controlBoard.getRawButton(4);
 		
 		//restButton = controlBoard.getRawButton(2);
-		autoGather = controlBoard.getRawButton(9);
 		switchButton = controlBoard.getRawButton(3);
 		scaleButton = controlBoard.getRawButton(4);
-		gather = controlBoard.getRawButton(2) || autoGather;
+		//having a cube prevents the gather button from being pressed
+		autoGather = controlBoard.getRawButton(9) && !sense.hasCube;
+		gather = (controlBoard.getRawButton(2) || autoGather) && !sense.hasCube; 
 		liftExchange = controlBoard.getRawButton(8);
 		shoot = controlBoard.getRawButton(5);
 		preClimb = controlBoard.getRawButton(6);
 		liftFlip = !controlBoard.getRawButton(15);
 		
-		//enable gather if action button is pressed and we are in rest or floor position
-		if(actionButton && (elevate.currentState == Elevator.liftState.F_FLOOR_POSITION || 
-				elevate.currentState == Elevator.liftState.REST_POSITION || elevate.currentState == Elevator.liftState.R_FLOOR_POSITION)) {
-			gather = true;
-		} else if (actionButton) {
+		//do action button
+		if(actionButton && gather) {
+			//leave autoGather false if we have a cube
+			autoGather = !sense.hasCube;
+		} else if (actionButton && (elevatorCommand == Elevator.liftState.F_SWITCH_POSITION 
+				|| elevatorCommand == Elevator.liftState.F_SCALE_POSITION 
+				|| elevatorCommand == Elevator.liftState.F_SCALE_LOW_POSITION
+				|| elevatorCommand == Elevator.liftState.F_EXCHANGE_POSITION)) {
 			shoot = true;
 		}
 		

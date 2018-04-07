@@ -178,9 +178,11 @@ public class Sensors extends Component {
 		SmartDashboard.putNumber("distFL", ((int) (distFL * 10))/10.0);
 	}
 	
+	public boolean hasCube = false;
 	
 	public void runLights() {
 		if(distFC < Gatherer.DIST_FRAME && distFR < Gatherer.DIST_FRAME && distFL < Gatherer.DIST_FRAME) {
+			hasCube = true;
 			greenLED.set(true);
 			greenLED2.set(true);
 			blueLED.set(false);
@@ -188,6 +190,7 @@ public class Sensors extends Component {
 			redLED.set(false);
 			redLED2.set(false);
 		} else {
+			hasCube = false;
 			greenLED.set(false);
 			greenLED2.set(false);
 			blueLED.set(true);

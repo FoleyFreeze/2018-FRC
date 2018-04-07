@@ -20,7 +20,8 @@ public class Vision extends Component {
 	
 	public static final double WIDTH_LIMIT = 25;
 	public static final double HEIGHT_LIMIT = 25;
-
+	
+	
 	LimitedStack<VisionData> blocks = new LimitedStack<VisionData>(MAX_SIZE);
 
 	public Vision() {
@@ -57,6 +58,19 @@ public class Vision extends Component {
 		
 		targetAngle.set(angle);
 		return true;
+	}
+	
+	public double getLatestDist() {
+		if(blocks.isEmpty()) return 0;
+		
+		VisionData vd = blocks.getLast();
+		
+		if(vd.timestamp < Timer.getFPGATimestamp() - IMAGE_TIMEOUT) {
+			return 0;
+		}
+		
+		//get bottom edge of cube
+		return vd.y - vd.h/2;
 	}
 
 	public void run() {

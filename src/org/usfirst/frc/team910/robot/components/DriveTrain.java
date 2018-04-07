@@ -27,7 +27,9 @@ public class DriveTrain extends Component implements Runnable {
 
 	public static final double CAM_DRIVE_KP = 0.5 / 45; // This is power per degree of error
 	public static final double CAM_DRIVE_KD = 0; // .5/45 * 50. This is power per degree per 20 milliseconds
-	public static final double CAM_DRIVE_PWR = 0.4;
+	public static final double CAM_DRIVE_PWR = 0.2;
+	public static final double CAM_DRIVE_DIST_KP = 0.01; //max height of camera is 240
+	public static final double GATHERED_DIST = 90; 
 	
 	public static final double[] CAM_DRIVE_TABLE = { 1, 0.75, 0.5,  0 };
 	public static final double[] CAM_DRIVE_AXIS =  { 5,   10,  25, 50 };
@@ -61,15 +63,19 @@ public class DriveTrain extends Component implements Runnable {
 			//only mp if we still have points
 			if(!isMpDoneYet()) driveMp();
 			// out.driveMP.run(in.enableMP);
+			
 		} else if (in.autoGather && view.getLatestAngle(targetAngle)) {
-			driveAngle(targetAngle, CAM_DRIVE_PWR);	
+			driveAngle(targetAngle, CAM_DRIVE_PWR, view.getLatestDist());	
+			
 		} else if (in.dynamicBrake) {
 			boolean first = !prevBrake && in.dynamicBrake;
 			dynamicBrake(sense.leftDist, sense.rightDist, first);
+			
 		} else if (in.driveStraight) {
 			boolean first = !prevDriveStraight && in.driveStraight;
 			driveStraightEnc(sense.leftDist, sense.rightDist, first, in.rightDrive);
 			// driveStraightNavx(sense.robotAngle,in.rightDrive, first);
+			
 		} else {
 			tankDrive(in.leftDrive, in.rightDrive);
 		}
@@ -345,7 +351,7 @@ public class DriveTrain extends Component implements Runnable {
 
 	private double prevCamError;
 
-	public void driveAngle(Angle targetAngle, double power) {
+	public void driveAngle(Angle targetAngle, double power, double dist) {
 		// error is the target angle minus the robot angle
 		double error = targetAngle.subtract(sense.robotAngle);
 
@@ -356,20 +362,26 @@ public class DriveTrain extends Component implements Runnable {
 		double powerDiff = CAM_DRIVE_KP * error + CAM_DRIVE_KD * deltaError;
 
 		power = power * Elevator.interp(CAM_DRIVE_AXIS, CAM_DRIVE_TABLE, error);
-
+	
+		power *= (dist - GATHERED_DIST) * CAM_DRIVE_DIST_KP;
+		
 		// setting powers
 		double powerL = power - powerDiff;
 		double powerR = power + powerDiff;
 
-		if (powerL > 1)
-			powerL = 1;
-		else if (powerL < -1)
-			powerL = -1;
-		if (powerR > 1)
-			powerR = 1;
-		else if (powerR < -1)
-			powerR = -1;
-
+		//normalize powers
+		double maxPwr = Math.max(powerL, powerR);
+		double minPwr = Math.min(powerL, powerR);
+		
+		if (maxPwr > 1) {
+			powerL /= Math.abs(maxPwr);
+			powerR /= Math.abs(maxPwr);
+		}
+		else if (maxPwr < -1) {
+			powerL /= Math.abs(minPwr);
+			powerR /= Math.abs(minPwr);
+		}
+		
 		out.setDrivePower(powerL, powerR);
 
 	}
