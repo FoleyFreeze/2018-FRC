@@ -187,20 +187,20 @@ public class AutonMain extends Component {
 					//b.add(new WaitStep(.5));
 					b.add(new ShootStep());
 					b.end();
-				b.add(new DriveTurnStep(0.2,0.2,2));
+				b.add(new DriveTurnStep(0.2,0.2,1));
 				b.end();
 			
 			
 			//wait and then attempt to drive back
-			b.add(new WaitStep(1));
+			//b.add(new WaitStep(0.5));
 			
 			b.add(new IfSet(new IfInterface() {
 				public boolean choice() { //is the switch on the left or right
 					return options.switchIsLeft;
 				}
 			}));
-				b.add(new DriveTurnStep(-0.5, 0.1, 0.9)); //left start
-				b.add(new DriveTurnStep(0.1, -0.5, 0.9)); //right start
+				b.add(new DriveTurnStep(-0.5, 0.1, 1.1)); //left start
+				b.add(new DriveTurnStep(0.1, -0.5, 1.1)); //right start
 				b.end();
 			
 			b.add(new ElevatorPosition(Elevator.liftState.REST_POSITION));
@@ -215,7 +215,7 @@ public class AutonMain extends Component {
 				b.add(new DriveTurnStep(-0.05, 0.4, 1)); //right start
 				b.end();
 			
-			b.add(new DriveForward(60, 0.75));
+			b.add(new DriveForward(70, 1.4));//was 60
 			
 			b.add(new IfSet(new IfInterface() {
 				public boolean choice() { //is the switch on the left or right
@@ -251,10 +251,10 @@ public class AutonMain extends Component {
 				b.add(new SeriesSet());
 					b.add(new DriveProfile(Profile.straightScaleL));
 					b.add(new ElevatorPosition(Elevator.liftState.F_SCALE_POSITION));
-					b.add(new WaitStep(2));
-					b.add(new DriveTurnStep(0.5, 0.05, 0.6)); //kick
+					b.add(new WaitStep(1));
+					b.add(new DriveTurnStep(0.55, 0.05, 0.6)); //kick
 					b.add(new ShootStep());
-					b.add(new WaitStep(3));
+					//b.add(new WaitStep(3));
 					b.add(new DriveTurnStep(-.25, -.25, 3));
 					b.add(new WaitStep(3));
 					b.add(new ElevatorPosition(Elevator.liftState.REST_POSITION));
@@ -267,16 +267,16 @@ public class AutonMain extends Component {
 					b.add(new SeriesSet());
 						b.add(new DriveProfile(Profile.straightScaleR));
 						b.add(new ElevatorPosition(Elevator.liftState.F_SCALE_POSITION));
-						b.add(new WaitStep(1.5));
-						b.add(new DriveTurnStep(0.05, 0.5, 0.6));//kick
+						b.add(new WaitStep(1));
+						b.add(new DriveTurnStep(0.05, 0.6, 0.6));//kick
 						b.add(new ShootStep());
-						b.add(new WaitStep(3));
+						//b.add(new WaitStep(3));
 						b.add(new DriveTurnStep(-.25, -.25, 3));
 						b.add(new WaitStep(3));
 						b.add(new ElevatorPosition(Elevator.liftState.REST_POSITION));
 						b.end();
 					//false drive straight
-					b.add(new DriveForward(80, 3));
+					b.add(new DriveForward(50, 3)); //was 80 fh
 					b.end();
 				b.end();
 		
@@ -354,7 +354,7 @@ public class AutonMain extends Component {
 		testProfile = new SeriesSet();
 		b.add(testProfile);
 			b.add(new StartStep());
-			b.add(new DriveProfile(Profile.centerSwitchR));
+			b.add(new DriveProfile(Profile.rightToLeftScale));
 			b.add(new EndStep());
 			b.end();
 		Path.print = false;
