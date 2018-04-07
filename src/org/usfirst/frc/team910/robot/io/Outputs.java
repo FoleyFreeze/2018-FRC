@@ -229,7 +229,7 @@ public class Outputs extends Component {
 		}
 		
 		double power = 1;
-		if(in.manualOverride) power = in.manualHeight;
+		if(in.manualOverride && !in.climb) power = in.manualHeight;
 		elevatorPower=power*elevatorPower;
 		
 		//limiting logic
@@ -364,17 +364,11 @@ public class Outputs extends Component {
 	}
 	
 	public void disableBrake() {
-		if(!in.manualOverride) {
-			elevator1.setNeutralMode(NeutralMode.Coast);
-			elevator2.setNeutralMode(NeutralMode.Coast);
-			elevator3.setNeutralMode(NeutralMode.Coast);
-			elevator4.setNeutralMode(NeutralMode.Coast);
-		}else {
-			elevator1.setNeutralMode(NeutralMode.Brake);
-			elevator2.setNeutralMode(NeutralMode.Brake);
-			elevator3.setNeutralMode(NeutralMode.Brake);
-			elevator4.setNeutralMode(NeutralMode.Brake);
-		}
+		elevator1.setNeutralMode(NeutralMode.Coast);
+		elevator2.setNeutralMode(NeutralMode.Coast);
+		elevator3.setNeutralMode(NeutralMode.Coast);
+		elevator4.setNeutralMode(NeutralMode.Coast);
+			
 		armMotor1.setNeutralMode(NeutralMode.Coast);
 		armMotor2.setNeutralMode(NeutralMode.Coast);
 	}

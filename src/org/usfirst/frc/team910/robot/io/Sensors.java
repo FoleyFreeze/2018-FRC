@@ -178,17 +178,22 @@ public class Sensors extends Component {
 		SmartDashboard.putNumber("distFL", ((int) (distFL * 10))/10.0);
 	}
 	
+	
 	public void runLights() {
 		if(distFC < Gatherer.DIST_FRAME && distFR < Gatherer.DIST_FRAME && distFL < Gatherer.DIST_FRAME) {
 			greenLED.set(true);
 			greenLED2.set(true);
 			blueLED.set(false);
 			blueLED2.set(false);
+			redLED.set(false);
+			redLED2.set(false);
 		} else {
 			greenLED.set(false);
 			greenLED2.set(false);
 			blueLED.set(true);
 			blueLED2.set(true);
+			redLED.set(false);
+			redLED2.set(false);
 		}
 	}
 

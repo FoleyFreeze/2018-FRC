@@ -25,18 +25,18 @@ public class Gatherer extends Component {
 	public static final double DIST_TOLERANCE = 2;
 	public static final double DIST_FRAME = 6;
 	
-	public static final double PWR_SHOOT = -0.5;//was -0.35 pre mid rollers
+	public static final double PWR_SHOOT = -0.45; //FH -0.5; //was -0.35 pre mid rollers
 	public static final double PWR_SHIFT_SHOOT = -0.9; //was -0.7 pre mid rollers
 	public static final double PWR_EXCHANGE_SHOOT = -0.9;
 	
-	public static final double PWR_REV_GATHER = -0.2; //was -0.2
-	public static final double PWR_FWD_GATHER = 0.8; //was 0.6 //3-29
-	public static final double PWR_GATHER_FAST = 0.7;
+	public static final double PWR_REV_GATHER = -0.3; //was -0.2
+	public static final double PWR_FWD_GATHER = 0.9; //was 0.6 //3-29
+	public static final double PWR_GATHER_FAST = 0.7; //0.85 LH
 	public static final double PWR_GATHER_SLOW = 0.4;
 	public static final double PWR_GATHER_PASSIVE = 0.15;
 	
-	public static final double TIME_UNTIL_RESPIN = 0.3;
-	public static final double TIME_IN_RESPIN = 0.10;
+	public static final double TIME_UNTIL_RESPIN = 0.4;//.3
+	public static final double TIME_IN_RESPIN = 0.20; //0.10
 
 	public double stepTimer_IR = 0;
 	public gatherStateIR gatherS_IR = gatherStateIR.INIT;

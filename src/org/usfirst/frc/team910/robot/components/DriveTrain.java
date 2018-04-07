@@ -29,8 +29,8 @@ public class DriveTrain extends Component implements Runnable {
 	public static final double CAM_DRIVE_KD = 0; // .5/45 * 50. This is power per degree per 20 milliseconds
 	public static final double CAM_DRIVE_PWR = 0.4;
 	
-	public static final double[] CAM_DRIVE_TABLE = { 1, 0.75, 0.5, 0 };
-	public static final double[] CAM_DRIVE_AXIS = { 5, 10, 25, 50 };
+	public static final double[] CAM_DRIVE_TABLE = { 1, 0.75, 0.5,  0 };
+	public static final double[] CAM_DRIVE_AXIS =  { 5,   10,  25, 50 };
 
 	public DriveTrain() {
 		Component.drive = this;

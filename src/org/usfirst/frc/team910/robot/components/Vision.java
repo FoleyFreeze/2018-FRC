@@ -31,6 +31,9 @@ public class Vision extends Component {
 
 		// PIXY ID #8
 		listener.setPixyIDFront(-1225198266);
+		
+		// PIXY ID #6
+		//listener.setPixyIDFront(-1028254399);
 
 		listener.listForPixyFront(blocks);
 
@@ -40,6 +43,8 @@ public class Vision extends Component {
 	}
 	
 	public boolean getLatestAngle(Angle targetAngle) {
+		if(blocks.isEmpty()) return false;
+		
 		VisionData vd = blocks.getLast();
 		
 		if(vd.timestamp < Timer.getFPGATimestamp() - IMAGE_TIMEOUT) {

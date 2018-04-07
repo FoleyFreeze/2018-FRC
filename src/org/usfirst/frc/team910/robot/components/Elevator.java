@@ -28,6 +28,7 @@ public class Elevator extends Component {
 	public static final double LIFT_UP_PWR_SHIFT = 0.4;
 	public static final double LIFT_DN_PWR_SHIFT = 0.25;
 	public static final double LIFT_CLIMB_PWR = 0.8;
+	public static final double LIFT_CLIMB_PWR_SHIFT = 0.6;
 	
 	//TODO figure this out properly
 	public static final double[] ARM_AXIS_MIN_HIGH = {-150, -120, -119.9, -108, 108, 106, 165, 277};
@@ -78,7 +79,7 @@ public class Elevator extends Component {
 	public static final double R_SCALE_ARM_MIN = 180;
 	
 	public static final double LIFT_SCALE = 69;//was 70
-	public static final double LIFT_SCALE_LOW = 60;
+	public static final double LIFT_SCALE_LOW = 62;
 	public static final double LIFT_SWITCH = 20;//was 18
 	public static final double LIFT_SWITCH_GATHER = 6;
 	public static final double LIFT_EXCHANGE = 3;
@@ -125,13 +126,17 @@ public class Elevator extends Component {
 			} else if (in.switchButton) {
 				out.setElevatorPower(-1);
 			} else if(in.climb) {
+				double climbPwr;
+				if(in.shift) climbPwr = -LIFT_CLIMB_PWR_SHIFT;
+				else climbPwr = -LIFT_CLIMB_PWR;
+				
 				//when climb pressed, drive to 10in and hysteresis to 20in before resuming
 				if(sense.liftPos > 20) {
-					out.setElevatorPower(-LIFT_CLIMB_PWR);
+					out.setElevatorPower(climbPwr);
 					climbAllowed = true;
-				} else if(sense.liftPos > 10) {
+				} else if(sense.liftPos > 15) {
 					if(climbAllowed) {
-						out.setElevatorPower(-LIFT_CLIMB_PWR);
+						out.setElevatorPower(climbPwr);
 					} else {
 						out.setElevatorPower(0);
 					}
