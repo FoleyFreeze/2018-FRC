@@ -67,6 +67,7 @@ public class Robot extends TimedRobot {
 	@Override
 	public void autonomousInit() {
 		auton.init();
+		input.auton = true;
 		sensor.robotDisabled = false;
 	}
 
@@ -95,6 +96,7 @@ public class Robot extends TimedRobot {
 	@Override
 	public void teleopInit() {
 		sensor.robotDisabled = false;
+		input.auton = false;
 	}
 
 	/**

@@ -253,7 +253,7 @@ public class AutonMain extends Component {
 					b.add(new ElevatorPosition(Elevator.liftState.F_SCALE_POSITION));
 					b.add(new WaitStep(1));
 					b.add(new DriveTurnStep(0.55, 0.05, 0.6)); //kick
-					b.add(new ShootStep());
+					b.add(new ShootStep(-0.35));
 					//b.add(new WaitStep(3));
 					b.add(new DriveTurnStep(-.25, -.25, 3));
 					b.add(new WaitStep(3));
@@ -268,8 +268,8 @@ public class AutonMain extends Component {
 						b.add(new DriveProfile(Profile.straightScaleR));
 						b.add(new ElevatorPosition(Elevator.liftState.F_SCALE_POSITION));
 						b.add(new WaitStep(1));
-						b.add(new DriveTurnStep(0.05, 0.6, 0.6));//kick
-						b.add(new ShootStep());
+						b.add(new DriveTurnStep(0.05, 0.6, 0.6));//left kick
+						b.add(new ShootStep(-0.35));
 						//b.add(new WaitStep(3));
 						b.add(new DriveTurnStep(-.25, -.25, 3));
 						b.add(new WaitStep(3));
@@ -306,46 +306,58 @@ public class AutonMain extends Component {
 					b.add(new SeriesSet());
 						b.add(new DriveProfile(Profile.straightScaleL));
 						b.add(new ElevatorPosition(Elevator.liftState.F_SCALE_POSITION));
-						b.add(new WaitStep(2));
-						b.add(new ShootStep());
+						b.add(new WaitStep(1));
+						b.add(new DriveTurnStep(0.55, -0.2, 0.4)); //kick
+						b.add(new ShootStep(-0.4));
+						//b.add(new WaitStep(3));
+						b.add(new DriveTurnStep(-.25, -.25, 3));
 						b.end();
 					//start right goal right
 					b.add(new SeriesSet()); 
 						b.add(new DriveProfile(Profile.straightScaleR));
 						b.add(new ElevatorPosition(Elevator.liftState.F_SCALE_POSITION));
-						b.add(new WaitStep(2));
-						b.add(new ShootStep());
+						b.add(new WaitStep(1));
+						b.add(new DriveTurnStep(-0.2, 0.6, 0.4));//left kick
+						b.add(new ShootStep(-0.4));
+						//b.add(new WaitStep(3));
+						b.add(new DriveTurnStep(-.25, -.25, 3));
 						b.end();
 					b.end(); //end of the true straight case series set
 				
 //------------------CROSS SCALE---------------------------------------------------------------------
 			
-				//false case of straight scale if (indicates cross scale)
+			
+				//start right have to cross to left
 				b.add(new IfSet(new IfInterface() {
 					public boolean choice() {
-						return options.selectedStart == LEFT && !options.scaleIsLeft
-							|| options.selectedStart == RIGHT && options.scaleIsLeft;					 
+						return options.selectedStart == RIGHT && options.scaleIsLeft;
 					}
 				}));
-					//start right have to cross to left
-					b.add(new IfSet(new IfInterface() {
-						public boolean choice() {
-							return options.selectedStart == RIGHT && options.scaleIsLeft;
-						}
-					}));
-						b.add(new SeriesSet()); 
+					b.add(new SeriesSet()); 
+						b.add(new ParallelSet());
 							b.add(new DriveProfile(Profile.rightToLeftScale));
-							b.add(new ElevatorPosition(Elevator.liftState.F_SCALE_POSITION));
-							b.add(new WaitStep(2));
-							b.add(new ShootStep());
+							b.add(new SeriesSet());
+								b.add(new WaitStep(5.2));
+								//b.add(new EndStep()); //TODO: remove when we want to complete cross scale auto
+								b.add(new ElevatorPosition(Elevator.liftState.F_SCALE_POSITION)); //TODO: re add this
+								b.end();
 							b.end();
-						b.add(new SeriesSet()); 
-							b.add(new DriveProfile(Profile.leftToRightScale));
-							b.add(new ElevatorPosition(Elevator.liftState.F_SCALE_POSITION));
-							b.add(new WaitStep(2));
-							b.add(new ShootStep());
-							b.end();
-						b.end();//ends the left or right cross if
+						b.add(new ShootStep()); //TODO: re add this
+						b.end();
+					
+						//b.add(new DriveProfile(Profile.rightToLeftScale));
+						//b.add(new ElevatorPosition(Elevator.liftState.F_SCALE_POSITION));
+						//b.add(new WaitStep(1));
+						//b.add(new DriveTurnStep(0.6, 0.05, 0.6));
+						//b.add(new ShootStep());
+						//b.end();
+					b.add(new SeriesSet()); 
+						b.add(new DriveProfile(Profile.leftToRightScale));
+						b.add(new ElevatorPosition(Elevator.liftState.F_SCALE_POSITION));
+						b.add(new WaitStep(1));
+						b.add(new ShootStep());
+						b.end();
+					b.end();//ends the left or right cross if
 				b.end();//ends the straight or cross if
 			b.add(new EndStep());
 			b.end(); 
@@ -355,6 +367,8 @@ public class AutonMain extends Component {
 		b.add(testProfile);
 			b.add(new StartStep());
 			b.add(new DriveProfile(Profile.rightToLeftScale));
+			//b.add(scale);
+			//b.end();
 			b.add(new EndStep());
 			b.end();
 		Path.print = false;
@@ -411,7 +425,8 @@ public class AutonMain extends Component {
 		//if scale is selected, do that one
 		switch(options.selectedPriority) {
 		case SCALE:
-			currentAuton = straightScale;
+			//currentAuton = straightScale;
+			currentAuton = scale;
 			SmartDashboard.putString("CurrAuton","scale");
 			break;
 		}

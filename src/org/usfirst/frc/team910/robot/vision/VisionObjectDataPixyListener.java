@@ -162,7 +162,7 @@ public class VisionObjectDataPixyListener  {
     private int pixyBackId;
 	private static final int BLOCK_SIZE = 6;
     private boolean debug;
-	private static final String PIXY_TABLE = "Pixy";
+	private static final String PIXY_TABLE = "pixy";
 	private static final String PIXY_DATA = "pixyobjdata";
 	private NetworkTableInstance inst;
 	private NetworkTable table;

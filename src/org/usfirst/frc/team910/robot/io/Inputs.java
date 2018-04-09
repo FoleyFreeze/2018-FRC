@@ -20,6 +20,8 @@ public class Inputs extends Component {
 	private Joystick controlBoard;
 	
 	public boolean enableMP = false;
+	public boolean auton = false;
+	public double autonShootPwr = 0;
 	public double powerLimiter;
 	/*
 
@@ -176,7 +178,8 @@ public class Inputs extends Component {
 		}
 		//if we are transitioning out of the gather position
 		else if( elevatorCommand == Elevator.liftState.F_FLOOR_POSITION ||
-				 elevatorCommand == Elevator.liftState.R_FLOOR_POSITION) {
+				 elevatorCommand == Elevator.liftState.R_FLOOR_POSITION ||
+				 (sense.hasCube && gather)) {
 			elevatorCommand = Elevator.liftState.REST_POSITION;
 		} 
 		//if we are transitioning out of the switch gather position
@@ -219,6 +222,8 @@ public class Inputs extends Component {
 		//if this is ever pressed, dont go back
 		if((preClimb || deployClimb) && !manualOverride && elevate.currentState == Elevator.liftState.REST_POSITION) preClimbLatch = true;
 		
+		SmartDashboard.putString("ElevatorCmd", elevatorCommand.toString());
+		SmartDashboard.putBoolean("ClimbLatch", preClimbLatch);
 	}
 	
 	

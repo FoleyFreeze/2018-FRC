@@ -81,13 +81,14 @@ public class Elevator extends Component {
 	public static final double LIFT_SCALE = 69;//was 70
 	public static final double LIFT_SCALE_LOW = 62;
 	public static final double LIFT_SWITCH = 24;//was 20
-	public static final double LIFT_SWITCH_GATHER = 6;
+	public static final double LIFT_SWITCH_GATHER = 7;//was 6
 	public static final double LIFT_EXCHANGE = 3;
 	public static final double LIFT_FLOOR = 0.5;
 	public static final double LIFT_REST = LIFT_FLOOR;
 	public static final double ARM_SCALE = 90;
 	public static final double ARM_SCALE_LOW = 110;
 	public static final double ARM_SWITCH = 95;//was 90
+	public static final double ARM_SWITCH_GATHER = 90;
 	public static final double ARM_EXCHANGE = 95;
 	public static final double ARM_FLOOR = 104; //104 from prototype testing
 	public static final double ARM_FLOOR_SHIFT = 90;
@@ -569,11 +570,6 @@ public class Elevator extends Component {
 				else targetArm = F_ARM_REST;
 				targetLift = LIFT_REST;
 				
-				if(currentState == liftState.F_FLOOR_POSITION || currentState == liftState.R_FLOOR_POSITION) {
-					
-				} else {
-					
-				}
 				break;
 				
 			case F_FLOOR_POSITION:
@@ -595,8 +591,13 @@ public class Elevator extends Component {
 					targetArm = ARM_SWITCH;
 				}
 				
-				if(in.switchGather) targetLift = LIFT_SWITCH_GATHER;
-				else targetLift = LIFT_SWITCH;
+				if(in.switchGather) {
+					targetLift = LIFT_SWITCH_GATHER;
+					targetArm = ARM_SWITCH_GATHER;
+				}
+				else {
+					targetLift = LIFT_SWITCH;
+				}
 				
 				break;
 				
@@ -830,6 +831,7 @@ public class Elevator extends Component {
 					armPwrLim = ARM_UP_PWR;
 				}
 				*/
+				armPwrLim = ARM_UP_PWR;
 			}
 			
 			if(liftError > 0) {
@@ -838,6 +840,7 @@ public class Elevator extends Component {
 				liftPwrLim = LIFT_DN_PWR;
 			}
 		}
+		
 		
 		//limit powers
 		if(armPower > armPwrLim) armPower = armPwrLim;
@@ -858,11 +861,15 @@ public class Elevator extends Component {
 		
 		
 		SmartDashboard.putNumber("Lift Power", liftPower);
+		SmartDashboard.putNumber("Lift Power Lim", liftPwrLim);
+		SmartDashboard.putNumber("Arm Power Lim", armPwrLim);
 		SmartDashboard.putNumber("Arm Power", armPower);
 		SmartDashboard.putNumber("Lift Goal", lift);
 		SmartDashboard.putNumber("Arm Goal", arm);
 		SmartDashboard.putNumber("ArmD", deltaArmError);
 		SmartDashboard.putNumber("LiftD", deltaLiftError);
+		SmartDashboard.putNumber("LiftError", liftError);
+		SmartDashboard.putNumber("ArmError", armError);
 	}
 	
 	public enum ClimbState {
@@ -881,7 +888,10 @@ public class Elevator extends Component {
 		case PRE_CLIMB_1:
 			//only move when button is held down
 			if(in.preClimb) pidElevator(ARM_PRECLIMB_1, LIFT_PRECLIMB_1);
-			else out.setElevatorPower(0);
+			else {
+				out.setArmPower(0);
+				out.setElevatorPower(0);
+			}
 			
 			if(Math.abs(armError) < 5 && Math.abs(liftError) < 1.5)
 					cState = ClimbState.PRE_CLIMB_2;
@@ -892,7 +902,10 @@ public class Elevator extends Component {
 		case PRE_CLIMB_2:
 			
 			if(in.preClimb) pidElevator(ARM_PRECLIMB_2, LIFT_PRECLIMB_2);
-			else out.setElevatorPower(0);
+			else {
+				out.setArmPower(0);
+				out.setElevatorPower(0);
+			}
 			
 			if(Math.abs(armError) < 5 && Math.abs(liftError) < 1.5)
 					cState = ClimbState.PRE_CLIMB_3;
@@ -903,7 +916,10 @@ public class Elevator extends Component {
 		case PRE_CLIMB_3:
 			
 			if(in.preClimb) pidElevator(ARM_PRECLIMB_3, LIFT_PRECLIMB_3);
-			else out.setElevatorPower(0);
+			else {
+				out.setArmPower(0);
+				out.setElevatorPower(0);
+			}
 			
 			if(Math.abs(armError) < 5 && Math.abs(liftError) < 1.5)
 					cState = ClimbState.LIFT_HOOK;
@@ -914,7 +930,10 @@ public class Elevator extends Component {
 		case LIFT_HOOK:
 			
 			if(in.deployClimb) pidElevator(ARM_LIFTHOOK, LIFT_LIFTHOOK);
-			else out.setElevatorPower(0);
+			else {
+				out.setArmPower(0);
+				out.setElevatorPower(0);
+			}
 			
 			if(Math.abs(armError) < 5 && Math.abs(liftError) < 1.5)
 					cState = ClimbState.CLIMB;
@@ -923,6 +942,7 @@ public class Elevator extends Component {
 			break;
 			
 		case CLIMB:
+			out.setArmPower(0);
 			
 			if(in.climb) {
 				double climbPwr;
@@ -951,6 +971,8 @@ public class Elevator extends Component {
 			
 			break;
 		}	
+		
+		SmartDashboard.putString("ClimbState", cState.toString());
 		
 	}
 

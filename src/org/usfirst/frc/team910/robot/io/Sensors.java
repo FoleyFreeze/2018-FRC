@@ -182,7 +182,8 @@ public class Sensors extends Component {
 	
 	public void runLights() {
 		if(distFC < Gatherer.DIST_FRAME && distFR < Gatherer.DIST_FRAME && distFL < Gatherer.DIST_FRAME) {
-			hasCube = true;
+			//hasCube = true;
+			sense.hasCube = false;
 			greenLED.set(true);
 			greenLED2.set(true);
 			blueLED.set(false);
