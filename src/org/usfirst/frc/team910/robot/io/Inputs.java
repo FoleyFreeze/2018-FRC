@@ -90,8 +90,8 @@ public class Inputs extends Component {
 	public void read() {
 		double leftYAxis = -leftStick.getY();
 		double rightYAxis = -rightStick.getY();
-		//manualGatherLeft = leftStick.getThrottle();
-		//manualGatherRight = rightStick.getThrottle();
+		manualGatherLeft = leftStick.getThrottle();
+		manualGatherRight = rightStick.getThrottle();
 		
 		enableMP = false;
 		

@@ -24,6 +24,7 @@ public class Gatherer extends Component {
 	public static final double SEARCH_DIST = 11.5;
 	public static final double DIST_TOLERANCE = 1.5;
 	public static final double DIST_FRAME = 6.5;
+	public static final double DIST_HALF_GATHER = 8.5;
 	
 	public static final double PWR_SHOOT = -0.45; //FH -0.5; //was -0.35 pre mid rollers
 	public static final double PWR_SHIFT_SHOOT = -0.9; //was -0.7 pre mid rollers

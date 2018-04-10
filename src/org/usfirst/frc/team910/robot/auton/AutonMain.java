@@ -342,7 +342,12 @@ public class AutonMain extends Component {
 								b.add(new ElevatorPosition(Elevator.liftState.F_SCALE_POSITION)); //TODO: re add this
 								b.end();
 							b.end();
-						b.add(new ShootStep()); //TODO: re add this
+						b.add(new ShootStep());
+						b.add(new WaitStep(0.5));
+						b.add(new DriveTurnStep(-0.2, -0.2, 0.2));
+						b.add(new ElevatorPosition(Elevator.liftState.R_FLOOR_POSITION));
+						//b.add(new AutoGather);
+						//b.add(new DriveProfile(Profile.));
 						b.end();
 					
 						//b.add(new DriveProfile(Profile.rightToLeftScale));

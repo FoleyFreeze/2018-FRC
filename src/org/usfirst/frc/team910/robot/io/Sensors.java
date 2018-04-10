@@ -179,6 +179,8 @@ public class Sensors extends Component {
 	}
 	
 	public boolean hasCube = false;
+	public boolean touchingCube = false;
+	public boolean halfGathered = false;
 	
 	public void runLights() {
 		if(distFC < Gatherer.DIST_FRAME && distFR < Gatherer.DIST_FRAME && distFL < Gatherer.DIST_FRAME) {
@@ -198,6 +200,19 @@ public class Sensors extends Component {
 			blueLED2.set(true);
 			redLED.set(false);
 			redLED2.set(false);
+		}
+		
+		if(distFR < Gatherer.DIST_HALF_GATHER || distFL < Gatherer.DIST_HALF_GATHER) {
+			halfGathered = true;
+		}else {
+			halfGathered = false;
+		}
+		
+//		if(distFC < Gatherer.SEARCH_DIST && distFR < Gatherer.SEARCH_DIST && distFL < Gatherer.SEARCH_DIST) {
+		if(distFR < Gatherer.SEARCH_DIST && distFL < Gatherer.SEARCH_DIST) { //If a cube is touching the gatherer set flag true
+			touchingCube = true;
+		} else {
+			touchingCube = false;
 		}
 	}
 

@@ -25,14 +25,14 @@ public class DriveTrain extends Component implements Runnable {
 	public static final double DRIVEMP_KFA = 1.0 / 380.0; //full power is 420 in/sec/sec
 	public static final double DRIVEMP_KFV_INT = 0.1;
 
-	public static final double CAM_DRIVE_KP = 1.0 / 25.0; // This is power per degree of error
+	public static final double CAM_DRIVE_KP = 1.0 / 25.0; // Ex: 1/25 is 100% power per 25 degree of error
 	public static final double CAM_DRIVE_KD = 0.1; // .5/45 * 50. This is power per degree per 20 milliseconds
-	public static final double CAM_DRIVE_PWR = 0.5;
-	public static final double CAM_DRIVE_DIST_KP = 0.01; //max height of camera is 240
-	public static final double GATHERED_DIST = 140; 
+	public static final double CAM_DRIVE_PWR = 0.5;  //Power cap
+	public static final double CAM_DRIVE_DIST_KP = 0.01; //max height of camera is 240 pixels
+	public static final double GATHERED_DIST = 110; //Was 140 - Chgd 4/9 Mr C; //pixels
 	
-	public static final double[] CAM_DRIVE_TABLE = { 1, 0.3, 0.25,  0 };
-	public static final double[] CAM_DRIVE_AXIS =  { 1,  10,   25, 50 };
+	public static final double[] CAM_DRIVE_TABLE = { 1, 0.3, 0.25,  0 };//dist error percent of drive straight power to apply: 
+	public static final double[] CAM_DRIVE_AXIS =  { 1,  10,   25, 50 };//angle error axis
 
 	public DriveTrain() {
 		Component.drive = this;
@@ -387,14 +387,20 @@ public class DriveTrain extends Component implements Runnable {
 		
 		SmartDashboard.putNumber("camLpwr", powerL);
 		SmartDashboard.putNumber("camRpwr", powerR);
-		
-		//out.setDrivePower(powerL, powerR); //front
-		if(!sense.hasCube) out.setDrivePower(-powerR, -powerL); //back
-		else out.setDrivePower(0.3, 0.3);
-		
-		
-		
 
+//		SmartDashboard.putNumber("dist", dist);
+
+		//out.setDrivePower(powerL, powerR); //front
+		if(!sense.touchingCube)						//If we don't have a cube in sight yet
+			out.setDrivePower(-powerR, -powerL); 	//   back towards it until we're close
+		else {										//Else a cube has been spotted! 
+			if(!sense.halfGathered) {					//	If cube is in jaws but not fully brought in yet
+				out.setDrivePower(0.45, 0.45); 		//  	Slam on brakes and start to reverse
+			} else {								//  Else we've got the cube fully in
+				out.setDrivePower(.2, .2);			//      So slow down our backup to this value
+			}
+		}
+	
 	}
 
 }
