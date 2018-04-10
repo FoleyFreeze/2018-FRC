@@ -97,6 +97,7 @@ public class Robot extends TimedRobot {
 	public void teleopInit() {
 		sensor.robotDisabled = false;
 		input.auton = false;
+		output.setRatchetServo(false);
 	}
 
 	/**
@@ -115,6 +116,7 @@ public class Robot extends TimedRobot {
 		output.circuitBreaker();
 		
 		sensor.runLights();
+		
 	}
 	
 	@Override

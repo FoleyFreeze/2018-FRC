@@ -362,7 +362,7 @@ public class AutonMain extends Component {
 			b.add(new EndStep());
 			b.end(); 
 		
-		Path.print = true;
+		//Path.print = true;
 		testProfile = new SeriesSet();
 		b.add(testProfile);
 			b.add(new StartStep());
@@ -371,7 +371,7 @@ public class AutonMain extends Component {
 			//b.end();
 			b.add(new EndStep());
 			b.end();
-		Path.print = false;
+		//Path.print = false;
 	}
 	
 	

@@ -954,6 +954,9 @@ public class Elevator extends Component {
 					out.setElevatorPower(climbPwr);
 					climbAllowed = true;
 				} else if(sense.liftPos > 10) {
+					//once we get here, lock the ratchet
+					out.setRatchetServo(true);
+					
 					if(climbAllowed) {
 						out.setElevatorPower(climbPwr);
 					} else {

@@ -103,6 +103,9 @@ public class Inputs extends Component {
 		rightDrive = ramp(rightYAxis, rightDrive);
 		driveStraightTurn = leftStick.getX();
 		
+		SmartDashboard.putNumber("leftDrive", leftDrive);
+		SmartDashboard.putNumber("rightDrive", rightDrive);
+		
 		manualOverride = controlBoard.getRawButton(14);
 		boolean manualGatherButtons = leftStick.getRawButton(5) && rightStick.getRawButton(5);
 	
@@ -139,12 +142,14 @@ public class Inputs extends Component {
 		//middleAngle = !prevMiddleAngle && controlBoard.getRawButton(3);
 		//highAngle = !prevHighAngle && controlBoard.getRawButton(4);
 		
+		boolean localHasCube = sense.hasCube;
+		localHasCube = false; //TODO: make this actually work
 		//restButton = controlBoard.getRawButton(2);
 		switchButton = controlBoard.getRawButton(3);
 		scaleButton = controlBoard.getRawButton(4);
 		//having a cube prevents the gather button from being pressed
-		autoGather = controlBoard.getRawButton(9) && (!sense.hasCube || manualOverride);
-		gather = (controlBoard.getRawButton(2) || autoGather) && !sense.hasCube; 
+		autoGather = controlBoard.getRawButton(9) && (!localHasCube|| manualOverride);
+		gather = (controlBoard.getRawButton(2) || autoGather) && !localHasCube; 
 		liftExchange = controlBoard.getRawButton(8);
 		shoot = controlBoard.getRawButton(5);
 		liftFlip = !controlBoard.getRawButton(15);
@@ -152,7 +157,7 @@ public class Inputs extends Component {
 		//do action button
 		if(actionButton && gather && !manualOverride) {
 			//leave autoGather false if we have a cube
-			autoGather = !sense.hasCube;
+			autoGather = !localHasCube;
 		} else if (actionButton && (elevatorCommand == Elevator.liftState.F_SWITCH_POSITION 
 				|| elevatorCommand == Elevator.liftState.F_SCALE_POSITION 
 				|| elevatorCommand == Elevator.liftState.F_SCALE_LOW_POSITION
@@ -179,7 +184,7 @@ public class Inputs extends Component {
 		//if we are transitioning out of the gather position
 		else if( elevatorCommand == Elevator.liftState.F_FLOOR_POSITION ||
 				 elevatorCommand == Elevator.liftState.R_FLOOR_POSITION ||
-				 (sense.hasCube && gather)) {
+				 (localHasCube && gather)) {
 			elevatorCommand = Elevator.liftState.REST_POSITION;
 		} 
 		//if we are transitioning out of the switch gather position

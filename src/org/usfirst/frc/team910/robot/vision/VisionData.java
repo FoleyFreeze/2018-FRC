@@ -13,4 +13,5 @@ public class VisionData {
 	public int y;
 	public int w;
 	public int h;
+	public double robotAngle;
 }

@@ -2,6 +2,7 @@ package org.usfirst.frc.team910.robot.vision;
 
 import java.util.LinkedList;
 
+import org.usfirst.frc.team910.robot.Component;
 import org.usfirst.frc.team910.robot.components.Vision;
 
 import edu.wpi.first.networktables.EntryListenerFlags;
@@ -132,6 +133,7 @@ public class VisionObjectDataPixyListener  {
 						newData.h = Integer.parseInt(msg_parsed[blockIndex + 5]);
 						newData.frame = frameNum;
 						blockIndex += BLOCK_SIZE;
+						newData.robotAngle = Component.sense.robotAngle.get();
 						
 						if(bestBlock == null) bestBlock = newData;
 						else if(newData.w + newData.h > bestBlock.w + bestBlock.h) {
@@ -162,7 +164,7 @@ public class VisionObjectDataPixyListener  {
     private int pixyBackId;
 	private static final int BLOCK_SIZE = 6;
     private boolean debug;
-	private static final String PIXY_TABLE = "pixy";
+	private static final String PIXY_TABLE = "Pixy";
 	private static final String PIXY_DATA = "pixyobjdata";
 	private NetworkTableInstance inst;
 	private NetworkTable table;

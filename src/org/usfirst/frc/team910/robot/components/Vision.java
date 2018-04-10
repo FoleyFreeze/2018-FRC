@@ -52,7 +52,8 @@ public class Vision extends Component {
 			return false;
 		}
 
-		double angle = sense.robotAngle.get();
+		//double angle = sense.robotAngle.get();
+		double angle = vd.robotAngle;
 		
 		angle += ((X_RES / 2) - vd.x) * X_DEG_PER_PIXEL; 
 		

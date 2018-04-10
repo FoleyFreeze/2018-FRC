@@ -30,8 +30,8 @@ public class Gatherer extends Component {
 	public static final double PWR_EXCHANGE_SHOOT = -0.9;
 	
 	public static final double PWR_REV_GATHER = -0.3; //was -0.2
-	public static final double PWR_FWD_GATHER = 0.9; //was 0.6 //3-29
-	public static final double PWR_GATHER_FAST = 0.7; //0.85 LH
+	public static final double PWR_FWD_GATHER = 0.6; //was 0.6 //3-29
+	public static final double PWR_GATHER_FAST = 0.6; //0.85 LH
 	public static final double PWR_GATHER_SLOW = 0.4;
 	public static final double PWR_GATHER_PASSIVE = 0.15;
 	

@@ -25,14 +25,14 @@ public class DriveTrain extends Component implements Runnable {
 	public static final double DRIVEMP_KFA = 1.0 / 380.0; //full power is 420 in/sec/sec
 	public static final double DRIVEMP_KFV_INT = 0.1;
 
-	public static final double CAM_DRIVE_KP = 0.5 / 45; // This is power per degree of error
-	public static final double CAM_DRIVE_KD = 0; // .5/45 * 50. This is power per degree per 20 milliseconds
-	public static final double CAM_DRIVE_PWR = 0.2;
+	public static final double CAM_DRIVE_KP = 1.0 / 25.0; // This is power per degree of error
+	public static final double CAM_DRIVE_KD = 0.1; // .5/45 * 50. This is power per degree per 20 milliseconds
+	public static final double CAM_DRIVE_PWR = 0.5;
 	public static final double CAM_DRIVE_DIST_KP = 0.01; //max height of camera is 240
-	public static final double GATHERED_DIST = 90; 
+	public static final double GATHERED_DIST = 140; 
 	
-	public static final double[] CAM_DRIVE_TABLE = { 1, 0.75, 0.5,  0 };
-	public static final double[] CAM_DRIVE_AXIS =  { 5,   10,  25, 50 };
+	public static final double[] CAM_DRIVE_TABLE = { 1, 0.3, 0.25,  0 };
+	public static final double[] CAM_DRIVE_AXIS =  { 1,  10,   25, 50 };
 
 	public DriveTrain() {
 		Component.drive = this;
@@ -351,19 +351,22 @@ public class DriveTrain extends Component implements Runnable {
 
 	private double prevCamError;
 
-	public void driveAngle(Angle targetAngle, double power, double dist) {
+	public void driveAngle(Angle targetAngle, double powerLimit, double dist) {
 		// error is the target angle minus the robot angle
 		double error = targetAngle.subtract(sense.robotAngle);
 
 		//switch to measuring the change in process variable instead of change in error to avoid jumps
 		double deltaError = sense.robotAngle.subtract(prevCamError);
+		
+		SmartDashboard.putNumber("camError", error);
+		SmartDashboard.putNumber("camDeltaError", deltaError);
 
 		// PD for the given power
-		double powerDiff = CAM_DRIVE_KP * error + CAM_DRIVE_KD * deltaError;
+		double powerDiff = CAM_DRIVE_KP * error - CAM_DRIVE_KD * deltaError;
 
-		power = power * Elevator.interp(CAM_DRIVE_AXIS, CAM_DRIVE_TABLE, error);
+		double power = Elevator.interp(CAM_DRIVE_AXIS, CAM_DRIVE_TABLE, error);
 	
-		power *= (dist - GATHERED_DIST) * CAM_DRIVE_DIST_KP;
+		power *= (GATHERED_DIST - dist) * CAM_DRIVE_DIST_KP;
 		
 		// setting powers
 		double powerL = power - powerDiff;
@@ -373,16 +376,24 @@ public class DriveTrain extends Component implements Runnable {
 		double maxPwr = Math.max(powerL, powerR);
 		double minPwr = Math.min(powerL, powerR);
 		
-		if (maxPwr > 1) {
-			powerL /= Math.abs(maxPwr);
-			powerR /= Math.abs(maxPwr);
+		if (maxPwr > powerLimit) {
+			powerL = powerL / Math.abs(maxPwr) * powerLimit;
+			powerR = powerR / Math.abs(maxPwr) * powerLimit;
 		}
-		else if (maxPwr < -1) {
-			powerL /= Math.abs(minPwr);
-			powerR /= Math.abs(minPwr);
+		else if (maxPwr < -powerLimit) {
+			powerL = powerL / Math.abs(minPwr) * powerLimit;
+			powerR = powerR / Math.abs(minPwr) * powerLimit;
 		}
 		
-		out.setDrivePower(powerL, powerR);
+		SmartDashboard.putNumber("camLpwr", powerL);
+		SmartDashboard.putNumber("camRpwr", powerR);
+		
+		//out.setDrivePower(powerL, powerR); //front
+		if(!sense.hasCube) out.setDrivePower(-powerR, -powerL); //back
+		else out.setDrivePower(0.3, 0.3);
+		
+		
+		
 
 	}
 

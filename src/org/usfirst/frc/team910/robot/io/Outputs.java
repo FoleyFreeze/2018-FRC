@@ -7,6 +7,7 @@ import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
+import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -28,6 +29,8 @@ public class Outputs extends Component {
 	
 	TalonSRX gatherLeft;
 	TalonSRX gatherRight;
+	
+	Servo climbRatchet;
 	
 	public MotionProfile driveMP;
 	
@@ -110,7 +113,12 @@ public class Outputs extends Component {
 		//gatherRight.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
 		//gatherRight.setSensorPhase(true);
 		
-		
+		climbRatchet = new Servo(0);
+	}
+	
+	public void setRatchetServo(boolean on) {
+		if(on) climbRatchet.set(1);
+		else climbRatchet.set(0);
 	}
 	
 	public void readDriveEncoders() {

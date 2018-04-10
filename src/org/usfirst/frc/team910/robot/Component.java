@@ -13,7 +13,7 @@ public class Component {
 
 	protected static Inputs in;
 	protected static Outputs out;
-	protected static Sensors sense;
+	public static Sensors sense;
 	protected static Climber climb;
 	protected static DriveTrain drive;
 	protected static Elevator elevate;
