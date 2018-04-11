@@ -88,7 +88,7 @@ public class VisionObjectDataPixyListener  {
 			String msg = value.getString();
 
 			if (debug == true) {
-				System.out.println("VisionObjectDataPixyListener message received = " + msg);
+				System.out.println("VisionObjectDataPixyListener front message received = " + msg);
 			}
 			
 			// Elements of message sent by Pi area separated by ','
@@ -165,7 +165,7 @@ public class VisionObjectDataPixyListener  {
 			String msg = value.getString();
 
 			if (debug == true) {
-				System.out.println("VisionObjectDataPixyListener message received = " + msg);
+				System.out.println("VisionObjectDataPixyListener back message received = " + msg);
 			}
 			
 			// Elements of message sent by Pi area separated by ','
@@ -179,6 +179,7 @@ public class VisionObjectDataPixyListener  {
 				currentList = listFront;
 			} else if (currentPixy == pixyBackId && saveBack == true ) {
 				currentList = listBack;
+				//System.out.println("VisionObjectDataPixyListener currentList = back ");
 			} else {
 				return;
 			}
@@ -191,6 +192,7 @@ public class VisionObjectDataPixyListener  {
 
 				// Check if there are any blocks in this message
 				numBlocks = Integer.parseInt(msg_parsed[2]);
+				//System.out.println("VisionObjectDataPixyListener numblocks = " + numBlocks);
 
 				if (numBlocks > 0) {
 

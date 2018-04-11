@@ -30,7 +30,8 @@ public class Vision extends Component {
 		
 		VisionObjectDataPixyListener listener = new VisionObjectDataPixyListener();
 		listener.saveValuesFront(true);
-
+		listener.saveValuesBack(true); //added 4-11
+		
 		// PIXY ID #8
 		listener.setPixyIDFront(-1225198266);
 		
@@ -73,9 +74,12 @@ public class Vision extends Component {
 	public double getLatestDist() {
 		LimitedStack<VisionData> blocks;
 		if(in.liftFlip) {
-			blocks = rear_blocks;
-		} else {
+			//blocks = rear_blocks;
 			blocks = front_blocks;
+			
+		} else {
+			//blocks = front_blocks;
+			blocks = rear_blocks;
 		}
 		
 		if(blocks.isEmpty()) return 0;

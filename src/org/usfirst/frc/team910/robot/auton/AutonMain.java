@@ -129,13 +129,15 @@ public class AutonMain extends Component {
 					return options.switchIsLeft;
 				}
 			}));
-				b.add(new ParallelSet());
-					b.add(new DriveProfile(Profile.centerSwitchL,false));
-					b.add(new SeriesSet());
-						b.add(new WaitStep(2.2));
-						b.add(new ShootStep());
-						b.end();
+				b.add(new SeriesSet());
+					b.add(new ParallelSet());
+						b.add(new DriveProfile(Profile.centerSwitchL,false));
+						b.add(new SeriesSet());
+							b.add(new WaitStep(2.2));
+							b.add(new ShootStep());
+							b.end();
 					b.end();
+				b.end();
 				b.add(new ParallelSet());
 					b.add(new DriveProfile(Profile.centerSwitchR,false));
 					b.add(new SeriesSet());
