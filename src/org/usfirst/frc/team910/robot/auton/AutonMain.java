@@ -3,6 +3,7 @@ package org.usfirst.frc.team910.robot.auton;
 import java.util.ArrayList;
 
 import org.usfirst.frc.team910.robot.Component;
+import org.usfirst.frc.team910.robot.auton.steps.AutoGather;
 import org.usfirst.frc.team910.robot.auton.steps.AutonSet;
 import org.usfirst.frc.team910.robot.auton.steps.AutonStep;
 import org.usfirst.frc.team910.robot.auton.steps.DriveForward;
@@ -43,6 +44,7 @@ public class AutonMain extends Component {
 	private SeriesSet scale;//no matta wat //start left or right priority scale
 	private SeriesSet testProfile; //test
 	private SeriesSet straightScale;
+	private SeriesSet test2Cube;
 	
 	//public int currentStep = 0;
 	
@@ -344,10 +346,17 @@ public class AutonMain extends Component {
 							b.end();
 						b.add(new ShootStep());
 						b.add(new WaitStep(0.5));
-						b.add(new DriveTurnStep(-0.2, -0.2, 0.2));
+						b.add(new DriveTurnStep(-0.2, -0.2, 1));
 						b.add(new ElevatorPosition(Elevator.liftState.R_FLOOR_POSITION));
-						//b.add(new AutoGather);
-						//b.add(new DriveProfile(Profile.));
+						b.add(new AutoGather(true)); //true means back gather
+						b.add(new ParallelSet());
+							b.add(new DriveProfile(Profile.left1ToScale));
+							b.add(new SeriesSet());
+								b.add(new WaitStep(0.1));
+								b.add(new ElevatorPosition(Elevator.liftState.F_SCALE_POSITION)); //TODO: re add this
+								b.end();
+							b.end();
+							b.add(new ShootStep());
 						b.end();
 					
 						//b.add(new DriveProfile(Profile.rightToLeftScale));
@@ -377,6 +386,23 @@ public class AutonMain extends Component {
 			b.add(new EndStep());
 			b.end();
 		//Path.print = false;
+			
+			
+		test2Cube = new SeriesSet();
+		b.add(test2Cube);
+			b.add(new StartStep());
+			b.add(new DriveTurnStep(-0.2, -0.2, 1));
+			b.add(new ElevatorPosition(Elevator.liftState.R_FLOOR_POSITION));
+			b.add(new AutoGather(true)); //true means back gather
+			b.add(new ParallelSet());
+				b.add(new DriveProfile(Profile.left1ToScale));
+				b.add(new SeriesSet());
+					b.add(new WaitStep(0.1));
+					b.add(new ElevatorPosition(Elevator.liftState.F_SCALE_POSITION)); //TODO: re add this
+					b.end();
+				b.end();
+				b.add(new ShootStep());
+			b.end();
 	}
 	
 	
@@ -423,6 +449,7 @@ public class AutonMain extends Component {
 			
 		case TEST:
 			currentAuton = testProfile;
+			//currentAuton = test2Cube;
 			SmartDashboard.putString("CurrAuton","testProfile");
 			break;
 		}

@@ -73,7 +73,7 @@ public class DriveTrain extends Component implements Runnable {
 			
 		} else if (in.driveStraight) {
 			boolean first = !prevDriveStraight && in.driveStraight;
-			driveStraightEnc(sense.leftDist, sense.rightDist, first, in.rightDrive);
+			driveStraightEnc(sense.leftDist, sense.rightDist, first, in.driveStraightForward);
 			// driveStraightNavx(sense.robotAngle,in.rightDrive, first);
 			
 		} else {
@@ -389,18 +389,30 @@ public class DriveTrain extends Component implements Runnable {
 		SmartDashboard.putNumber("camRpwr", powerR);
 
 //		SmartDashboard.putNumber("dist", dist);
-
-		//out.setDrivePower(powerL, powerR); //front
-		if(!sense.touchingCube)						//If we don't have a cube in sight yet
-			out.setDrivePower(-powerR, -powerL); 	//   back towards it until we're close
-		else {										//Else a cube has been spotted! 
-			if(!sense.halfGathered) {					//	If cube is in jaws but not fully brought in yet
-				out.setDrivePower(0.45, 0.45); 		//  	Slam on brakes and start to reverse
-			} else {								//  Else we've got the cube fully in
-				out.setDrivePower(.2, .2);			//      So slow down our backup to this value
+		
+		if(in.liftFlip) {
+			//rear case
+			if(!sense.touchingCube)						//If we don't have a cube in sight yet
+				out.setDrivePower(-powerR, -powerL); 	//   back towards it until we're close
+			else {										//Else a cube has been spotted! 
+				if(!sense.halfGathered) {					//	If cube is in jaws but not fully brought in yet
+					out.setDrivePower(0.45, 0.45); 		//  	Slam on brakes and start to reverse
+				} else {								//  Else we've got the cube fully in
+					out.setDrivePower(0.2, 0.2);			//      So slow down our backup to this value
+				}
+			}
+		} else {
+			//front case
+			if(!sense.touchingCube)						//If we don't have a cube in sight yet
+				out.setDrivePower(powerL, powerR); 	//   back towards it until we're close
+			else {										//Else a cube has been spotted! 
+				if(!sense.halfGathered) {					//	If cube is in jaws but not fully brought in yet
+					out.setDrivePower(-0.45, -0.45); 		//  	Slam on brakes and start to reverse
+				} else {								//  Else we've got the cube fully in
+					out.setDrivePower(-0.2, -0.2);			//      So slow down our backup to this value
+				}
 			}
 		}
-	
 	}
 
 }

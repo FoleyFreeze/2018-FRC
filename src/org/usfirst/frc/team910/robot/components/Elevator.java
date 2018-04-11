@@ -15,6 +15,8 @@ public class Elevator extends Component {
 	public static final double LIFT_I_MAX = 0.2;
 	public static final double LIFT_I_DEADBAND = 0.25;
 	
+	public static final double LIFT_FF_PWR = 0.185; //seems reasonable (about 18amps over 4 motors)
+	
 	public static final double LIFT_DEADBAND = 0;
 	public static final double ARM_DEADBAND = 0;
 	
@@ -23,12 +25,13 @@ public class Elevator extends Component {
 	public static final double ARM_DN_PWR = 0.8;
 	public static final double ARM_UP_PWR_SHIFT = 0.8;
 	public static final double ARM_DN_PWR_SHIFT = 0.5;
-	public static final double LIFT_UP_PWR = 0.75;//was 0.6 ON PRAC  //was .5 //was 0.75
+	public static final double LIFT_UP_PWR = 0.75-0.185;//was 0.6 ON PRAC  //was .5 //was 0.75
 	public static final double LIFT_DN_PWR = 0.45;//was .3 //was 0.5; too hard!
 	public static final double LIFT_UP_PWR_SHIFT = 0.4;
 	public static final double LIFT_DN_PWR_SHIFT = 0.25;
 	public static final double LIFT_CLIMB_PWR = 0.8;
 	public static final double LIFT_CLIMB_PWR_SHIFT = 0.6;
+	public static final double LIFT_CLIMB_PWR_HOLD = 0.1;
 	
 	//TODO figure this out properly
 	public static final double[] ARM_AXIS_MIN_HIGH = {-150, -120, -119.9, -108, 108, 106, 165, 277};
@@ -132,6 +135,7 @@ public class Elevator extends Component {
 		//once you go climb you never go back
 		if(in.preClimbLatch) {
 			climbElevator();
+			updateDerivatives();
 			return;
 		}
 		
@@ -849,9 +853,18 @@ public class Elevator extends Component {
 		if(liftPower > liftPwrLim) liftPower = liftPwrLim;
 		else if(liftPower < -liftPwrLim) liftPower = -liftPwrLim;
 		
+		//shift operating power now that we have no counterweight
+		double shiftedLiftPower = liftPower + LIFT_FF_PWR;
+		if(liftPower > 1) shiftedLiftPower = 1;
+		
+		//if in the rest position, apply no power
+		if(lift < LIFT_EXCHANGE_MIN && Math.abs(liftError) < LIFT_EXCHANGE_MIN) {
+			shiftedLiftPower = 0;
+		}
+		
 		//drive motors
 		out.setArmPower(armPower);
-		out.setElevatorPower(liftPower);
+		out.setElevatorPower(shiftedLiftPower);
 		
 		//hold onto error values
 		//use sensor data to eliminate derivative kick
@@ -870,6 +883,7 @@ public class Elevator extends Component {
 		SmartDashboard.putNumber("LiftD", deltaLiftError);
 		SmartDashboard.putNumber("LiftError", liftError);
 		SmartDashboard.putNumber("ArmError", armError);
+		
 	}
 	
 	public enum ClimbState {
@@ -887,56 +901,60 @@ public class Elevator extends Component {
 			
 		case PRE_CLIMB_1:
 			//only move when button is held down
-			if(in.preClimb) pidElevator(ARM_PRECLIMB_1, LIFT_PRECLIMB_1);
+			if(in.preClimb) {
+				pidElevator(ARM_PRECLIMB_1, LIFT_PRECLIMB_1);
+				if(Math.abs(armError) < 5 && Math.abs(liftError) < 1.5)
+					cState = ClimbState.PRE_CLIMB_2;
+			}
 			else {
 				out.setArmPower(0);
 				out.setElevatorPower(0);
 			}
-			
-			if(Math.abs(armError) < 5 && Math.abs(liftError) < 1.5)
-					cState = ClimbState.PRE_CLIMB_2;
 			
 			if(in.deployClimb) cState = ClimbState.LIFT_HOOK;
 			break;
 			
 		case PRE_CLIMB_2:
 			
-			if(in.preClimb) pidElevator(ARM_PRECLIMB_2, LIFT_PRECLIMB_2);
+			if(in.preClimb) {
+				pidElevator(ARM_PRECLIMB_2, LIFT_PRECLIMB_2);
+				if(Math.abs(armError) < 5 && Math.abs(liftError) < 1.5)
+					cState = ClimbState.PRE_CLIMB_3;
+			}
 			else {
 				out.setArmPower(0);
 				out.setElevatorPower(0);
 			}
-			
-			if(Math.abs(armError) < 5 && Math.abs(liftError) < 1.5)
-					cState = ClimbState.PRE_CLIMB_3;
 			
 			if(in.deployClimb) cState = ClimbState.LIFT_HOOK;
 			break;
 			
 		case PRE_CLIMB_3:
 			
-			if(in.preClimb) pidElevator(ARM_PRECLIMB_3, LIFT_PRECLIMB_3);
+			if(in.preClimb) {
+				pidElevator(ARM_PRECLIMB_3, LIFT_PRECLIMB_3);
+				if(Math.abs(armError) < 5 && Math.abs(liftError) < 1.5)
+					cState = ClimbState.LIFT_HOOK;
+			}
 			else {
 				out.setArmPower(0);
 				out.setElevatorPower(0);
 			}
-			
-			if(Math.abs(armError) < 5 && Math.abs(liftError) < 1.5)
-					cState = ClimbState.LIFT_HOOK;
 			
 			if(in.deployClimb) cState = ClimbState.LIFT_HOOK;
 			break;
 			
 		case LIFT_HOOK:
 			
-			if(in.deployClimb) pidElevator(ARM_LIFTHOOK, LIFT_LIFTHOOK);
+			if(in.deployClimb) {
+				pidElevator(ARM_LIFTHOOK, LIFT_LIFTHOOK);
+				if(Math.abs(armError) < 5 && Math.abs(liftError) < 1.5)
+					cState = ClimbState.CLIMB;
+			}
 			else {
 				out.setArmPower(0);
-				out.setElevatorPower(0);
+				out.setElevatorPower(LIFT_CLIMB_PWR_HOLD);
 			}
-			
-			if(Math.abs(armError) < 5 && Math.abs(liftError) < 1.5)
-					cState = ClimbState.CLIMB;
 			
 			if(in.climb) cState = ClimbState.CLIMB;
 			break;
@@ -960,14 +978,14 @@ public class Elevator extends Component {
 					if(climbAllowed) {
 						out.setElevatorPower(climbPwr);
 					} else {
-						out.setElevatorPower(0);
+						out.setElevatorPower(LIFT_CLIMB_PWR_HOLD);
 					}
 				} else {
 					climbAllowed = false;
-					out.setElevatorPower(0);
+					out.setElevatorPower(LIFT_CLIMB_PWR_HOLD);
 				}
 			} else {
-				out.setElevatorPower(0);
+				out.setElevatorPower(LIFT_CLIMB_PWR_HOLD);
 			}
 			
 			if(in.deployClimb) cState = ClimbState.LIFT_HOOK;

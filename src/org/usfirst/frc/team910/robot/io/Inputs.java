@@ -35,10 +35,12 @@ public class Inputs extends Component {
 	public double leftDrive;
 	public double rightDrive;
 	public double driveStraightTurn;
+	public double driveStraightForward;
 	public boolean dynamicBrake = false;
 	public boolean driveStraight = false;
 	public boolean actionButton = false;
 	public boolean manualGatherThrottle = false;
+	public boolean flipRobot = false;
 
 	//----------------------------Operator Functions--------------------------------------
 	
@@ -88,10 +90,26 @@ public class Inputs extends Component {
 	boolean prevManualGather;
 
 	public void read() {
+		
 		double leftYAxis = -leftStick.getY();
 		double rightYAxis = -rightStick.getY();
-		manualGatherLeft = leftStick.getThrottle();
-		manualGatherRight = rightStick.getThrottle();
+		driveStraightForward = rightYAxis;
+		driveStraightTurn = leftStick.getX();
+		manualGatherLeft = -leftStick.getThrottle();
+		manualGatherRight = -rightStick.getThrottle();
+		
+		liftFlip = !controlBoard.getRawButton(15);
+		
+		//invert the controls
+		if(manualGatherLeft < -0.75 && manualGatherRight < -0.75) {
+			double temp = -leftYAxis;
+			leftYAxis = -rightYAxis;
+			rightYAxis = temp;
+			
+			driveStraightForward = -driveStraightForward;
+			
+			liftFlip = !liftFlip;
+		}
 		
 		enableMP = false;
 		
@@ -101,7 +119,7 @@ public class Inputs extends Component {
 		
 		leftDrive = ramp(leftYAxis, leftDrive);
 		rightDrive = ramp(rightYAxis, rightDrive);
-		driveStraightTurn = leftStick.getX();
+		
 		
 		SmartDashboard.putNumber("leftDrive", leftDrive);
 		SmartDashboard.putNumber("rightDrive", rightDrive);
@@ -152,7 +170,7 @@ public class Inputs extends Component {
 		gather = (controlBoard.getRawButton(2) || autoGather) && !localHasCube; 
 		liftExchange = controlBoard.getRawButton(8);
 		shoot = controlBoard.getRawButton(5);
-		liftFlip = !controlBoard.getRawButton(15);
+		
 		
 		//do action button
 		if(actionButton && gather && !manualOverride) {

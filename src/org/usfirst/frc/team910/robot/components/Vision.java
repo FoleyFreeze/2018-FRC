@@ -22,7 +22,8 @@ public class Vision extends Component {
 	public static final double HEIGHT_LIMIT = 25;
 	
 	
-	LimitedStack<VisionData> blocks = new LimitedStack<VisionData>(MAX_SIZE);
+	LimitedStack<VisionData> front_blocks = new LimitedStack<VisionData>(MAX_SIZE);
+	LimitedStack<VisionData> rear_blocks = new LimitedStack<VisionData>(MAX_SIZE);
 
 	public Vision() {
 		Component.view = this;
@@ -34,9 +35,10 @@ public class Vision extends Component {
 		listener.setPixyIDFront(-1225198266);
 		
 		// PIXY ID #6
-		//listener.setPixyIDFront(-1028254399);
+		listener.setPixyIDBack(109109);
 
-		listener.listForPixyFront(blocks);
+		listener.listForPixyFront(front_blocks);
+		listener.listForPixyBack(rear_blocks);
 
 		listener.setDebug(false);
 		listener.start(); // vision data going into <blocks> now
@@ -44,6 +46,13 @@ public class Vision extends Component {
 	}
 	
 	public boolean getLatestAngle(Angle targetAngle) {
+		LimitedStack<VisionData> blocks;
+		if(in.liftFlip) {
+			blocks = rear_blocks;
+		} else {
+			blocks = front_blocks;
+		}
+		
 		if(blocks.isEmpty()) return false;
 		
 		VisionData vd = blocks.getLast();
@@ -62,6 +71,13 @@ public class Vision extends Component {
 	}
 	
 	public double getLatestDist() {
+		LimitedStack<VisionData> blocks;
+		if(in.liftFlip) {
+			blocks = rear_blocks;
+		} else {
+			blocks = front_blocks;
+		}
+		
 		if(blocks.isEmpty()) return 0;
 		
 		VisionData vd = blocks.getLast();
