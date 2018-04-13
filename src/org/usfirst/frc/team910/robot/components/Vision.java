@@ -29,15 +29,7 @@ public class Vision extends Component {
 		Component.view = this;
 		
 		VisionObjectDataPixyListener listener = new VisionObjectDataPixyListener();
-		/*
-		if(!in.liftFlip) {  //!in.liftFlip
-			//listener.saveValuesBack(false); //added 4-11
-			listener.saveValuesFront(true);
-		}else {
-			listener.saveValuesBack(true); //added 4-11
-			//listener.saveValuesFront(false); //added 4-11
-		}
-		*/
+		
 		listener.saveValuesBack(true);
 		listener.saveValuesFront(true);
 		// PIXY ID #8

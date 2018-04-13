@@ -892,11 +892,12 @@ public class Elevator extends Component {
 	public ClimbState cState = ClimbState.START;
 	
 	private void climbElevator() {
+		out.deployForkServo(in.preClimb);
 		
 		switch(cState) {
 		case START:
-			if(in.preClimb) cState = ClimbState.PRE_CLIMB_1;
-			else if(in.deployClimb) cState = ClimbState.LIFT_HOOK;
+			//if(in.preClimb) cState = ClimbState.PRE_CLIMB_1;
+			if(in.deployClimb) cState = ClimbState.LIFT_HOOK;
 			break;
 			
 		case PRE_CLIMB_1:
