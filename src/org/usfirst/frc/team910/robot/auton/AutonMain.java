@@ -313,7 +313,7 @@ public class AutonMain extends Component {
 							b.end(); }
 						b.add(new ShootStep());
 						b.add(new WaitStep(0.5));
-						b.add(new DriveTurnStep(-0.3, -0.2, 1));
+						b.add(new DriveTurnStep(-0.35, -0.15, 1)); //-0.3,-0.2 MSC
 						b.add(new ElevatorPosition(Elevator.liftState.R_FLOOR_POSITION));
 						b.add(new AutoGather(true));
 						b.end(); }
@@ -329,7 +329,7 @@ public class AutonMain extends Component {
 							b.end(); }
 						b.add(new ShootStep());
 						b.add(new WaitStep(0.5));
-						b.add(new DriveTurnStep(-0.2, -0.3, 1));
+						b.add(new DriveTurnStep(-0.15, -0.35, 1)); //-0.3,-0.2 MSC
 						b.add(new ElevatorPosition(Elevator.liftState.R_FLOOR_POSITION));
 						b.add(new AutoGather(true));
 						b.end(); }
@@ -355,7 +355,7 @@ public class AutonMain extends Component {
 							b.end(); }
 						b.add(new ShootStep());
 						b.add(new WaitStep(0.5));
-						b.add(new DriveTurnStep(-0.3, -0.2, 1));
+						b.add(new DriveTurnStep(-0.35, -0.15, 1)); //-0.3,-0.2 MSC
 						b.add(new ElevatorPosition(Elevator.liftState.R_FLOOR_POSITION));
 						b.add(new AutoGather(true));
 						b.end(); }
@@ -371,7 +371,7 @@ public class AutonMain extends Component {
 							b.end(); }
 						b.add(new ShootStep());
 						b.add(new WaitStep(0.5));
-						b.add(new DriveTurnStep(-0.2, -0.3, 1));
+						b.add(new DriveTurnStep(-0.15, -0.35, 1)); //-0.2,-0.3 MSC
 						b.add(new ElevatorPosition(Elevator.liftState.R_FLOOR_POSITION));
 						b.add(new AutoGather(true));
 						b.end(); }

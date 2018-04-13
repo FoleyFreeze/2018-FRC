@@ -124,6 +124,7 @@ public class Outputs extends Component {
 		if(on) climbRatchet.set(0);
 		else climbRatchet.set(0.75);
 	}
+	
 	public void deployForkServo(boolean on) {
 		if(on) {
 			forkRatchetL.set(1);
@@ -147,8 +148,8 @@ public class Outputs extends Component {
 		//sense.gatherRightPos = gatherRight.getSelectedSensorPosition(0)/ElectroBach.TICKS_PER_INCH;
 		//System.out.format("L:%.2f R:%.2f\n",sense.leftDist,sense.rightDist);
 		SmartDashboard.putNumber("Servo 0", climbRatchet.get());
-		SmartDashboard.putNumber("Servo 1", forkRatchetL.get());
-		SmartDashboard.putNumber("Servo 2", forkRatchetR.get());
+		//SmartDashboard.putNumber("Servo 1", forkRatchetL.get());
+		//SmartDashboard.putNumber("Servo 2", forkRatchetR.get());
 	}
 	
 	public void resetDriveEncoders() {
