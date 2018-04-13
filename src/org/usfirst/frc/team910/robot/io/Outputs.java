@@ -31,6 +31,8 @@ public class Outputs extends Component {
 	TalonSRX gatherRight;
 	
 	Servo climbRatchet;
+	Servo forkRatchetL;
+	Servo forkRatchetR;
 	
 	public MotionProfile driveMP;
 	
@@ -114,11 +116,22 @@ public class Outputs extends Component {
 		//gatherRight.setSensorPhase(true);
 		
 		climbRatchet = new Servo(0);
+		forkRatchetL = new Servo(1);
+		forkRatchetL = new Servo(2);
 	}
 	
 	public void setRatchetServo(boolean on) {
-		if(on) climbRatchet.set(1);
-		else climbRatchet.set(0);
+		if(on) climbRatchet.set(0);
+		else climbRatchet.set(0.75);
+	}
+	public void deployHookServo(boolean on) {
+		if(on) {
+			forkRatchetL.set(1);
+			forkRatchetR.set(1);
+		}else {
+			forkRatchetL.set(0);
+			forkRatchetR.set(0);
+		}
 	}
 	
 	public void readDriveEncoders() {

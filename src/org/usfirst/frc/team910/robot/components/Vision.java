@@ -29,11 +29,19 @@ public class Vision extends Component {
 		Component.view = this;
 		
 		VisionObjectDataPixyListener listener = new VisionObjectDataPixyListener();
+		/*
+		if(!in.liftFlip) {  //!in.liftFlip
+			//listener.saveValuesBack(false); //added 4-11
+			listener.saveValuesFront(true);
+		}else {
+			listener.saveValuesBack(true); //added 4-11
+			//listener.saveValuesFront(false); //added 4-11
+		}
+		*/
+		listener.saveValuesBack(true);
 		listener.saveValuesFront(true);
-		listener.saveValuesBack(true); //added 4-11
-		
 		// PIXY ID #8
-		listener.setPixyIDFront(-1225198266);
+		listener.setPixyIDFront(109106); //-1225198266 pixy id //109106 ip
 		
 		// PIXY ID #6
 		listener.setPixyIDBack(109109);
@@ -50,8 +58,10 @@ public class Vision extends Component {
 		LimitedStack<VisionData> blocks;
 		if(in.liftFlip) {
 			blocks = rear_blocks;
+			//blocks = front_blocks;
 		} else {
 			blocks = front_blocks;
+			//blocks = rear_blocks;
 		}
 		
 		if(blocks.isEmpty()) return false;
@@ -74,12 +84,12 @@ public class Vision extends Component {
 	public double getLatestDist() {
 		LimitedStack<VisionData> blocks;
 		if(in.liftFlip) {
-			//blocks = rear_blocks;
-			blocks = front_blocks;
+			blocks = rear_blocks;
+			//blocks = front_blocks;
 			
 		} else {
-			//blocks = front_blocks;
-			blocks = rear_blocks;
+			blocks = front_blocks;
+			//blocks = rear_blocks;
 		}
 		
 		if(blocks.isEmpty()) return 0;
