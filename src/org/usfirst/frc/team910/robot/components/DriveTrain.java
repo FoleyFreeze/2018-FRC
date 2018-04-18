@@ -71,11 +71,14 @@ public class DriveTrain extends Component implements Runnable {
 			boolean first = !prevBrake && in.dynamicBrake;
 			dynamicBrake(sense.leftDist, sense.rightDist, first);
 			
-		} else if (in.driveStraight) {
+		/*} else if (in.driveStraight && sense.navx.isConnected()) {
+			boolean first = !prevDriveStraight && in.driveStraight;
+			//driveStraightEnc(sense.leftDist, sense.rightDist, first, in.driveStraightForward);
+			driveStraightNavx(sense.robotAngle,in.rightDrive, first);
+		*/
+		}else if(in.driveStraight) {
 			boolean first = !prevDriveStraight && in.driveStraight;
 			driveStraightEnc(sense.leftDist, sense.rightDist, first, in.driveStraightForward);
-			// driveStraightNavx(sense.robotAngle,in.rightDrive, first);
-			
 		} else {
 			tankDrive(in.leftDrive, in.rightDrive);
 		}
@@ -398,7 +401,7 @@ public class DriveTrain extends Component implements Runnable {
 				if(!sense.halfGathered) {					//	If cube is in jaws but not fully brought in yet
 					out.setDrivePower(0.45, 0.45); 		//  	Slam on brakes and start to reverse
 				} else {								//  Else we've got the cube fully in
-					out.setDrivePower(0.2, 0.2);			//      So slow down our backup to this value
+					out.setDrivePower(0.05, 0.05);			//      So slow down our backup to this value
 				}
 			}
 		} else {
@@ -409,7 +412,7 @@ public class DriveTrain extends Component implements Runnable {
 				if(!sense.halfGathered) {					//	If cube is in jaws but not fully brought in yet
 					out.setDrivePower(-0.45, -0.45); 		//  	Slam on brakes and start to reverse
 				} else {								//  Else we've got the cube fully in
-					out.setDrivePower(-0.2, -0.2);			//      So slow down our backup to this value
+					out.setDrivePower(-0.05, -0.05);			//      So slow down our backup to this value
 				}
 			}
 		}

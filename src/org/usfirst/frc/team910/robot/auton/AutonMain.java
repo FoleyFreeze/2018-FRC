@@ -15,6 +15,7 @@ import org.usfirst.frc.team910.robot.auton.steps.EndStep;
 import org.usfirst.frc.team910.robot.auton.steps.IfInterface;
 import org.usfirst.frc.team910.robot.auton.steps.IfSet;
 import org.usfirst.frc.team910.robot.auton.steps.ParallelSet;
+import org.usfirst.frc.team910.robot.auton.steps.ResetEncoders;
 import org.usfirst.frc.team910.robot.auton.steps.SeriesSet;
 import org.usfirst.frc.team910.robot.auton.steps.ShootStep;
 import org.usfirst.frc.team910.robot.auton.steps.StartStep;
@@ -313,9 +314,25 @@ public class AutonMain extends Component {
 							b.end(); }
 						b.add(new ShootStep());
 						b.add(new WaitStep(0.5));
-						b.add(new DriveTurnStep(-0.35, -0.15, 1)); //-0.3,-0.2 MSC
+						b.add(new DriveTurnStep(-0.45, 0.15, 0.6)); //-0.3,-0.2 MSC
 						b.add(new ElevatorPosition(Elevator.liftState.R_FLOOR_POSITION));
-						b.add(new AutoGather(true));
+						b.add(new WaitStep(3));
+						b.add(new AutoGather());
+						b.add(new ResetEncoders());
+						b.add(new ParallelSet()); {
+							b.add(new SeriesSet()); {
+								b.add(new WaitStep(1));
+								b.add(new DriveProfile(Profile.left1ToScale));	
+								b.end(); }
+							b.add(new SeriesSet()); {
+								b.add(new ElevatorPosition(Elevator.liftState.F_SCALE_POSITION)); //TODO: re add this
+								b.add(new WaitStep(1.5));
+								b.end(); }
+							b.end(); }
+						b.add(new ShootStep());
+						b.add(new WaitStep(0.5));
+						b.add(new DriveTurnStep(-0.2, -0.2, 1));
+						b.add(new ElevatorPosition(Elevator.liftState.REST_POSITION));
 						b.end(); }
 						
 					b.add(new SeriesSet()); { 
@@ -328,10 +345,26 @@ public class AutonMain extends Component {
 								b.end(); }
 							b.end(); }
 						b.add(new ShootStep());
-						b.add(new WaitStep(0.5));
-						b.add(new DriveTurnStep(-0.15, -0.35, 1)); //-0.3,-0.2 MSC
+						//b.add(new WaitStep(0.5));
+						b.add(new DriveTurnStep(0.15, -0.45, 0.6)); //-0.3,-0.2 MSC
 						b.add(new ElevatorPosition(Elevator.liftState.R_FLOOR_POSITION));
-						b.add(new AutoGather(true));
+						b.add(new WaitStep(2.5));
+						b.add(new AutoGather());
+						b.add(new ResetEncoders());
+						b.add(new ParallelSet()); {
+							b.add(new SeriesSet()); {
+								b.add(new WaitStep(0.5));
+								b.add(new DriveProfile(Profile.right1ToScale));	
+								b.end(); }
+							b.add(new SeriesSet()); {
+								b.add(new ElevatorPosition(Elevator.liftState.F_SCALE_POSITION)); //TODO: re add this
+								b.add(new WaitStep(1.5));
+								b.end(); }
+							b.end(); }
+						b.add(new ShootStep());
+						b.add(new WaitStep(0.5));
+						b.add(new DriveTurnStep(-0.2, -0.2, 1));
+						b.add(new ElevatorPosition(Elevator.liftState.REST_POSITION));
 						b.end(); }
 					b.end(); }
 				
@@ -355,32 +388,35 @@ public class AutonMain extends Component {
 							b.end(); }
 						b.add(new ShootStep());
 						b.add(new WaitStep(0.5));
-						b.add(new DriveTurnStep(-0.35, -0.15, 1)); //-0.3,-0.2 MSC
+						b.add(new DriveTurnStep(-0.35, -0.15, 0.4)); //-0.3,-0.2 MSC
 						b.add(new ElevatorPosition(Elevator.liftState.R_FLOOR_POSITION));
-						b.add(new AutoGather(true));
+						b.add(new AutoGather());
+						b.add(new ElevatorPosition(Elevator.liftState.REST_POSITION));
 						b.end(); }
 					
 					b.add(new SeriesSet()); { 
 						b.add(new ParallelSet()); {
 							b.add(new DriveProfile(Profile.leftToRightScale));
 							b.add(new SeriesSet()); {
-								b.add(new WaitStep(5.2));
+								b.add(new WaitStep(4.7));
 								//b.add(new EndStep()); //TODO: remove when we want to complete cross scale auto
 								b.add(new ElevatorPosition(Elevator.liftState.F_SCALE_POSITION)); //TODO: re add this
 								b.end(); }
 							b.end(); }
-						b.add(new ShootStep());
-						b.add(new WaitStep(0.5));
-						b.add(new DriveTurnStep(-0.15, -0.35, 1)); //-0.2,-0.3 MSC
+						b.add(new ShootStep(-0.50));
+						//b.add(new WaitStep(0.5));
+						b.add(new DriveTurnStep(0.15, -0.45, 0.6)); //-0.2,-0.3 MSC
 						b.add(new ElevatorPosition(Elevator.liftState.R_FLOOR_POSITION));
-						b.add(new AutoGather(true));
+						b.add(new WaitStep(2.5));
+						b.add(new AutoGather());
+						b.add(new ElevatorPosition(Elevator.liftState.REST_POSITION));
 						b.end(); }
 					b.end(); }//ends the left or right cross if
 				b.end(); }
 			b.add(new EndStep());
 			b.end(); }
 				/*
-				b.add(new AutoGather(true)); //true means back gather
+				b.add(new AutoGather());
 				b.add(new ParallelSet());
 					b.add(new DriveProfile(Profile.right1ToScale));
 					b.add(new SeriesSet());
@@ -391,15 +427,16 @@ public class AutonMain extends Component {
 				b.add(new ShootStep());
 				b.add(new WaitStep(0.5));
 				b.add(new DriveTurnStep(-0.2, -0.2, 1));
+				b.add(new ElevatorPosition(Elevator.liftState.REST_POSITION));
 				*/
 			
 		//Path.print = true;
 		testProfile = new SeriesSet();
 		b.add(testProfile); {
 			b.add(new StartStep());
-			b.add(new DriveForward(10, 0.25));
-
-			b.add(new DriveForward(200, 5));
+			b.add(new ElevatorPosition(Elevator.liftState.R_FLOOR_POSITION));
+			b.add(new AutoGather());
+			b.add(new ElevatorPosition(Elevator.liftState.REST_POSITION));
 			//b.add(new DriveProfile(Profile.rightToLeftScale));
 			//b.add(scale);
 			//b.end();
@@ -413,7 +450,7 @@ public class AutonMain extends Component {
 			b.add(new StartStep());
 			b.add(new DriveTurnStep(-0.2, -0.2, 1));
 			b.add(new ElevatorPosition(Elevator.liftState.R_FLOOR_POSITION));
-			b.add(new AutoGather(true)); //true means back gather
+			b.add(new AutoGather()); //true means back gather
 			b.add(new ParallelSet()); {
 				b.add(new DriveProfile(Profile.left1ToScale));
 				b.add(new SeriesSet()); {

@@ -17,7 +17,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Sensors extends Component {
 
-	private AHRS navx;
+	public AHRS navx;
 	private AnalogInput frontCenter;
 	private AnalogInput frontRight;
 	private AnalogInput frontLeft;

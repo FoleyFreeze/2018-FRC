@@ -15,7 +15,7 @@ public class Elevator extends Component {
 	public static final double LIFT_I_MAX = 0.2;
 	public static final double LIFT_I_DEADBAND = 0.25;
 	
-	public static final double LIFT_FF_PWR = 0.185; //seems reasonable (about 18amps over 4 motors)
+	public static final double LIFT_FF_PWR = 0.1;//was .185 //seems reasonable (about 18amps over 4 motors)
 	
 	public static final double LIFT_DEADBAND = 0;
 	public static final double ARM_DEADBAND = 0;
@@ -25,13 +25,13 @@ public class Elevator extends Component {
 	public static final double ARM_DN_PWR = 0.8;
 	public static final double ARM_UP_PWR_SHIFT = 0.8;
 	public static final double ARM_DN_PWR_SHIFT = 0.5;
-	public static final double LIFT_UP_PWR = 0.75-0.185;//was 0.6 ON PRAC  //was .5 //was 0.75
+	public static final double LIFT_UP_PWR = 0.75-0.1;//was 0.6 ON PRAC  //was .5 //was 0.75
 	public static final double LIFT_DN_PWR = 0.45;//was .3 //was 0.5; too hard!
 	public static final double LIFT_UP_PWR_SHIFT = 0.4;
 	public static final double LIFT_DN_PWR_SHIFT = 0.25;
 	public static final double LIFT_CLIMB_PWR = 0.8;
 	public static final double LIFT_CLIMB_PWR_SHIFT = 0.6;
-	public static final double LIFT_CLIMB_PWR_HOLD = 0.1;
+	public static final double LIFT_CLIMB_PWR_HOLD = 0.0;
 	
 	//TODO figure this out properly
 	public static final double[] ARM_AXIS_MIN_HIGH = {-150, -120, -119.9, -108, 108, 106, 165, 277};
@@ -109,7 +109,7 @@ public class Elevator extends Component {
 	public static final double ARM_PRECLIMB_3 = 45;
 	public static final double LIFT_PRECLIMB_3 = 15;
 	public static final double ARM_LIFTHOOK = 45;
-	public static final double LIFT_LIFTHOOK = 64;
+	public static final double LIFT_LIFTHOOK = 65;
 	
 	public Elevator() {
 		Component.elevate = this;
@@ -892,7 +892,7 @@ public class Elevator extends Component {
 	public ClimbState cState = ClimbState.START;
 	
 	private void climbElevator() {
-		out.deployForkServo(in.preClimb);
+		//out.deployForkServo(in.preClimb);
 		
 		switch(cState) {
 		case START:
@@ -949,7 +949,7 @@ public class Elevator extends Component {
 			
 			if(in.deployClimb) {
 				pidElevator(ARM_LIFTHOOK, LIFT_LIFTHOOK);
-				if(Math.abs(armError) < 5 && Math.abs(liftError) < 1.5)
+				if(Math.abs(sense.armPosL - ARM_LIFTHOOK) < 5 && Math.abs(sense.liftPos - LIFT_LIFTHOOK) < 1.5)
 					cState = ClimbState.CLIMB;
 			}
 			else {
@@ -974,7 +974,7 @@ public class Elevator extends Component {
 					climbAllowed = true;
 				} else if(sense.liftPos > 10) {
 					//once we get here, lock the ratchet
-					out.setRatchetServo(true);
+					//out.setRatchetServo(true);
 					
 					if(climbAllowed) {
 						out.setElevatorPower(climbPwr);

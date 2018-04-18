@@ -52,9 +52,9 @@ public class Robot extends TimedRobot {
 		climb = new Climber();
 		elevate = new Elevator();
 		gather = new Gatherer();
+		sensor = new Sensors();
 		view = new Vision();
 		input = new Inputs();
-		sensor = new Sensors();
 		drive = new DriveTrain();
 		//Component.set(input, output, sensor, climb, drive, elevate, gather, view);
 		
