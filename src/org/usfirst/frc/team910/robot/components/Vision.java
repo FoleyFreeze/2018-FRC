@@ -31,12 +31,12 @@ public class Vision extends Component {
 		VisionObjectDataPixyListener listener = new VisionObjectDataPixyListener();
 		
 		listener.saveValuesBack(true);
-		listener.saveValuesFront(true);
+		listener.saveValuesFront(false);
 		// PIXY ID #8
-		listener.setPixyIDFront(109106); //-1225198266 pixy id //109106 ip
+		listener.setPixyIDFront(109109); //-1225198266 pixy id //109106 ip
 		
 		// PIXY ID #6
-		listener.setPixyIDBack(109109);
+		listener.setPixyIDBack(-1225198266); //changed back for prac bot b4 worlds //Was 109109 MSC Comp Bot. Chgd for Prac bot!!!
 
 		listener.listForPixyFront(front_blocks);
 		listener.listForPixyBack(rear_blocks);
