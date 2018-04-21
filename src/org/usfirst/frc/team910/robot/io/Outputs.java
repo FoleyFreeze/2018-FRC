@@ -398,12 +398,12 @@ public class Outputs extends Component {
 	}
 	
 	public void disableBrake() {
-		elevator1.setNeutralMode(NeutralMode.Coast);
-		elevator2.setNeutralMode(NeutralMode.Coast);
-		elevator3.setNeutralMode(NeutralMode.Coast);
-		elevator4.setNeutralMode(NeutralMode.Coast);
+		elevator1.setNeutralMode(NeutralMode.Brake);
+		elevator2.setNeutralMode(NeutralMode.Brake);
+		elevator3.setNeutralMode(NeutralMode.Brake);
+		elevator4.setNeutralMode(NeutralMode.Brake);
 			
-		armMotor1.setNeutralMode(NeutralMode.Coast);
-		armMotor2.setNeutralMode(NeutralMode.Coast);
+		armMotor1.setNeutralMode(NeutralMode.Brake);
+		armMotor2.setNeutralMode(NeutralMode.Brake);
 	}
 }

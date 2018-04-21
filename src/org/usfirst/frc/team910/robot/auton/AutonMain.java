@@ -46,17 +46,21 @@ public class AutonMain extends Component {
 	private SeriesSet testProfile; //test
 	private SeriesSet straightScale;
 	private SeriesSet test2Cube;
+	private SeriesSet scaleSwitch;
 	
 	//public int currentStep = 0;
 	
 	public static final int STRAIGHT_ONLY = 0;
-	public static final int LEFT = 1;
-	public static final int CENTER = 2;
-	public static final int RIGHT = 3;
-	public static final int SCALE = 4;
-	public static final int SWITCH = 5;
-	public static final int EXCHANGE = 6;
-	public static final int TEST =7;
+	public static final int CENTER_SWITCH = 1;
+	public static final int CENTER_SWITCH_MP = 2;
+	public static final int LEFT_SCALE_ONLY = 3;
+	public static final int RIGHT_SCALE_ONLY = 4;
+	public static final int LEFT_SCALE_SWITCH = 5;
+	public static final int RIGHT_SCALE_SWITCH = 6;
+	public static final int LEFT_SWITCH = 7;
+	public static final int RIGHT_SWITCH = 8;
+	
+	public static final int TEST =9;
 	SendableChooser<Integer> startLocation;
 	SendableChooser<Integer> priority;
 	
@@ -70,6 +74,7 @@ public class AutonMain extends Component {
 		
 		boolean switchIsLeft;
 		boolean scaleIsLeft;
+		boolean startedLeft;
 	}
 	public static AutonOptions options = new AutonOptions();
 	
@@ -77,20 +82,26 @@ public class AutonMain extends Component {
 		
 		startLocation = new SendableChooser<>();
 		//startLocation.addDefault("Center", CENTER);//was straight only
-		startLocation.addDefault("Straight" , STRAIGHT_ONLY);//straight only
-		startLocation.addObject("Left", LEFT);
+		startLocation.addDefault("Straight Only" , STRAIGHT_ONLY);//straight only
+		startLocation.addObject("Left Switch", LEFT_SWITCH );
 		//startLocation.addObject("Straight", STRAIGHT_ONLY);//was center 
-		startLocation.addObject("Center", CENTER);
-		startLocation.addObject("Right", RIGHT);
+		startLocation.addObject("Right Switch", RIGHT_SWITCH);
+		startLocation.addObject("Center Switch", CENTER_SWITCH);
+		startLocation.addObject("Center Switch MP", CENTER_SWITCH_MP);
+		startLocation.addObject("Left Scale", LEFT_SCALE_ONLY);
+		startLocation.addObject("Right Scale", RIGHT_SCALE_ONLY);
+		startLocation.addObject("Left Scale + Switch Behind ", LEFT_SCALE_SWITCH);
+		startLocation.addObject("Right Scale + Switch Behind ", RIGHT_SCALE_SWITCH);
 		startLocation.addObject("TEST", TEST);
 		SmartDashboard.putData("AutoStartLocation", startLocation);
 		
+		/*
 		priority = new SendableChooser<>();
 		priority.addDefault("Switch", SWITCH);
 		priority.addObject("Scale", SCALE);
 		priority.addObject("Exchange", EXCHANGE);
 		SmartDashboard.putData("AutoPriority", priority);
-		
+		*/
 		
 		//build autons
 		driveForward = new SeriesSet();
@@ -109,8 +120,8 @@ public class AutonMain extends Component {
 			
 			b.add(new IfSet(new IfInterface() {
 				public boolean choice() { //if the switch we are in front of is the one we should score on
-					return options.selectedStart == LEFT && options.switchIsLeft ||
-					      options.selectedStart == RIGHT && !options.switchIsLeft;
+					return options.startedLeft && options.switchIsLeft ||
+					      !options.startedLeft && !options.switchIsLeft;
 				}
 			})); {
 				b.add(new ShootStep());
@@ -252,7 +263,7 @@ public class AutonMain extends Component {
 			//if we are on the same side as our scale, attempt to score
 			b.add(new IfSet(new IfInterface() {
 				public boolean choice() {
-					return options.selectedStart == LEFT && options.scaleIsLeft;
+					return options.startedLeft && options.scaleIsLeft;
 				}
 			})); {
 				//for the true case, run this series
@@ -292,14 +303,14 @@ public class AutonMain extends Component {
 			//if straight or cross scale
 			b.add(new IfSet(new IfInterface() {
 				public boolean choice() {
-					return options.selectedStart == LEFT && options.scaleIsLeft
-						|| options.selectedStart == RIGHT && !options.scaleIsLeft;					 
+					return options.startedLeft && options.scaleIsLeft
+						|| !options.startedLeft && !options.scaleIsLeft;					 
 				}
 			})); {
 				//if left or right straight scale
 				b.add(new IfSet(new IfInterface() {
 					public boolean choice() {
-						return options.selectedStart == LEFT && options.scaleIsLeft;					 
+						return options.startedLeft && options.scaleIsLeft;					 
 					}
 				})); {
 						//start left goal left
@@ -374,7 +385,7 @@ public class AutonMain extends Component {
 				//start right have to cross to left
 				b.add(new IfSet(new IfInterface() {
 					public boolean choice() {
-						return options.selectedStart == RIGHT && options.scaleIsLeft;
+						return !options.startedLeft && options.scaleIsLeft;
 					}
 				})); {
 					b.add(new SeriesSet()); { 
@@ -429,7 +440,44 @@ public class AutonMain extends Component {
 				b.add(new DriveTurnStep(-0.2, -0.2, 1));
 				b.add(new ElevatorPosition(Elevator.liftState.REST_POSITION));
 				*/
+		/*
+		scaleSwitch = new SeriesSet();
+		b.add(scaleSwitch); {
+			b.add(new StartStep());
+			b.add(new ElevatorPosition(Elevator.liftState.R_FLOOR_POSITION));
 			
+			b.add(new IfSet(new IfInterface() {
+				public boolean choice() {
+					return options.startedLeft && options.scaleIsLeft
+						|| !options.startedLeft && !options.scaleIsLeft;					 
+				}
+			})); {
+				//if left or right straight scale
+				b.add(new IfSet(new IfInterface() {
+					public boolean choice() {
+						return options.startedLeft && options.scaleIsLeft;					 
+					}
+				})); {
+						//start left goal left
+					b.add(new SeriesSet()); { 
+						b.add(new ParallelSet()); {
+							b.add(new DriveProfile(Profile.curvedStraightScaleL));
+							b.add(new SeriesSet()); {
+								b.add(new WaitStep(3));
+							//b.add(new EndStep()); //TODO: remove when we want to complete cross scale auto
+								b.add(new ElevatorPosition(Elevator.liftState.F_SCALE_POSITION)); //TODO: re add this
+								b.end(); }
+							b.end(); }
+						b.add(new ShootStep());
+						b.add(new WaitStep(0.5));
+						b.add(new DriveTurnStep(-0.45, 0.15, 0.6)); //-0.3,-0.2 MSC
+						b.add(new ElevatorPosition(Elevator.liftState.R_FLOOR_POSITION));
+						b.add(new WaitStep(3));
+						b.add(new AutoGather());
+						b.add(new ResetEncoders());
+			
+		}
+					*/
 		//Path.print = true;
 		testProfile = new SeriesSet();
 		b.add(testProfile); {
@@ -474,6 +522,7 @@ public class AutonMain extends Component {
 		
 		//read driver station values
 		options.selectedStart = startLocation.getSelected();
+		options.startedLeft = false;
 		options.selectedPriority = priority.getSelected();
 		options.switchIfLeft = SmartDashboard.getBoolean("SwitchIfLeft", false);
 		options.switchIfRight = SmartDashboard.getBoolean("SwitchIfRight", false);
@@ -488,20 +537,50 @@ public class AutonMain extends Component {
 			SmartDashboard.putString("CurrAuton","driveForward");
 			break;
 			
-		case LEFT:
+		case LEFT_SWITCH:
 			currentAuton = onlySwitch;
-			SmartDashboard.putString("CurrAuton","onlySwitch");
+			SmartDashboard.putString("CurrAuton","onlySwitchLeft");
+			options.startedLeft = true;
 			break;
 			
-		case CENTER:
-			//currentAuton = centerSwitch;
+		case RIGHT_SWITCH:
+			currentAuton = onlySwitch;
+			SmartDashboard.putString("CurrAuton","onlySwitchRight");
+			options.startedLeft = false;
+			break;
+			
+		case CENTER_SWITCH_MP:
 			currentAuton = mpCenterSwitch;
+			SmartDashboard.putString("CurrAuton","centerSwitchMP");
+			break;
+		
+		case CENTER_SWITCH:
+			currentAuton = centerSwitch;
 			SmartDashboard.putString("CurrAuton","centerSwitch");
 			break;
+		
+		case LEFT_SCALE_ONLY:
+			currentAuton = scale;
+			SmartDashboard.putString("CurrAuton","scaleLeft");
+			options.startedLeft = true;
+			break;
 			
-		case RIGHT:
-			currentAuton = onlySwitch;
-			SmartDashboard.putString("CurrAuton","onlySwitch");
+		case RIGHT_SCALE_ONLY:
+			currentAuton = scale;
+			SmartDashboard.putString("CurrAuton","scaleRight");
+			options.startedLeft = false;
+			break;
+			
+		case LEFT_SCALE_SWITCH:
+			currentAuton = scale;
+			SmartDashboard.putString("CurrAuton","scaleRight");
+			options.startedLeft = false;
+			break;
+			
+		case RIGHT_SCALE_SWITCH:
+			currentAuton = scale;
+			SmartDashboard.putString("CurrAuton","scaleRight");
+			options.startedLeft = false;
 			break;
 			
 		case TEST:
@@ -510,7 +589,7 @@ public class AutonMain extends Component {
 			SmartDashboard.putString("CurrAuton","testProfile");
 			break;
 		}
-		
+		/*
 		//if scale is selected, do that one
 		switch(options.selectedPriority) {
 		case SCALE:
@@ -519,7 +598,7 @@ public class AutonMain extends Component {
 			SmartDashboard.putString("CurrAuton","scale");
 			break;
 		}
-		
+		*/
 	}
 	
 	public void getGameData() {
