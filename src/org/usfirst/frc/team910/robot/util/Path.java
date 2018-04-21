@@ -19,10 +19,14 @@ public class Path {
 	public ArrayList<Double> motorPower; //array of the recorded left motor power per loop
 	public ArrayList<Double> angles;
 
-
+	
 	public static final double TOP_VELOC = 60.1; // inches per second, highest capable velocity of robot
 	public static final double ACCEL = 60; // inches per second squared
 	public static final double DT = 0.02; // 10 milliseconds
+	public static final double ACCELERATION_FACTOR = 9.0/12.0;
+
+	public static final double[] MAX_ACCEL_TABLE = {364, 182, 67.86, 47.58, 0};
+	public static final double[] MAX_ACCEL_AXIS = {0, 110, 178, 191, 219};
 	
 	//tolerance constants
 	public static final double POS_TOL = 0.01;

@@ -36,7 +36,7 @@ public class Outputs extends Component {
 	
 	public MotionProfile driveMP;
 	
-
+	public double totalElevatorError = 0;
 
 	public Outputs() {
 		Component.out = this;
@@ -180,6 +180,11 @@ public class Outputs extends Component {
 		
 		armMotor1.setSelectedSensorPosition(0, 0, 0);
 		armMotor2.setSelectedSensorPosition(0, 0, 0);
+		elevator1.setSelectedSensorPosition(0, 0, 0);
+		totalElevatorError = 0;
+	}
+	public void resetElevator() {
+		totalElevatorError = totalElevatorError + elevator1.getSelectedSensorPosition(0)/ElectroBach.TICKS_PER_INCH_HEIGHT;
 		elevator1.setSelectedSensorPosition(0, 0, 0);
 	}
 	
