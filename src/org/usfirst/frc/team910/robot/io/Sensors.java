@@ -83,7 +83,7 @@ public class Sensors extends Component {
 		frontLeft = new AnalogInput(ElectroBach.F_LFT_DIST);
 		frontLeft.setOversampleBits(3);//6
 		frontLeft.setAverageBits(1);//3
-		liftZeroItSwitch = new DigitalInput(1);
+		liftZeroItSwitch = new DigitalInput(0);
 		
 		redLED = new Solenoid(0);
 		greenLED = new Solenoid(1);
@@ -109,8 +109,11 @@ public class Sensors extends Component {
 	
 	public void read() {
 		//reset the encoder when the lift reaches the bottom
-		if(liftZeroItSwitch.get()) {
+		if(!liftZeroItSwitch.get()) {
 			out.resetElevator();
+			SmartDashboard.putBoolean("LimitSw", true);
+		} else {
+			SmartDashboard.putBoolean("LimitSw", false);
 		}
 		
 		double time = Timer.getFPGATimestamp();

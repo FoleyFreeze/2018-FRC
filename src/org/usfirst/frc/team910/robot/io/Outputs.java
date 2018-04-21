@@ -91,10 +91,10 @@ public class Outputs extends Component {
 		elevator4.setInverted(true);
 		
 		//was 0.2 MSC semis
-		elevator1.configOpenloopRamp(0.7, 0);//.4 prev.
-		elevator2.configOpenloopRamp(0.7, 0);//.4 prev.
-		elevator3.configOpenloopRamp(0.7, 0);//.4 prev.
-		elevator4.configOpenloopRamp(0.7, 0);//.4 prev.
+		elevator1.configOpenloopRamp(0.4, 0);
+		elevator2.configOpenloopRamp(0.4, 0);
+		elevator3.configOpenloopRamp(0.4, 0);
+		elevator4.configOpenloopRamp(0.4, 0);
 		
 		armMotor1 = new TalonSRX(ElectroBach.ARM_CAN_1);
 		armMotor2 = new TalonSRX(ElectroBach.ARM_CAN_2);
