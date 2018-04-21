@@ -36,7 +36,7 @@ public class Outputs extends Component {
 	
 	public MotionProfile driveMP;
 	
-
+	public double totalElevatorError = 0;
 
 	public Outputs() {
 		Component.out = this;
@@ -91,10 +91,10 @@ public class Outputs extends Component {
 		elevator4.setInverted(true);
 		
 		//was 0.2 MSC semis
-		elevator1.configOpenloopRamp(0.4, 0);
-		elevator2.configOpenloopRamp(0.4, 0);
-		elevator3.configOpenloopRamp(0.4, 0);
-		elevator4.configOpenloopRamp(0.4, 0);
+		elevator1.configOpenloopRamp(0.7, 0);//.4 prev.
+		elevator2.configOpenloopRamp(0.7, 0);//.4 prev.
+		elevator3.configOpenloopRamp(0.7, 0);//.4 prev.
+		elevator4.configOpenloopRamp(0.7, 0);//.4 prev.
 		
 		armMotor1 = new TalonSRX(ElectroBach.ARM_CAN_1);
 		armMotor2 = new TalonSRX(ElectroBach.ARM_CAN_2);
@@ -108,6 +108,9 @@ public class Outputs extends Component {
 		
 		armMotor1.setInverted(true);
 		armMotor2.setInverted(false);
+		
+		armMotor1.configOpenloopRamp(0.2, 0);
+		armMotor2.configOpenloopRamp(0.2, 0);
 		
 		gatherLeft = new TalonSRX(ElectroBach.LEFT_GATHER_CAN);
 		//gatherLeft.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
@@ -180,6 +183,11 @@ public class Outputs extends Component {
 		
 		armMotor1.setSelectedSensorPosition(0, 0, 0);
 		armMotor2.setSelectedSensorPosition(0, 0, 0);
+		elevator1.setSelectedSensorPosition(0, 0, 0);
+		totalElevatorError = 0;
+	}
+	public void resetElevator() {
+		totalElevatorError = totalElevatorError + elevator1.getSelectedSensorPosition(0)/ElectroBach.TICKS_PER_INCH_HEIGHT;
 		elevator1.setSelectedSensorPosition(0, 0, 0);
 	}
 	

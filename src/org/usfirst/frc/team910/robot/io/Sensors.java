@@ -7,6 +7,7 @@ import org.usfirst.frc.team910.robot.components.Gatherer;
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
@@ -21,6 +22,7 @@ public class Sensors extends Component {
 	private AnalogInput frontCenter;
 	private AnalogInput frontRight;
 	private AnalogInput frontLeft;
+	private DigitalInput liftZeroItSwitch;
 
 	public boolean robotDisabled = true;
 	
@@ -81,6 +83,7 @@ public class Sensors extends Component {
 		frontLeft = new AnalogInput(ElectroBach.F_LFT_DIST);
 		frontLeft.setOversampleBits(3);//6
 		frontLeft.setAverageBits(1);//3
+		liftZeroItSwitch = new DigitalInput(1);
 		
 		redLED = new Solenoid(0);
 		greenLED = new Solenoid(1);
@@ -105,6 +108,11 @@ public class Sensors extends Component {
 	private int numNavxTries = 0;
 	
 	public void read() {
+		//reset the encoder when the lift reaches the bottom
+		if(liftZeroItSwitch.get()) {
+			out.resetElevator();
+		}
+		
 		double time = Timer.getFPGATimestamp();
 		dt = time - oldTime;
 		oldTime = time;
