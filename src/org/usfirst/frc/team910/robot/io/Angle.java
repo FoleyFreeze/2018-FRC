@@ -20,6 +20,11 @@ public class Angle { // math to create angles throughout NavX-related and Auto f
 		angle = newAngle.get();
 	}
 	
+	public void add(double value) {
+		angle = mod(angle+value);
+		
+	}
+	
 	// returns shortest distance around the circle
 	public double subtract(Angle other) {
 		double diff = angle - other.get(); // target minus actual

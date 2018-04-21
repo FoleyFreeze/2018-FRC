@@ -16,11 +16,12 @@ public class DriveTrain extends Component implements Runnable {
 	public static final double DYN_BRAKE_KP = 0.0005; // This is power per inch of error
 	public static final double DRIVE_STRAIGHT_KP = 0.1; // Distance difference by inch
 	public static final double DRIVE_STRAIGHT_TURN = 30.0 / 50.0; // 5 inches per second / 50
-	public static final double DRIVE_STRAIGHTNAVX_KP = 0.1; // Distance difference by inch
+	public static final double DRIVE_STRAIGHTNAVX_KP = 0.025; // Distance difference by inch
+	public static final double DRIVE_STRAIGHTNAVX_TURN = 45.0 / 50.0; // 45deg per second / 50
 
 	public static final double DRIVEMP_KP = 0.15;
 	public static final double DRIVEMP_KD = 0.1;
-	public static final double DRIVEMP_KP_ANGLE = 0.0 / 45; //50% per 45deg
+	public static final double DRIVEMP_KP_ANGLE = 0.9 / 45; //50% per 45deg
 	public static final double DRIVEMP_KFV = 0.9 / 200.0; //200 in/sec at max pwr
 	public static final double DRIVEMP_KFA = 1.0 / 380.0; //full power is 420 in/sec/sec
 	public static final double DRIVEMP_KFV_INT = 0.1;
@@ -71,11 +72,11 @@ public class DriveTrain extends Component implements Runnable {
 			boolean first = !prevBrake && in.dynamicBrake;
 			dynamicBrake(sense.leftDist, sense.rightDist, first);
 			
-		/*} else if (in.driveStraight && sense.navx.isConnected()) {
+		} else if (in.driveStraight && sense.navx.isConnected()) {
 			boolean first = !prevDriveStraight && in.driveStraight;
 			//driveStraightEnc(sense.leftDist, sense.rightDist, first, in.driveStraightForward);
-			driveStraightNavx(sense.robotAngle,in.rightDrive, first);
-		*/
+			driveStraightNavx(sense.robotAngle,in.driveStraightForward, first);
+		
 		}else if(in.driveStraight) {
 			boolean first = !prevDriveStraight && in.driveStraight;
 			driveStraightEnc(sense.leftDist, sense.rightDist, first, in.driveStraightForward);
@@ -199,9 +200,13 @@ public class DriveTrain extends Component implements Runnable {
 		if (first) {
 			initAngle.set(currentAngle);
 		}
+		
+		initAngle.add(-DRIVE_STRAIGHTNAVX_TURN * in.driveStraightTurn); // use right joystick to turn while driving straight
+		
+		
 		// how far off we are from initial angle
 		double angleError = currentAngle.subtract(initAngle);
-		double powerDiff = DRIVE_STRAIGHTNAVX_KP * angleError;
+		double powerDiff = -DRIVE_STRAIGHTNAVX_KP * angleError;
 
 		// power for each motor
 		double powerL = rightJoystick - powerDiff;

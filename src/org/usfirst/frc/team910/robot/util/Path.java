@@ -11,6 +11,9 @@ import java.util.ArrayList;
 
 public class Path {
 	
+	public static final double SCRUB_FACTOR = 2.4;
+	public static final double TURNING_WIDTH = 23.2375 * SCRUB_FACTOR;
+	
 	public static boolean print = false;
 
 	public ArrayList<Double> positions; //array of the recorded positions per loop
@@ -229,8 +232,7 @@ public class Path {
 
 	}
 
-	public static final double SCRUB_FACTOR = 2.4;
-	public static final double TURNING_WIDTH = 23.2375 * SCRUB_FACTOR;
+	
 
 	public void calcAngles(Path l, Path r, double startAngle){
 		angles = new ArrayList<>();  

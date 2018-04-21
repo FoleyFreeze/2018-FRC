@@ -194,9 +194,15 @@ public class Sensors extends Component {
 	public boolean halfGathered = false;
 	
 	public void runLights() {
-		if(distFC < Gatherer.DIST_FRAME && distFR < Gatherer.DIST_FRAME && distFL < Gatherer.DIST_FRAME) {
+		int closeCount = 0;
+		if(distFR < Gatherer.DIST_FRAME) closeCount++;
+		if(distFL < Gatherer.DIST_FRAME) closeCount++;
+		if(distFC < Gatherer.DIST_FRAME) closeCount++;
+		if(closeCount >= 2) hasCube = true;
+		else hasCube = false;
+		
+		if(hasCube) {
 			//hasCube = true;
-			sense.hasCube = true;
 			greenLED.set(true);
 			greenLED2.set(true);
 			blueLED.set(false);
@@ -204,7 +210,7 @@ public class Sensors extends Component {
 			redLED.set(false);
 			redLED2.set(false);
 		} else {
-			hasCube = false;
+			//hasCube = false;
 			greenLED.set(false);
 			greenLED2.set(false);
 			blueLED.set(true);
@@ -212,6 +218,7 @@ public class Sensors extends Component {
 			redLED.set(false);
 			redLED2.set(false);
 		}
+		
 		
 		if(distFR < Gatherer.DIST_HALF_GATHER || distFL < Gatherer.DIST_HALF_GATHER) {
 			halfGathered = true;

@@ -109,8 +109,8 @@ public class Outputs extends Component {
 		armMotor1.setInverted(true);
 		armMotor2.setInverted(false);
 		
-		armMotor1.configOpenloopRamp(0.2, 0);
-		armMotor2.configOpenloopRamp(0.2, 0);
+		armMotor1.configOpenloopRamp(0.1, 0);
+		armMotor2.configOpenloopRamp(0.1, 0);
 		
 		gatherLeft = new TalonSRX(ElectroBach.LEFT_GATHER_CAN);
 		//gatherLeft.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
@@ -188,6 +188,7 @@ public class Outputs extends Component {
 	}
 	public void resetElevator() {
 		totalElevatorError = totalElevatorError + elevator1.getSelectedSensorPosition(0)/ElectroBach.TICKS_PER_INCH_HEIGHT;
+		SmartDashboard.putNumber("LiftEncError", totalElevatorError);
 		elevator1.setSelectedSensorPosition(0, 0, 0);
 	}
 	
@@ -403,7 +404,7 @@ public class Outputs extends Component {
 		elevator3.setNeutralMode(NeutralMode.Brake);
 		elevator4.setNeutralMode(NeutralMode.Brake);
 			
-		armMotor1.setNeutralMode(NeutralMode.Brake);
-		armMotor2.setNeutralMode(NeutralMode.Brake);
+		armMotor1.setNeutralMode(NeutralMode.Coast);
+		armMotor2.setNeutralMode(NeutralMode.Coast);
 	}
 }

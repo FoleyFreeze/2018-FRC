@@ -398,7 +398,7 @@ public class AutonMain extends Component {
 								b.end(); }
 							b.end(); }
 						b.add(new ShootStep());
-						b.add(new WaitStep(0.5));
+						//b.add(new WaitStep(0.5));
 						b.add(new DriveTurnStep(-0.35, -0.15, 0.4)); //-0.3,-0.2 MSC
 						b.add(new ElevatorPosition(Elevator.liftState.R_FLOOR_POSITION));
 						b.add(new AutoGather());
@@ -418,8 +418,19 @@ public class AutonMain extends Component {
 						//b.add(new WaitStep(0.5));
 						b.add(new DriveTurnStep(0.15, -0.45, 0.6)); //-0.2,-0.3 MSC
 						b.add(new ElevatorPosition(Elevator.liftState.R_FLOOR_POSITION));
-						b.add(new WaitStep(2.5));
+						b.add(new WaitStep(1.5));
 						b.add(new AutoGather());
+						b.add(new ResetEncoders());
+						b.add(new ParallelSet()); {
+							b.add(new DriveProfile(Profile.right1ToScale));
+							b.add(new SeriesSet()); {
+								b.add(new WaitStep(0.1));
+								b.add(new ElevatorPosition(Elevator.liftState.F_SCALE_POSITION)); //TODO: re add this
+								b.end();}
+							b.end();}
+						b.add(new ShootStep());
+						//b.add(new WaitStep(0.5));
+						b.add(new DriveTurnStep(-0.2, -0.2, 1));
 						b.add(new ElevatorPosition(Elevator.liftState.REST_POSITION));
 						b.end(); }
 					b.end(); }//ends the left or right cross if
@@ -523,7 +534,7 @@ public class AutonMain extends Component {
 		//read driver station values
 		options.selectedStart = startLocation.getSelected();
 		options.startedLeft = false;
-		options.selectedPriority = priority.getSelected();
+		//options.selectedPriority = priority.getSelected();
 		options.switchIfLeft = SmartDashboard.getBoolean("SwitchIfLeft", false);
 		options.switchIfRight = SmartDashboard.getBoolean("SwitchIfRight", false);
 		options.exchangeIfSwitch = SmartDashboard.getBoolean("ExchangeIfSwitch", false);

@@ -15,7 +15,7 @@ public class Elevator extends Component {
 	public static final double LIFT_I_MAX = 0.2;
 	public static final double LIFT_I_DEADBAND = 0.25;
 	
-	public static final double LIFT_FF_PWR = 0.1;//was .185 //seems reasonable (about 18amps over 4 motors)
+	public static final double LIFT_FF_PWR = 0.05;//was .185 //seems reasonable (about 18amps over 4 motors)
 	
 	public static final double LIFT_DEADBAND = 0;
 	public static final double ARM_DEADBAND = 0;
@@ -25,8 +25,8 @@ public class Elevator extends Component {
 	public static final double ARM_DN_PWR = 0.8;
 	public static final double ARM_UP_PWR_SHIFT = 0.8;
 	public static final double ARM_DN_PWR_SHIFT = 0.5;
-	public static final double LIFT_UP_PWR = 0.75-0.1;//was 0.6 ON PRAC  //was .5 //was 0.75
-	public static final double LIFT_DN_PWR = 0.45;//was .3 //was 0.5; too hard!
+	public static final double LIFT_UP_PWR = 0.85;//was 0.6 ON PRAC  //was .5 //was 0.75
+	public static final double LIFT_DN_PWR = 0.45;//was .45 //was .3 //was 0.5; too hard!
 	public static final double LIFT_UP_PWR_SHIFT = 0.4;
 	public static final double LIFT_DN_PWR_SHIFT = 0.25;
 	public static final double LIFT_CLIMB_PWR = 0.8;
@@ -53,7 +53,7 @@ public class Elevator extends Component {
 	//public static final double[] ARM_TABLE_MAX_FRONT= {105,141,106,165,310};
 	public static final double[] LIFT_AXIS_MAX_FRONT= {  0, 21, 26, 42, 67, 67.5, 69};
 	//public static final double[] ARM_TABLE_MAX_FRONT= {105,141,30,  45,165,310};
-	public static final double[] ARM_TABLE_MAX_FRONT= {105,141,60,  60,165, 310, 310}; //changed to stop shaking cube
+	public static final double[] ARM_TABLE_MAX_FRONT= {105,141,80,  80,165, 310, 310}; //changed to stop shaking cube
 	
 	public static final double[] LIFT_AXIS_MIN_REAR= {   0,   9,  10,  28, 28.1, 70};
 	public static final double[] ARM_TABLE_MIN_REAR= {-105,-124,-120,-150,   26, 46};

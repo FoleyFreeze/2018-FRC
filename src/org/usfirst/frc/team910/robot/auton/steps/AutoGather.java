@@ -30,7 +30,7 @@ public class AutoGather extends AutonStep {
 			startTime = Timer.getFPGATimestamp();
 			startedCount = true;
 			return false;
-		} else if(startedCount && startTime + 0.5 < Timer.getFPGATimestamp()) {
+		} else if(startedCount && startTime + 0 < Timer.getFPGATimestamp()) {
 			in.liftFlip = false;
 			in.autoGather = false;
 			in.gather = false;
