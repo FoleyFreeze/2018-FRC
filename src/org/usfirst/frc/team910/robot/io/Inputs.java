@@ -69,6 +69,7 @@ public class Inputs extends Component {
 	public boolean resetBreaker = false;
 	public Elevator.liftState elevatorCommand = Elevator.liftState.REST_POSITION;
 	public boolean switchGather = false;
+	public boolean switchScale = false;
 	public boolean preClimb = false;
 	public boolean preClimbLatch = false;
 	
@@ -186,13 +187,24 @@ public class Inputs extends Component {
 		//use last button pressed to set correct position
 		if(restButton) elevatorCommand = Elevator.liftState.F_FLOOR_POSITION;
 		else if(switchButton) {
-			elevatorCommand = Elevator.liftState.F_SWITCH_POSITION;
-			if(gather) switchGather = true;
+			//use scale + switch to select auton_scale position
+			if(scaleButton) {
+				switchScale = true;
+				elevatorCommand = Elevator.liftState.AUTON_SCALE_POSITION;
+			} else {
+				elevatorCommand = Elevator.liftState.F_SWITCH_POSITION;
+				if(gather) switchGather = true;
+			}
 		}
 		else if(scaleButton) {
 			elevatorCommand = Elevator.liftState.F_SCALE_POSITION;
 		}
 		else if(liftExchange) elevatorCommand = Elevator.liftState.F_EXCHANGE_POSITION;
+		
+		//if we are in the auton scale position, check the other buttons to know when to leave
+		if(switchScale && (gather || (switchButton && !scaleButton) || liftExchange)) {
+			switchScale = false;
+		}
 		
 		//require gather button to be held down to gather
 		if(gather && !switchGather) {
