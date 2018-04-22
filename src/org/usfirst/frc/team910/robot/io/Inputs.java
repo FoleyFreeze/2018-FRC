@@ -193,7 +193,6 @@ public class Inputs extends Component {
 			elevatorCommand = Elevator.liftState.F_SCALE_POSITION;
 		}
 		else if(liftExchange) elevatorCommand = Elevator.liftState.F_EXCHANGE_POSITION;
-		else if(preClimb) elevatorCommand = Elevator.liftState.CLIMB_POSITION;
 		
 		//require gather button to be held down to gather
 		if(gather && !switchGather) {
