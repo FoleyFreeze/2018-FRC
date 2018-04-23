@@ -198,7 +198,7 @@ public class Sensors extends Component {
 		if(distFR < Gatherer.DIST_FRAME) closeCount++;
 		if(distFL < Gatherer.DIST_FRAME) closeCount++;
 		if(distFC < Gatherer.DIST_FRAME) closeCount++;
-		if(closeCount >= 2) hasCube = true;
+		if(closeCount >= 3) hasCube = true;
 		else hasCube = false;
 		
 		if(hasCube) {

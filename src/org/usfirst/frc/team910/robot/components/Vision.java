@@ -21,6 +21,7 @@ public class Vision extends Component {
 	public static final double WIDTH_LIMIT = 25;
 	public static final double HEIGHT_LIMIT = 25;
 	
+	public static final double AREA_CLOSE_FRAC = 0.5; //within 80 percent area, select based on center-ness instead
 	
 	LimitedStack<VisionData> front_blocks = new LimitedStack<VisionData>(MAX_SIZE);
 	LimitedStack<VisionData> rear_blocks = new LimitedStack<VisionData>(MAX_SIZE);

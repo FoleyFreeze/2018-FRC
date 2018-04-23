@@ -99,8 +99,8 @@ public class Elevator extends Component {
 	public static final double ARM_CLIMB = 45; 
 	public static final double ARM_CLIMB_DEPLOY = 15;
 	public static final double LIFT_CLIMB = 58; 
-	public static final double LIFT_AUTON_SCALE = 55;
-	public static final double ARM_AUTON_SCALE = 25;
+	public static final double LIFT_AUTON_SCALE = 57;
+	public static final double ARM_AUTON_SCALE = 35;
 	
 	//CLIMB POSITIONS
 	public static final double ARM_PRECLIMB_1 = 170;

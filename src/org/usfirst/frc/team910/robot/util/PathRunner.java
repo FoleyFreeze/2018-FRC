@@ -267,7 +267,7 @@ public class PathRunner {
 	
 	public static void main(String[] args) {
 
-	    double[][] activeProf = testProfile;
+	    double[][] activeProf = LeftToRightScale;
 	    
 	    for(int i=0; i<activeProf.length; i++){
 	        parseArray(activeProf[i]);

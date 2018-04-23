@@ -27,7 +27,7 @@ public class Gatherer extends Component {
 	public static final double DIST_HALF_GATHER = 8.5;
 	
 	public static final double PWR_SHOOT = -0.45; //FH -0.5; //was -0.35 pre mid rollers
-	public static final double PWR_SHIFT_SHOOT = -0.9; //was -0.7 pre mid rollers
+	public static final double PWR_SHIFT_SHOOT = -1.0; //was -0.7 pre mid rollers
 	public static final double PWR_EXCHANGE_SHOOT = -0.9;
 	
 	public static final double PWR_REV_GATHER = -0.3; //was -0.2

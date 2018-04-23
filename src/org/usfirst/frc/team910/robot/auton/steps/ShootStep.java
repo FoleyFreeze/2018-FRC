@@ -21,7 +21,7 @@ public class ShootStep extends AutonStep {
 	@Override
 	public void init() {
 		startTime = Timer.getFPGATimestamp();
-		targetTime = 1; //2 pre forest hills
+		targetTime = 0.75; //2 pre forest hills
 		in.shoot = true;
 		in.autonShootPwr = shootPower;
 	}

@@ -12,13 +12,17 @@ public class Inputs extends Component {
 	public static final double DEADBAND = 0.1;
 	public static double RAMP_LIMIT = .02; //Power per 20 ms
 	public static final double[] ELEVATOR_HEIGHT_AXIS = {    0,     10,    20,     30,    40,     50,    60,     70}; 
-	public static final double[] RAMP_LIMIT_TABLE =     {0.025, 0.0235, 0.022, 0.0205, 0.019, 0.0175, 0.016, 0.0145};
+	//public static final double[] RAMP_LIMIT_TABLE =     {0.025, 0.0235, 0.022, 0.0205, 0.019, 0.0175, 0.016, 0.0145};
+	public static final double X = 8;
+	public static final double[] RAMP_LIMIT_TABLE =     {0.025*X, 0.0235*X, 0.022*X, 0.0205*X, 0.019*X, 0.0175*X, 0.016*X, 0.0145*X};
 	//public static final double[] RAMP_LIMIT_TABLE =     {1,1,1,1,1,1,1,1};
 	
 	private Joystick leftStick;
 	private Joystick rightStick;
 	private Joystick controlBoard;
 	
+	public boolean mpRecPath = false;
+	public boolean recordPath = false;
 	public boolean enableMP = false;
 	public boolean auton = false;
 	public double autonShootPwr = 0;
@@ -91,6 +95,10 @@ public class Inputs extends Component {
 	boolean prevManualGather;
 
 	public void read() {
+		//set the auton values to false
+		mpRecPath = false;
+		recordPath = false;
+		enableMP = false;
 		
 		double leftYAxis = -leftStick.getY();
 		double rightYAxis = -rightStick.getY();
@@ -197,7 +205,8 @@ public class Inputs extends Component {
 			}
 		}
 		else if(scaleButton) {
-			elevatorCommand = Elevator.liftState.F_SCALE_POSITION;
+			if(switchScale) elevatorCommand = Elevator.liftState.AUTON_SCALE_POSITION;
+			else elevatorCommand = Elevator.liftState.F_SCALE_POSITION;
 		}
 		else if(liftExchange) elevatorCommand = Elevator.liftState.F_EXCHANGE_POSITION;
 		

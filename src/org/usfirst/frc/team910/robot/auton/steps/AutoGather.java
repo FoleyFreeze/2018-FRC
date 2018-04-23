@@ -1,5 +1,7 @@
 package org.usfirst.frc.team910.robot.auton.steps;
 
+import org.usfirst.frc.team910.robot.util.Path;
+
 import edu.wpi.first.wpilibj.Timer;
 
 public class AutoGather extends AutonStep {
@@ -11,8 +13,8 @@ public class AutoGather extends AutonStep {
 
 	@Override
 	public void init() {
-		
-		
+		//Path.startRecord();
+		//in.recordPath = true;
 	}
 
 	public void run() {
@@ -34,6 +36,7 @@ public class AutoGather extends AutonStep {
 			in.liftFlip = false;
 			in.autoGather = false;
 			in.gather = false;
+			//in.recordPath = false;
 			return true;	
 		}
 		return false;

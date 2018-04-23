@@ -135,9 +135,21 @@ public class VisionObjectDataPixyListener  {
 						blockIndex += BLOCK_SIZE;
 						newData.robotAngle = Component.sense.robotAngle.get();
 						
-						if(bestBlock == null) bestBlock = newData;
-						else if(newData.w + newData.h > bestBlock.w + bestBlock.h) {
+						//if the best block doesnt exist, its this one now
+						if(bestBlock == null) {
 							bestBlock = newData;
+						} else {
+							//otherwise, we need to be a little smarter
+							double newArea = newData.w * newData.h;
+							double bestArea = bestBlock.w * bestBlock.h;
+							if(newArea * Vision.AREA_CLOSE_FRAC > bestArea) {
+								bestBlock = newData;
+							} else if(newArea > bestArea * Vision.AREA_CLOSE_FRAC) {
+								//if areas are close, choose based on which is more centered
+								if(Math.abs(newData.x - Vision.X_RES/2) < Math.abs(bestBlock.x - Vision.X_RES/2)) {
+									bestBlock = newData;
+								}
+							}
 						}
 					}
 					// Add new vision data to the list
@@ -214,9 +226,21 @@ public class VisionObjectDataPixyListener  {
 						blockIndex += BLOCK_SIZE;
 						newData.robotAngle = Component.sense.robotAngle.get();
 						
-						if(bestBlock == null) bestBlock = newData;
-						else if(newData.w + newData.h > bestBlock.w + bestBlock.h) {
+						//if the best block doesnt exist, its this one now
+						if(bestBlock == null) {
 							bestBlock = newData;
+						} else {
+							//otherwise, we need to be a little smarter
+							double newArea = newData.w * newData.h;
+							double bestArea = bestBlock.w * bestBlock.h;
+							if(newArea > bestArea * Vision.AREA_CLOSE_FRAC) {
+								bestBlock = newData;
+							} else {
+								//if areas are close, choose based on which is more centered
+								if(Math.abs(newData.x - Vision.X_RES/2) < Math.abs(bestBlock.x - Vision.X_RES/2)) {
+									bestBlock = newData;
+								}
+							}
 						}
 					}
 					// Add new vision data to the list

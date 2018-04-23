@@ -9,7 +9,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class Path {
+import org.usfirst.frc.team910.robot.Component;
+
+public class Path extends Component{
 	
 	public static final double SCRUB_FACTOR = 2.4;
 	public static final double TURNING_WIDTH = 23.2375 * SCRUB_FACTOR;
@@ -40,6 +42,7 @@ public class Path {
 		velocities = new ArrayList<Double>();
 		accelerations = new ArrayList<Double>();
 		motorPower = new ArrayList<Double>();
+		angles = new ArrayList<>();
 
 		
 	}
@@ -260,22 +263,25 @@ public class Path {
 	}
 
 	
-	/*
-	static boolean prevRecord = false;
+	
 	static double prevPosL = 0;
 	static double prevPosR = 0;
 	static double prevVelL = 0;
 	static double prevVelR = 0;
-	static Path recPathL;
-	static Path recPathR;
+	public static Path recPathL;
+	public static Path recPathR;
 	
-	public static void recordPath(boolean record) {
-		//record the following - position , velocity, acceleration, motor powers
-		//rising edge to record a new path
-		if(record && !prevRecord) {
-			recPathL = new Path();
-			recPathR = new Path();
-		}
+	public static void startRecord() {
+		recPathL = new Path();
+		recPathR = new Path();
+		prevPosL = sense.leftDist;
+		prevPosR = sense.rightDist;
+		prevVelL = sense.leftVel;
+		prevPosR = sense.rightVel;
+	}
+	
+	public static void recordPath() {
+		//record the following - position , velocity, acceleration, motor powers, angles
 		
 		double positionL = sense.leftDist;
 		double positionR = sense.rightDist;
@@ -291,17 +297,22 @@ public class Path {
 		prevVelL = velocityL;
 		prevVelR = velocityR;
 		
-		if(record) {
-			recPathL.positions.add(positionL);
-			recPathR.positions.add(positionR);
-			
-			recPathL.velocities.add(velocityL);
-			recPathR.velocities.add(velocityR);
-			
-			recPathL.accelerations.add(accelL);
-			recPathR.accelerations.add(accelR);
-		}
+		recPathL.positions.add(positionL);
+		recPathR.positions.add(positionR);
 		
+		recPathL.velocities.add(velocityL);
+		recPathR.velocities.add(velocityR);
+		
+		recPathL.accelerations.add(accelL);
+		recPathR.accelerations.add(accelR);
+	
+		recPathL.angles.add(sense.robotAngle.get());
+		
+		
+		
+		
+		//rethink how/when to save
+		/*
 		if(!record && prevRecord) {
 			//ctrl + s;
 			
@@ -334,9 +345,9 @@ public class Path {
 				e.printStackTrace();
 			}
 			
-		}
+		}*/
 		
 	}
-	*/
+	
 
 }

@@ -12,12 +12,12 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Outputs extends Component {
-	TalonSRX leftDrive1;
-	TalonSRX leftDrive2;
-	TalonSRX leftDrive3;
-	TalonSRX rightDrive1;
-	TalonSRX rightDrive2;
-	TalonSRX rightDrive3;
+	public TalonSRX leftDrive1;
+	public TalonSRX leftDrive2;
+	public TalonSRX leftDrive3;
+	public TalonSRX rightDrive1;
+	public TalonSRX rightDrive2;
+	public TalonSRX rightDrive3;
 	
 	TalonSRX armMotor1;
 	TalonSRX armMotor2;
@@ -47,6 +47,14 @@ public class Outputs extends Component {
 		rightDrive1 = new TalonSRX(ElectroBach.RIGHT_DRIVE_CAN_1);
 		rightDrive2 = new TalonSRX(ElectroBach.RIGHT_DRIVE_CAN_2);
 		rightDrive3 = new TalonSRX(ElectroBach.RIGHT_DRIVE_CAN_3);
+		
+		double ramprate = 0.05;
+		out.leftDrive1.configOpenloopRamp(ramprate, 0);
+		out.leftDrive2.configOpenloopRamp(ramprate, 0);
+		out.leftDrive3.configOpenloopRamp(ramprate, 0);
+		out.rightDrive1.configOpenloopRamp(ramprate, 0);
+		out.rightDrive2.configOpenloopRamp(ramprate, 0);
+		out.rightDrive3.configOpenloopRamp(ramprate, 0);
 		
 		rightDrive2.follow(rightDrive1);
 		rightDrive3.follow(rightDrive1);
