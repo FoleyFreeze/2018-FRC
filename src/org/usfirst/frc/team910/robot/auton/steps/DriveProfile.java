@@ -12,14 +12,24 @@ public class DriveProfile extends AutonStep {
 	public Path[] pathsR;
 
 	public int pathIdx;
+	public int skipSteps;
 
 	public DriveProfile(double[][] profile) {
-		this(profile, true);
+		this(profile, true, 0);
+	}
+	
+	public DriveProfile(double[][] profile, boolean pidStop) {
+		this(profile, pidStop, 0);
+	}
+	
+	public DriveProfile(double[][] profile, int skipSteps) {
+		this(profile,true,skipSteps);
 	}
 	
 	double time;
-	public DriveProfile(double[][] profile, boolean pidStop) {
-
+	public DriveProfile(double[][] profile, boolean pidStop, int skipSteps) {
+		this.skipSteps = skipSteps;
+		
 		pathsL = new Path[profile.length / 2];
 		pathsR = new Path[profile.length / 2];
 
@@ -48,6 +58,7 @@ public class DriveProfile extends AutonStep {
 		double lastVelL = pathsL[lastPath].velocities.get(pathsL[lastPath].positions.size() - 1);
 		double lastVelR = pathsR[lastPath].velocities.get(pathsR[lastPath].positions.size() - 1);
 
+		/*
 		if (lastVelL == 0 && lastVelR == 0 && !pidStop) {
 			// stick to last point to make sure we actually get there
 			for (int i = 0; i * Path.DT < REST_TIME; i++) {
@@ -60,7 +71,7 @@ public class DriveProfile extends AutonStep {
 				pathsL[lastPath].angles.add(lastAngle);
 			}
 		}
-		
+		*/
 	}
 
 	@Override
@@ -77,16 +88,18 @@ public class DriveProfile extends AutonStep {
 
 	@Override
 	public boolean isDone() {
-		if (drive.isMpDoneYet()) {
-			pathIdx++;
-			if (pathIdx < pathsL.length) {
+		if(pathIdx < pathsL.length-1) {
+			if(drive.isMpDoneYet()) {
+				pathIdx++;
 				drive.initMp(pathsL[pathIdx], pathsR[pathIdx]);
-			} else {
+			}
+		} else {
+			if(drive.isMpDoneYet(skipSteps)) {
 				in.enableMP = false;
 				return true;
 			}
-				
 		}
+		
 		return false;
 	}
 	

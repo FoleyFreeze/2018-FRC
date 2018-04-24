@@ -129,7 +129,9 @@ public class Sensors extends Component {
 		if(in.resetEnc) {
 			out.resetEncoders();
 			//navx.zeroYaw();
-			angleOffset = -navx.getYaw() - 90;
+			//angleOffset = -navx.getYaw() - 90;
+			navx.zeroYaw();
+			angleOffset = -90;
 		}
 		
 		out.readEncoders();

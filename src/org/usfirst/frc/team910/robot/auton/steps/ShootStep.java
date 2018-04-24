@@ -31,12 +31,15 @@ public class ShootStep extends AutonStep {
 		
 	}
 
+	boolean prevTouchingCube = true;
+	
 	@Override
 	public boolean isDone() {
-		if (Timer.getFPGATimestamp() > startTime + targetTime) {
+		if (Timer.getFPGATimestamp() > startTime + targetTime || (!sense.touchingCube && prevTouchingCube)) {
 			in.shoot = false;
 			return true;
 		} else {
+			prevTouchingCube = sense.touchingCube;
 			return false;
 		}
 	}

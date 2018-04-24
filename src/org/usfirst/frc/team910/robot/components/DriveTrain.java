@@ -236,7 +236,12 @@ public class DriveTrain extends Component implements Runnable {
 		
 		//if recorded path, start at the end and run backwards
 		if(in.mpRecPath) {
-			index = leftPath.positions.size()-1;
+			if(leftPath.positions.size() > 20) {
+				index = leftPath.positions.size()-20;//skip the first 10 steps
+			} else {
+				index = leftPath.positions.size()-1;
+			}
+			
 		} else {
 			index = 0;
 		}
@@ -353,7 +358,7 @@ public class DriveTrain extends Component implements Runnable {
 		
 		double ffPowerL = (DRIVEMP_KFV * leftVelocity) + (DRIVEMP_KFA * leftAccel);
 		double ffPowerR = (DRIVEMP_KFV * rightVelocity) + (DRIVEMP_KFA * rightAccel);
-
+		
 		if(leftVelocity > 0) ffPowerL += DRIVEMP_KFV_INT;
 		else if(leftVelocity < 0) ffPowerL -= DRIVEMP_KFV_INT;
 		if(rightVelocity > 0) ffPowerR += DRIVEMP_KFV_INT;
@@ -439,7 +444,7 @@ public class DriveTrain extends Component implements Runnable {
 		if(in.mpRecPath) {
 			return index <= -1 + stepThreshold;//we decrement after reading the index, so we will be one past 0
 		} else {
-			return index == leftPath.positions.size() || index == rightPath.positions.size();
+			return index+stepThreshold >= leftPath.positions.size() || index+stepThreshold >= rightPath.positions.size();
 		}
 	}
 
