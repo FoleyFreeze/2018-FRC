@@ -6,6 +6,7 @@ public class ParallelSet extends AutonSet {
 
 	private ArrayList<AutonStep> steps;
 	private ArrayList<Boolean> stepDones;
+	private boolean hasError = false;
 
 	public ParallelSet() {
 		steps = new ArrayList<>();
@@ -34,7 +35,11 @@ public class ParallelSet extends AutonSet {
 
 		for (int i = 0; i < steps.size(); i++) {
 			if (stepDones.get(i) == false) {
-				steps.get(i).run();
+				if(steps.get(i).isError()) {
+					hasError = true;
+				}else {
+					steps.get(i).run();
+				}
 			}
 
 		}
@@ -61,6 +66,11 @@ public class ParallelSet extends AutonSet {
 		}
 
 		return allDone;
+	}
+	
+	@Override
+	public boolean isError() {
+		return hasError;
 	}
 
 }

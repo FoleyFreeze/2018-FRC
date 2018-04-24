@@ -17,6 +17,7 @@ public class DriveProfile extends AutonStep {
 		this(profile, true);
 	}
 	
+	double time;
 	public DriveProfile(double[][] profile, boolean pidStop) {
 
 		pathsL = new Path[profile.length / 2];
@@ -38,6 +39,7 @@ public class DriveProfile extends AutonStep {
 				System.out.println("paths not equal: " + i/2);
 				
 			}
+			
 		}
 
 		int lastPath = pathsL.length - 1;
@@ -86,6 +88,18 @@ public class DriveProfile extends AutonStep {
 				
 		}
 		return false;
+	}
+	
+	@Override
+	public boolean isError() {
+		if (Math.abs(drive.lError) >= 30 
+				|| Math.abs(drive.rError) >= 30 
+				|| Math.abs(drive.angleError) >= 90) 
+			return true;
+		
+		
+		return false;
+		
 	}
 
 }

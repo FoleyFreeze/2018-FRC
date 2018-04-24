@@ -5,7 +5,6 @@ import org.usfirst.frc.team910.robot.util.Path;
 import edu.wpi.first.wpilibj.Timer;
 
 public class AutoGather extends AutonStep {
-
 	
 	public AutoGather() {
 		

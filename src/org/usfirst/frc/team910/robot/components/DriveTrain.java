@@ -24,7 +24,7 @@ public class DriveTrain extends Component implements Runnable {
 	public static final double DRIVEMP_KP_ANGLE = 0.9 / 45; //50% per 45deg
 	public static final double DRIVEMP_KP_ANGLE_REC = 2.5 / 45; //50% per 45deg
 	public static final double DRIVEMP_KFV = 0.9 / 200.0; //200 in/sec at max pwr
-	public static final double DRIVEMP_KFA = 1.0 / 380.0; //full power is 420 in/sec/sec
+	public static final double DRIVEMP_KFA = 1.0 / 300.0; //full power is 420 in/sec/sec
 	public static final double DRIVEMP_KFV_INT = 0.1;
 	public static final double DRIVEMP_REC_PWR = 0.75;
 
@@ -257,8 +257,9 @@ public class DriveTrain extends Component implements Runnable {
 	private int delayIndex = 0;
 	private double prevLError = 0;
 	private double prevRError = 0;
-	private double lError = 0;
-	private double rError = 0;
+	public double lError = 0;
+	public double rError = 0;
+	public double angleError = 0;
 	
 	private int counter = 0;
 	
@@ -338,7 +339,7 @@ public class DriveTrain extends Component implements Runnable {
 			delayIndex = 0;
 		}
 		
-		double angleError = sense.robotAngle.get() - targetAngle;
+		angleError = sense.robotAngle.get() - targetAngle;
 		if(angleError > 180) {
 			angleError -= 360;
 		} else if (angleError < -180) {
@@ -432,6 +433,14 @@ public class DriveTrain extends Component implements Runnable {
 			return index == leftPath.positions.size() || index == rightPath.positions.size();
 		}
 		
+	}
+	
+	public boolean isMpDoneYet(int stepThreshold) {
+		if(in.mpRecPath) {
+			return index <= -1 + stepThreshold;//we decrement after reading the index, so we will be one past 0
+		} else {
+			return index == leftPath.positions.size() || index == rightPath.positions.size();
+		}
 	}
 
 	private double prevCamError;

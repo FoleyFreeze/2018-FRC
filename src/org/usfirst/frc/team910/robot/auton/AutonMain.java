@@ -13,6 +13,7 @@ import org.usfirst.frc.team910.robot.auton.steps.DriveStraightPath;
 import org.usfirst.frc.team910.robot.auton.steps.DriveTurnStep;
 import org.usfirst.frc.team910.robot.auton.steps.ElevatorPosition;
 import org.usfirst.frc.team910.robot.auton.steps.EndStep;
+import org.usfirst.frc.team910.robot.auton.steps.ErrorStep;
 import org.usfirst.frc.team910.robot.auton.steps.IfInterface;
 import org.usfirst.frc.team910.robot.auton.steps.IfSet;
 import org.usfirst.frc.team910.robot.auton.steps.ParallelSet;
@@ -22,7 +23,7 @@ import org.usfirst.frc.team910.robot.auton.steps.ResetEncoders;
 import org.usfirst.frc.team910.robot.auton.steps.SeriesSet;
 import org.usfirst.frc.team910.robot.auton.steps.ShootStep;
 import org.usfirst.frc.team910.robot.auton.steps.StartStep;
-import org.usfirst.frc.team910.robot.auton.steps.WaitRecTime;
+import org.usfirst.frc.team910.robot.auton.steps.NegativeWait;
 import org.usfirst.frc.team910.robot.auton.steps.WaitStep;
 import org.usfirst.frc.team910.robot.components.Elevator;
 import org.usfirst.frc.team910.robot.util.Path;
@@ -343,12 +344,12 @@ public class AutonMain extends Component {
 						//b.add(new ResetEncoders());
 						b.add(new ParallelSet()); {
 							//b.add(new DriveProfile(Profile.right1ToScale));
-							b.add(new DriveRecPath());
+							b.add(new DriveRecPath(0));
 							b.add(new SeriesSet()); {
 								b.add(new WaitStep(0.1));
 								b.add(new ElevatorPosition(Elevator.liftState.AUTON_SCALE_POSITION));
 								//b.add(new WaitStep(1.3));
-								b.add(new WaitRecTime(0.3));
+								b.add(new NegativeWait(0.3));
 								b.add(new ShootStep(-1.0));
 								b.end();}
 							b.end();}
@@ -368,12 +369,12 @@ public class AutonMain extends Component {
 						//b.add(new ResetEncoders());
 						b.add(new ParallelSet()); {
 							//b.add(new DriveProfile(Profile.right1ToScale));
-							b.add(new DriveRecPath());
+							b.add(new DriveRecPath(0));
 							b.add(new SeriesSet()); {
 								b.add(new WaitStep(0.1));
 								b.add(new ElevatorPosition(Elevator.liftState.AUTON_SCALE_POSITION));
 								//b.add(new WaitStep(1.3));
-								b.add(new WaitRecTime(0.3));
+								b.add(new NegativeWait(0.3));
 								b.add(new ShootStep(-1.0));
 								b.end();}
 							b.end();}
@@ -452,13 +453,13 @@ public class AutonMain extends Component {
 						b.add(new ParallelSet()); {
 							b.add(new DriveProfile(Profile.leftToRightScale));
 							b.add(new SeriesSet()); {
-								b.add(new WaitStep(4.4));
+								b.add(new WaitStep(4.4+0.4)); 
 								//b.add(new EndStep()); //TODO: remove when we want to complete cross scale auto
 								b.add(new ElevatorPosition(Elevator.liftState.AUTON_SCALE_POSITION)); //TODO: re add this
 								
 								//moved shooting logic into this wait, so we start shooting before finishing driving
-								b.add(new WaitStep(1.8));
-								b.add(new ShootStep(-1.0));
+								b.add(new WaitStep(1.8 - 0.1));
+								b.add(new ShootStep(-0.8));
 								b.end(); }
 							b.end(); }
 						//b.add(new WaitStep(0.5));
@@ -467,9 +468,9 @@ public class AutonMain extends Component {
 						b.add(new RecordStart());
 						b.add(new ParallelSet()); {
 							b.add(new ElevatorPosition(Elevator.liftState.R_FLOOR_POSITION));
-							b.add(new DriveTurnStep(0.15, -0.45, 2)); //-0.2,-0.3 MSC
+							b.add(new DriveTurnStep(-0.05, -0.45 + 0.15, 2)); //-0.2,-0.3 MSC
 							b.add(new SeriesSet()); {
-								b.add(new WaitStep(1.0));
+								b.add(new WaitStep(1.0 +0.2));
 								b.add(new AutoGather());
 								b.end(); }
 							b.end(); }
@@ -478,20 +479,20 @@ public class AutonMain extends Component {
 						//b.add(new ResetEncoders());
 						b.add(new ParallelSet()); {
 							//b.add(new DriveProfile(Profile.right1ToScale));
-							b.add(new DriveRecPath());
+							b.add(new DriveRecPath(20));
 							b.add(new SeriesSet()); {
-								b.add(new WaitStep(0.1));
+								//b.add(new WaitStep(0.1));
 								b.add(new ElevatorPosition(Elevator.liftState.AUTON_SCALE_POSITION));
 								//b.add(new WaitStep(1.3));
-								b.add(new WaitRecTime(0.3));
-								b.add(new ShootStep(-1.0));
+								b.add(new NegativeWait(0.3 + 0.3));
+								b.add(new ShootStep(-0.85));
 								b.end();}
 							b.end();}
 						
 						//go for cube 3
 						b.add(new ParallelSet()); {
 							b.add(new ElevatorPosition(Elevator.liftState.R_FLOOR_POSITION));
-							b.add(new DriveTurnStep(0.15, -0.45, 2)); //-0.2,-0.3 MSC
+							b.add(new DriveTurnStep(0.05, -0.45, 2)); //-0.2,-0.3 MSC
 							b.add(new SeriesSet()); {
 								b.add(new WaitStep(0.8));
 								b.add(new AutoGather());
@@ -559,7 +560,9 @@ public class AutonMain extends Component {
 		testProfile = new SeriesSet();
 		b.add(testProfile); {
 			b.add(new StartStep());
-			b.add(new ElevatorPosition(Elevator.liftState.R_FLOOR_POSITION));
+			b.add(new ElevatorPosition(Elevator.liftState.REST_POSITION));
+			b.add(new DriveProfile(Profile.straightScaleLeftFast));
+			/*
 			b.add(new WaitStep(0.5));
 			b.add(new AutoGather());
 			b.add(new ElevatorPosition(Elevator.liftState.REST_POSITION));
@@ -567,6 +570,7 @@ public class AutonMain extends Component {
 			//b.add(new DriveProfile(Profile.rightToLeftScale));
 			//b.add(scale);
 			//b.end();
+			 */
 			b.add(new EndStep());
 			b.end(); }
 		//Path.print = false;
@@ -685,9 +689,16 @@ public class AutonMain extends Component {
 		options.scaleIsLeft = sense.scaleIsLeft;
 	}
 	
+	ErrorStep errStep = new ErrorStep();
 	public void run() {
 		
-		currentAuton.run();
+		//if there is an error stop everything
+		if(currentAuton.isError()) {
+			errStep.run();
+		} else {
+			//otherwise, run the selected auton
+			currentAuton.run();
+		}
 		
 		/*
 		steps.get(currentStep).run(); //run the functions of the step we are on

@@ -4,8 +4,10 @@ import org.usfirst.frc.team910.robot.util.Path;
 
 public class DriveRecPath extends AutonStep {
 
-	public DriveRecPath() {
-		
+	int numStepsToThrowAway = 0;
+	
+	public DriveRecPath(int stepsToThrowAway) {
+		numStepsToThrowAway = stepsToThrowAway;
 	}
 	
 	@Override
@@ -22,13 +24,27 @@ public class DriveRecPath extends AutonStep {
 	@Override
 	public boolean isDone() {
 		//if(out.driveMP.doneYet()) {
-		if(drive.isMpDoneYet()) {
+		if(drive.isMpDoneYet(numStepsToThrowAway)) {
+			System.out.println("PathComplete"+drive.index);
 			in.enableMP = false;
 			in.mpRecPath = false;
 			return true;
 		}else {
 			return false;
 		}
+	}
+	
+	@Override
+	public boolean isError() {
+		if (Math.abs(drive.lError) >= 30 
+				|| Math.abs(drive.rError) >= 30 
+				|| Math.abs(drive.angleError) >= 90) 
+			return true;
+		
+		if((Path.recPathL.positions.size() * Path.DT) >= 5) return true;
+		
+		return false;
+		
 	}
 	
 }

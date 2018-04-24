@@ -18,8 +18,8 @@ public class Vision extends Component {
 	public static final double X_FOV = 85;
 	public static final double X_DEG_PER_PIXEL = X_FOV / X_RES;
 	
-	public static final double WIDTH_LIMIT = 25;
-	public static final double HEIGHT_LIMIT = 25;
+	public static final double WIDTH_LIMIT = 20;
+	public static final double HEIGHT_LIMIT = 20;
 	
 	public static final double AREA_CLOSE_FRAC = 0.5; //within 80 percent area, select based on center-ness instead
 	

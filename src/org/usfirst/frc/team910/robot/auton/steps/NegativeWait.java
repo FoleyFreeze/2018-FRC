@@ -2,11 +2,11 @@ package org.usfirst.frc.team910.robot.auton.steps;
 
 import org.usfirst.frc.team910.robot.util.Path;
 
-public class WaitRecTime extends AutonStep{
+public class NegativeWait extends AutonStep{
 
 	private double idxFromEnd = 0;
 	
-	public WaitRecTime(double timeFromEnd) {
+	public NegativeWait(double timeFromEnd) {
 		idxFromEnd = timeFromEnd / Path.DT;
 	}
 	
