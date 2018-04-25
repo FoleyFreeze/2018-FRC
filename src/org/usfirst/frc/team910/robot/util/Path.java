@@ -270,6 +270,10 @@ public class Path extends Component{
 	static double prevVelR = 0;
 	public static Path recPathL;
 	public static Path recPathR;
+	static LowPassFilter accelFiltL = new LowPassFilter(0.2);
+	static LowPassFilter accelFiltR = new LowPassFilter(0.2);
+	static LowPassFilter velFiltL = new LowPassFilter(0.2);
+	static LowPassFilter velFiltR = new LowPassFilter(0.2);
 	
 	public static void startRecord() {
 		recPathL = new Path();
@@ -278,6 +282,10 @@ public class Path extends Component{
 		prevPosR = sense.rightDist;
 		prevVelL = sense.leftVel;
 		prevPosR = sense.rightVel;
+		accelFiltL.reset(0);
+		accelFiltR.reset(0);
+		velFiltL.reset(0);
+		velFiltR.reset(0);
 	}
 	
 	public static void recordPath() {
@@ -300,11 +308,11 @@ public class Path extends Component{
 		recPathL.positions.add(positionL);
 		recPathR.positions.add(positionR);
 		
-		recPathL.velocities.add(velocityL);
-		recPathR.velocities.add(velocityR);
+		recPathL.velocities.add(velFiltL.filt(velocityL));
+		recPathR.velocities.add(velFiltR.filt(velocityR));
 		
-		recPathL.accelerations.add(accelL);
-		recPathR.accelerations.add(accelR);
+		recPathL.accelerations.add(accelFiltL.filt(accelL));
+		recPathR.accelerations.add(accelFiltR.filt(accelR));
 	
 		recPathL.angles.add(sense.robotAngle.get());
 		

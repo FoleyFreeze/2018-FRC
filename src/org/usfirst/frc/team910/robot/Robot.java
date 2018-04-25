@@ -98,6 +98,19 @@ public class Robot extends TimedRobot {
 		sensor.robotDisabled = false;
 		input.auton = false;
 		output.setRatchetServo(false);
+		
+		//turn off everything that auton turned on
+		input.enableMP = false;
+		input.mpRecPath = false;
+		input.recordPath = false;
+		input.rightDrive = 0;
+		input.leftDrive = 0;
+		input.driveStraight = false;
+		input.shoot = false;
+		input.autonShootPwr = 0;
+		drive.turnAngle = false;
+		//input.elevatorCommand = Elevator.liftState.REST_POSITION;
+		//input.manualOverride = true;
 	}
 
 	/**

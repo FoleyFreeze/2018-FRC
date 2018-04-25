@@ -34,14 +34,24 @@ public class DriveRecPath extends AutonStep {
 		}
 	}
 	
+	boolean first = true;
+	
 	@Override
 	public boolean isError() {
+		/*
 		if (Math.abs(drive.lError) >= 30 
 				|| Math.abs(drive.rError) >= 30 
 				|| Math.abs(drive.angleError) >= 90) 
 			return true;
+		*/
 		
-		if((Path.recPathL.positions.size() * Path.DT) >= 5) return true;
+		if((Path.recPathL.positions.size() * Path.DT) >= 5) {
+			if(first) {
+				System.out.println("RecPath Error: Length is " + (Path.recPathL.positions.size() * Path.DT));
+				first = false;
+			}
+			return true;
+		}
 		
 		return false;
 		

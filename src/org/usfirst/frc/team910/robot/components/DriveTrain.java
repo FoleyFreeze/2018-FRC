@@ -49,6 +49,9 @@ public class DriveTrain extends Component implements Runnable {
 	
 	private Angle targetAngle = new Angle(0);
 	
+	public boolean turnAngle = false;
+	public double angleTarget = 0;
+	
 	public void run() {
 		double time = Timer.getFPGATimestamp(); 
 		dt = time - lastTime;
@@ -72,7 +75,9 @@ public class DriveTrain extends Component implements Runnable {
 			
 		} else if (in.autoGather && view.getLatestAngle(targetAngle)) {
 			driveAngle(targetAngle, CAM_DRIVE_PWR, view.getLatestDist());	
-			
+		} else if (turnAngle) {
+			targetAngle.set(angleTarget);
+			driveAngle(targetAngle, 0.8);
 		} else if (in.dynamicBrake) {
 			boolean first = !prevBrake && in.dynamicBrake;
 			dynamicBrake(sense.leftDist, sense.rightDist, first);
@@ -241,7 +246,8 @@ public class DriveTrain extends Component implements Runnable {
 			} else {
 				index = leftPath.positions.size()-1;
 			}
-			
+		} else if (reverseProfile) {
+			index = leftPath.positions.size()-1;
 		} else {
 			index = 0;
 		}
@@ -252,6 +258,21 @@ public class DriveTrain extends Component implements Runnable {
 		this.leftPath = leftPath;
 		this.rightPath = rightPath;
 
+	}
+	
+	private boolean reverseProfile = false;
+	private double endLpos;
+	private double endRpos;
+	//private double endAngle;
+	
+	public void reversePath(boolean doIt, double endL, double endR, double endA) {
+		reverseProfile = doIt;
+		
+		if(doIt) { 
+			endLpos = endL - sense.leftDist;
+			endRpos = endR - sense.rightDist;
+			//endAngle = endA - sense.robotAngle.get();
+		}
 	}
 	
 	private void recordMp() {
@@ -306,12 +327,28 @@ public class DriveTrain extends Component implements Runnable {
 			}			
 			
 			index--;
+		} else if (reverseProfile) {
+			//if rec path, run backwards
+			leftPosition = leftPath.positions.get(index) - endLpos;
+			rightPosition = rightPath.positions.get(index) - endRpos;
+
+			leftVelocity = leftPath.velocities.get(index);
+			rightVelocity = rightPath.velocities.get(index);
+
+			leftAccel = leftPath.accelerations.get(index);
+			rightAccel = rightPath.accelerations.get(index);
+			
+			if(leftPath.angles != null) {
+				targetAngle = leftPath.angles.get(index);
+			}			
+			
+			index--;
 		} else {
 			leftPosition = leftPath.positions.get(index);
 			rightPosition = rightPath.positions.get(index);
 
-			leftVelocity = leftPath.velocities.get(index);
-			rightVelocity = rightPath.velocities.get(index);
+			leftVelocity = -leftPath.velocities.get(index);
+			rightVelocity = -rightPath.velocities.get(index);
 
 			leftAccel = leftPath.accelerations.get(index);
 			rightAccel = rightPath.accelerations.get(index);
@@ -374,7 +411,7 @@ public class DriveTrain extends Component implements Runnable {
 			ffPowerR = -1;
 		
 		double anglePowerDiff;
-		if(in.mpRecPath) {
+		if(in.mpRecPath || reverseProfile) {
 			anglePowerDiff = DRIVEMP_KP_ANGLE_REC * angleError;
 		} else {
 			anglePowerDiff = DRIVEMP_KP_ANGLE * angleError;
@@ -432,7 +469,7 @@ public class DriveTrain extends Component implements Runnable {
 	}
 
 	public boolean isMpDoneYet() {
-		if(in.mpRecPath) {
+		if(in.mpRecPath || reverseProfile) {
 			return index == -1;//we decrement after reading the index, so we will be one past 0
 		} else {
 			return index == leftPath.positions.size() || index == rightPath.positions.size();
@@ -441,7 +478,7 @@ public class DriveTrain extends Component implements Runnable {
 	}
 	
 	public boolean isMpDoneYet(int stepThreshold) {
-		if(in.mpRecPath) {
+		if(in.mpRecPath || reverseProfile) {
 			return index <= -1 + stepThreshold;//we decrement after reading the index, so we will be one past 0
 		} else {
 			return index+stepThreshold >= leftPath.positions.size() || index+stepThreshold >= rightPath.positions.size();
@@ -465,7 +502,8 @@ public class DriveTrain extends Component implements Runnable {
 
 		double power = Elevator.interp(CAM_DRIVE_AXIS, CAM_DRIVE_TABLE, error);
 	
-		power *= (GATHERED_DIST - dist) * CAM_DRIVE_DIST_KP;
+		if(dist == 0) power = 0;
+		else power *= (GATHERED_DIST - dist) * CAM_DRIVE_DIST_KP;
 		
 		// setting powers
 		double powerL = power - powerDiff;
@@ -514,4 +552,35 @@ public class DriveTrain extends Component implements Runnable {
 		}
 	}
 
+	public void driveAngle(Angle targetAngle, double powerLimit) {
+		// error is the target angle minus the robot angle
+		double error = targetAngle.subtract(sense.robotAngle);
+
+		//switch to measuring the change in process variable instead of change in error to avoid jumps
+		double deltaError = sense.robotAngle.subtract(prevCamError);
+		
+		SmartDashboard.putNumber("camError", error);
+		SmartDashboard.putNumber("camDeltaError", deltaError);
+
+		// PD for the given power
+		double powerDiff = CAM_DRIVE_KP * error - CAM_DRIVE_KD/2 * deltaError;
+		
+		// setting powers
+		double powerL = -powerDiff;
+		double powerR = powerDiff;
+
+		if(powerL > powerLimit) powerL = powerLimit;
+		else if (powerL < powerLimit) powerL = -powerLimit;
+		
+		if(powerR > powerLimit) powerR = powerLimit;
+		else if (powerR < powerLimit) powerR = -powerLimit;
+		
+		
+		SmartDashboard.putNumber("camLpwr", powerL);
+		SmartDashboard.putNumber("camRpwr", powerR);
+
+		out.setDrivePower(-powerR, -powerL);
+
+	}
+	
 }

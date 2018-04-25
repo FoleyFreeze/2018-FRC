@@ -9,8 +9,15 @@ public class ErrorStep extends AutonStep {
 		
 	}
 
+	boolean first = true;
+	
 	@Override
 	public void run() {
+		if(first) {
+			first = false;
+			System.out.println("Error somewhere in auton");
+		}
+		
 		//turn off everything that auton turned on
 		in.enableMP = false;
 		in.mpRecPath = false;
