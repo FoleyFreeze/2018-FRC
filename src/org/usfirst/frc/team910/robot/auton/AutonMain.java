@@ -280,7 +280,7 @@ public class AutonMain extends Component {
 			})); {
 				//for the true case, run this series
 				b.add(new SeriesSet()); {
-					b.add(new DriveProfile(Profile.straightScaleL));
+					b.add(new DriveProfile(Profile.straightScaleLeftFast));
 					b.add(new ElevatorPosition(Elevator.liftState.F_SCALE_POSITION));
 					b.add(new WaitStep(1));
 					b.add(new DriveTurnStep(0.55, 0.05, 0.6)); //kick
@@ -335,7 +335,7 @@ public class AutonMain extends Component {
 								b.add(new WaitStep(2.0));
 								b.add(new ElevatorPosition(Elevator.liftState.AUTON_SCALE_POSITION));
 								b.add(new WaitStep(1.3));
-								b.add(new ShootStep(-0.6));
+								b.add(new ShootStep(-0.5));
 								b.end(); }
 							b.end(); }
 						
@@ -403,37 +403,83 @@ public class AutonMain extends Component {
 
 						b.end();}
 						
+					//RIGHT SIDE
 					b.add(new SeriesSet()); { 
+						
+						//FIRST CUBE
 						b.add(new ParallelSet()); {
-							b.add(new DriveProfile(Profile.curvedStraightScaleR));
+							b.add(new DriveProfile(Profile.straightScaleRightFast,10));
 							b.add(new SeriesSet()); {
-								b.add(new WaitStep(3));
-							//b.add(new EndStep()); //TODO: remove when we want to complete cross scale auto
-								b.add(new ElevatorPosition(Elevator.liftState.F_SCALE_POSITION)); //TODO: re add this
+								b.add(new WaitStep(2.0));
+								b.add(new ElevatorPosition(Elevator.liftState.AUTON_SCALE_POSITION));
+								b.add(new WaitStep(1.3));
+								b.add(new ShootStep(-0.6));
 								b.end(); }
 							b.end(); }
-						b.add(new ShootStep());
-						//b.add(new WaitStep(0.5));
-						b.add(new DriveTurnStep(0.15, -0.45, 0.6)); //-0.3,-0.2 MSC
-						b.add(new ElevatorPosition(Elevator.liftState.R_FLOOR_POSITION));
-						b.add(new WaitStep(2.5));
-						b.add(new AutoGather());
-						b.add(new ResetEncoders());
+						
+						//PICKUP SECOND CUBE
+						b.add(new RecordStart());
 						b.add(new ParallelSet()); {
+							b.add(new ElevatorPosition(Elevator.liftState.R_FLOOR_POSITION));
+							b.add(new DriveTurnStep(0.05, -0.45, 2)); //-0.2,-0.3 MSC
 							b.add(new SeriesSet()); {
-								b.add(new WaitStep(0.5));
-								b.add(new DriveProfile(Profile.right1ToScale));	
-								b.end(); }
-							b.add(new SeriesSet()); {
-								b.add(new ElevatorPosition(Elevator.liftState.F_SCALE_POSITION)); //TODO: re add this
-								b.add(new WaitStep(1.5));
+								b.add(new WaitStep(1.1 + 0.2));
+								b.add(new AutoGather());
 								b.end(); }
 							b.end(); }
-						b.add(new ShootStep());
-						b.add(new WaitStep(0.5));
-						b.add(new DriveTurnStep(-0.2, -0.2, 1));
-						b.add(new ElevatorPosition(Elevator.liftState.REST_POSITION));
-						b.end(); }
+						b.add(new RecordStop());
+						
+						//SHOOT CUBE 2
+						//b.add(new ResetEncoders());
+						b.add(new ParallelSet()); {
+							//b.add(new DriveProfile(Profile.right1ToScale));
+							b.add(new DriveRecPath(20));
+							b.add(new SeriesSet()); {
+								b.add(new WaitStep(0.1));
+								b.add(new ElevatorPosition(Elevator.liftState.AUTON_SCALE_POSITION));
+								//b.add(new WaitStep(1.3));
+								b.add(new NegativeWait(0.5));
+								b.add(new ShootStep(-0.7));
+								b.end();}
+							b.end();}
+						
+						//PICKUP CUBE 3
+						b.add(new RecordStart());
+						b.add(new ParallelSet()); {
+							b.add(new ElevatorPosition(Elevator.liftState.R_FLOOR_POSITION));
+							b.add(new DriveTurnStep(0.15, -0.45, 2)); //-0.2,-0.3 MSC
+							b.add(new SeriesSet()); {
+								b.add(new WaitStep(1.0 + 0.3));
+								b.add(new AutoGather());
+								b.end(); }
+							b.end(); }
+						b.add(new RecordStop());
+						
+						//SHOOT CUBE 3
+						//b.add(new ResetEncoders());
+						b.add(new ParallelSet()); {
+							//b.add(new DriveProfile(Profile.right1ToScale));
+							b.add(new DriveRecPath(0));
+							b.add(new SeriesSet()); {
+								b.add(new WaitStep(0.1));
+								b.add(new ElevatorPosition(Elevator.liftState.AUTON_SCALE_POSITION));
+								//b.add(new WaitStep(1.3));
+								b.add(new NegativeWait(0.3));
+								b.add(new ShootStep(-0.7));
+								b.end();}
+							b.end();}
+						
+						//PICKUP CUBE 4
+						b.add(new ParallelSet()); {
+							b.add(new ElevatorPosition(Elevator.liftState.R_FLOOR_POSITION));
+							b.add(new DriveTurnStep(0.15, -0.45, 2)); //-0.2,-0.3 MSC
+							b.add(new SeriesSet()); {
+								b.add(new WaitStep(0.8));
+								b.add(new AutoGather());
+								b.end(); }
+							b.end(); }
+
+						b.end();}
 					b.end(); }
 				
 	//------------------CROSS SCALE---------------------------------------------------------------------
@@ -449,17 +495,52 @@ public class AutonMain extends Component {
 						b.add(new ParallelSet()); {
 							b.add(new DriveProfile(Profile.rightToLeftScale));
 							b.add(new SeriesSet()); {
-								b.add(new WaitStep(5.2));
+								b.add(new WaitStep(4.4+0.4)); 
 								//b.add(new EndStep()); //TODO: remove when we want to complete cross scale auto
-								b.add(new ElevatorPosition(Elevator.liftState.F_SCALE_POSITION)); //TODO: re add this
+								b.add(new ElevatorPosition(Elevator.liftState.AUTON_SCALE_POSITION)); //TODO: re add this
+								
+								//moved shooting logic into this wait, so we start shooting before finishing driving
+								b.add(new WaitStep(1.8 - 0.1));
+								b.add(new ShootStep(-0.8));
 								b.end(); }
 							b.end(); }
-						b.add(new ShootStep());
 						//b.add(new WaitStep(0.5));
-						b.add(new DriveTurnStep(-0.35, -0.15, 0.4)); //-0.3,-0.2 MSC
-						b.add(new ElevatorPosition(Elevator.liftState.R_FLOOR_POSITION));
-						b.add(new AutoGather());
-						b.add(new ElevatorPosition(Elevator.liftState.REST_POSITION));
+						
+						//record the driveturn and autogather
+						b.add(new RecordStart());
+						b.add(new ParallelSet()); {
+							b.add(new ElevatorPosition(Elevator.liftState.R_FLOOR_POSITION));
+							b.add(new DriveTurnStep(-0.45 + 0.15, -0.05, 2)); //-0.2,-0.3 MSC
+							b.add(new SeriesSet()); {
+								b.add(new WaitStep(1.0 +0.2));
+								b.add(new AutoGather());
+								b.end(); }
+							b.end(); }
+						b.add(new RecordStop());
+						
+						//b.add(new ResetEncoders());
+						b.add(new ParallelSet()); {
+							//b.add(new DriveProfile(Profile.right1ToScale));
+							b.add(new DriveRecPath(20));
+							b.add(new SeriesSet()); {
+								//b.add(new WaitStep(0.1));
+								b.add(new ElevatorPosition(Elevator.liftState.AUTON_SCALE_POSITION));
+								//b.add(new WaitStep(1.3));
+								b.add(new NegativeWait(0.3 + 0.3));
+								b.add(new ShootStep(-0.85));
+								b.end();}
+							b.end();}
+						
+						//go for cube 3
+						b.add(new ParallelSet()); {
+							b.add(new ElevatorPosition(Elevator.liftState.R_FLOOR_POSITION));
+							b.add(new DriveTurnStep(-0.45, 0.05, 2)); //-0.2,-0.3 MSC
+							b.add(new SeriesSet()); {
+								b.add(new WaitStep(0.8));
+								b.add(new AutoGather());
+								b.end(); }
+							b.end(); }
+						
 						b.end(); }
 					
 					b.add(new SeriesSet()); { 
@@ -481,7 +562,7 @@ public class AutonMain extends Component {
 						b.add(new RecordStart());
 						b.add(new ParallelSet()); {
 							b.add(new ElevatorPosition(Elevator.liftState.R_FLOOR_POSITION));
-							b.add(new DriveTurnStep(-0.05, -0.45 + 0.15, 2)); //-0.2,-0.3 MSC
+							b.add(new DriveTurnStep(0.05, -0.45 + 0.15, 2)); //-0.2,-0.3 MSC
 							b.add(new SeriesSet()); {
 								b.add(new WaitStep(1.0 +0.2));
 								b.add(new AutoGather());
@@ -655,7 +736,7 @@ public class AutonMain extends Component {
 					b.add(new SeriesSet());{
 						//FIRST CUBE
 						b.add(new ParallelSet()); {
-							b.add(new DriveProfile(Profile.curvedStraightScaleR,10));
+							b.add(new DriveProfile(Profile.straightScaleRightFast,10));
 							b.add(new SeriesSet()); {
 								b.add(new WaitStep(2.0));
 								b.add(new ElevatorPosition(Elevator.liftState.AUTON_SCALE_POSITION));
@@ -824,9 +905,10 @@ public class AutonMain extends Component {
 						b.add(new DriveProfile(Profile.straightScaleZoom));
 						b.add(new ElevatorPosition(Elevator.liftState.F_SCALE_POSITION));
 						b.add(new WaitStep(1.2));
-						b.add(new TurnAngle(15));
-						b.add(new ShootStep(-1.0));
-						b.add(new DriveTurnStep(-0.3, -0.3, 0.5));
+						b.add(new TurnAngle(20));
+						b.add(new WaitStep(0.1));
+						b.add(new ShootStep(-0.9));
+						b.add(new DriveTurnStep(-0.3, -0.3, 0.6));
 						b.add(new ElevatorPosition(Elevator.liftState.REST_POSITION));
 						b.end();}
 						
@@ -836,7 +918,7 @@ public class AutonMain extends Component {
 						b.add(new DriveProfile(Profile.straightScaleZoom));
 						b.add(new ElevatorPosition(Elevator.liftState.F_SCALE_POSITION));
 						b.add(new WaitStep(1.2));
-						b.add(new TurnAngle(180));
+						b.add(new TurnAngle(160));
 						b.add(new ShootStep(-1.0));
 						b.add(new DriveTurnStep(-0.3, -0.3, 0.5));
 						b.add(new ElevatorPosition(Elevator.liftState.REST_POSITION));
@@ -931,8 +1013,11 @@ public class AutonMain extends Component {
 		testProfile = new SeriesSet();
 		b.add(testProfile); {
 			b.add(new StartStep());
-			b.add(new ElevatorPosition(Elevator.liftState.REST_POSITION));
-			b.add(new DriveProfile(Profile.straightScaleLeftFast));
+			b.add(new DriveTurnStep(-0.35, 0.05, 1.3)); //-0.2,-0.3 MSC
+			
+			
+			//b.add(new ElevatorPosition(Elevator.liftState.REST_POSITION));
+			//b.add(new DriveProfile(Profile.straightScaleLeftFast));
 			/*
 			b.add(new WaitStep(0.5));
 			b.add(new AutoGather());

@@ -884,7 +884,7 @@ public class Elevator extends Component {
 	public ClimbState cState = ClimbState.START;
 	
 	private void climbElevator() {
-		//out.deployForkServo(in.preClimb);
+		//out.deployForkServo(in.preClimb);  //Uncomment me when ready to climb! CMP
 		
 		switch(cState) {
 		case START:
@@ -966,7 +966,7 @@ public class Elevator extends Component {
 					climbAllowed = true;
 				} else if(sense.liftPos > 10) {
 					//once we get here, lock the ratchet
-					//out.setRatchetServo(true);
+					//out.setRatchetServo(true);   //Uncomment me when climbing & high enough! CMP
 					
 					if(climbAllowed) {
 						out.setElevatorPower(climbPwr);

@@ -28,10 +28,10 @@ public class DriveTrain extends Component implements Runnable {
 	public static final double DRIVEMP_KFV_INT = 0.1;
 	public static final double DRIVEMP_REC_PWR = 0.75;
 
-	public static final double CAM_DRIVE_KP = 3.0 / 25.0; // Ex: 1/25 is 100% power per 25 degree of error
+	public static final double CAM_DRIVE_KP = 3.0 / 25.0; // Ex: 3/25 is 300% power per 25 degree of error (100% for 8.3 deg)
 	public static final double CAM_DRIVE_KD = 1.5; // .5/45 * 50. This is power per degree per 20 milliseconds
-	public static final double CAM_DRIVE_PWR = 0.6;  //Power cap
-	public static final double CAM_DRIVE_DIST_KP = 0.01; //max height of camera is 240 pixels
+	public static final double CAM_DRIVE_PWR = 0.6;  //Power cap... LOWER this to .5? .4? CMP  ???
+	public static final double CAM_DRIVE_DIST_KP = 0.01; //amt drv str vs turn, max height of camera is 240 pixels
 	public static final double GATHERED_DIST = 110; //Was 140 - Chgd 4/9 Mr C; //pixels
 	
 	public static final double[] CAM_DRIVE_TABLE = { 1, 0.3, 0.25,  0 };//dist error percent of drive straight power to apply: 
